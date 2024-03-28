@@ -5,13 +5,32 @@ const express = require('express');
 const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs');
 
+const { check } = require('express-validator');
+const { handleValidationErrors } = require('../../utils/validation');
+
 const { setTokenCookie, restoreUser } = require('../../utils/auth');
+
 const { User } = require('../../db/models');
 
 const router = express.Router();
 
-// Log in endpoint.  It is in here instead of in user, only login and logout are here, that is why we did not need to import the requireAuth function
-router.post('/', async (req, res, next) => {
+
+// checks to see if the input password or username/email are empty and throws
+// an error if one is
+const validateLogin = [
+    check('credential')
+      .exists({ checkFalsy: true })
+      .notEmpty()
+      .withMessage('Please provide a valid email or username.'),
+    check('password')
+      .exists({ checkFalsy: true })
+      .withMessage('Please provide a password.'),
+    handleValidationErrors
+  ];
+
+// Log in endpoint.  It is in here instead of in user, only login and logout are here, that is why we did not need to import the requireAuth function,
+// uses the validateLogin middlewhere to check that all the information is there before proceeeding
+router.post('/', validateLogin, async (req, res, next) => {
 // credential and passwords are provided keys with values provided within the body
       const { credential, password } = req.body;
 // including unscoped() because the computer needs access to the username and email
@@ -71,6 +90,8 @@ router.get('/', (req, res) => {
     } else return res.json({ user: null });
   }
 );
+
+
 
 
 
