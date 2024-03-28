@@ -46,6 +46,14 @@ app.use(routes); // Connect all the routes
 
 const { ValidationError } = require('sequelize');
 
+
+app.get('/', (_req, res) => {
+  res.json('Server is running')
+})
+
+
+
+
 // Catch unhandled requests and forward to error handler.
 app.use((_req, _res, next) => {
     const err = new Error("The requested resource couldn't be found.");
