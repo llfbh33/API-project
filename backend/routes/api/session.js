@@ -10,7 +10,7 @@ const { User } = require('../../db/models');
 
 const router = express.Router();
 
-// Log in
+// Log in endpoint.  It is in here instead of in user, only login and logout are here, that is why we did not need to import the requireAuth function
 router.post(
     '/',
     async (req, res, next) => {
