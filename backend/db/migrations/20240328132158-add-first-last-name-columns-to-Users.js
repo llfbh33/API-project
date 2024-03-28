@@ -1,13 +1,12 @@
 'use strict';
+/** @type {import('sequelize-cli').Migration} */
 
 let options = {};
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA; // define schema for production
 }
+options.tableName = 'Users';
 
-const { DataTypes } = require('sequelize');
-
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
     /**
@@ -16,12 +15,13 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.addColumn('Users', 'firstName', {
+
+    await queryInterface.addColumn(options, 'firstName', {
       type: Sequelize.STRING(50),
       allowNull: false
     });
 
-    await queryInterface.addColumn('Users', 'lastName', {
+    await queryInterface.addColumn(options, 'lastName', {
       type: Sequelize.STRING(50),
       allowNull: false
     });
@@ -34,7 +34,7 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.removeColumn('Users', 'lastName');
-    await queryInterface.removeColumn('Users', 'firstName');
+    await queryInterface.removeColumn(options, 'lastName');
+    await queryInterface.removeColumn(options, 'firstName');
   }
 };

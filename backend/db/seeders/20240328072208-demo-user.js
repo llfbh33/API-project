@@ -1,4 +1,5 @@
 'use strict';
+/** @type {import('sequelize-cli').Migration} */
 
 let options = {};
 if (process.env.NODE_ENV === 'production') {
@@ -9,8 +10,6 @@ const { User } = require('../models');
 const { Op } = require('sequelize');
 const bcrypt = require("bcryptjs");
 
-
-/** @type {import('sequelize-cli').Migration} */
 const seedUsers = [
   {
     email: 'testUser1@testing.com',
@@ -51,7 +50,7 @@ const seedUsers = [
 
 module.exports = {
   async up (queryInterface, Sequelize) {
-   await User.bulkCreate(seedUsers, { validate: true })
+   await User.bulkCreate(options, seedUsers)   // , { validate: true }
   },
 
   async down (queryInterface, Sequelize) {
