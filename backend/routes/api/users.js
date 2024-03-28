@@ -64,7 +64,6 @@ router.post('/', validateSignup, async (req, res, next) => {
         firstName: newUser.firstName,
         lastName: newUser.lastName,
         email: newUser.email,
-        username: newUser.username
     }
     //use the function setTokencookie to create a JWT cookie
     await setTokenCookie(res, newUser);
