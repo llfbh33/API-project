@@ -50,7 +50,10 @@ const seedUsers = [
 
 module.exports = {
   async up (queryInterface, Sequelize) {
-   await User.bulkCreate(options, seedUsers)   // , { validate: true }
+  options.tableName = "Users";
+  options.validate = true;
+
+   await User.bulkCreate(seedUsers, options)   //
   },
 
   async down (queryInterface, Sequelize) {
