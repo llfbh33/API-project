@@ -54,6 +54,8 @@ router.post('/', validateLogin, async (req, res, next) => {
 // since no error was triggered we found a matching user and create a user object to return
       const safeUser = {
         id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
         username: user.username,
       };
@@ -81,6 +83,8 @@ router.get('/', (req, res) => {
     if (user) {
       const safeUser = {
         id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
         username: user.username,
       };
