@@ -1,3 +1,6 @@
+// utils files are utilities,exported functions which can be used by routes
+//or other files within the backend server
+
 // page contains user authentication middlewear
 
 const jwt = require('jsonwebtoken');
