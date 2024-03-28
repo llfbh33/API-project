@@ -11,9 +11,7 @@ const { User } = require('../../db/models');
 const router = express.Router();
 
 // Log in endpoint.  It is in here instead of in user, only login and logout are here, that is why we did not need to import the requireAuth function
-router.post(
-    '/',
-    async (req, res, next) => {
+router.post('/', async (req, res, next) => {
 // credential and passwords are provided keys with values provided within the body
       const { credential, password } = req.body;
 // including unscoped() because the computer needs access to the username and email
@@ -50,13 +48,29 @@ router.post(
     }
   );
 
-
   //logout route, removes the token cookie from the response and returns a success JSON message
 router.delete('/', (_req, res) => {
 // clears the token from the cookies
     res.clearCookie('token');
     return res.json({message: 'success'});
 });
+
+
+//This endpoint when hit will display who is currently signed in - the session user
+router.get('/', (req, res) => {
+    const { user } = req;
+    if (user) {
+      const safeUser = {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+      };
+      return res.json({
+        user: safeUser
+      });
+    } else return res.json({ user: null });
+  }
+);
 
 
 
