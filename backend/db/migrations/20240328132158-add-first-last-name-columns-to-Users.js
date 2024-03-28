@@ -1,5 +1,10 @@
 'use strict';
 
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA; // define schema for production
+}
+
 const { DataTypes } = require('sequelize');
 
 /** @type {import('sequelize-cli').Migration} */
