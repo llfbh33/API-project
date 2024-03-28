@@ -15,6 +15,14 @@ const router = express.Router();
 // Middleware which checks on all the information within the req.body username, email, password
 // to make sure that it was included in the req
 const validateSignup = [
+    check('firstName')
+        .exists({ checkFalsy: true })
+        .isLength({ min: 2 })
+        .withMessage('Please provide a valid first name'),
+    check('lastName')
+        .exists({ checkFalsy: true })
+        .isLength({ min: 2 })
+        .withMessage('Please provide a valid last name'),
     check('email')
       .exists({ checkFalsy: true })
       .isEmail()
@@ -39,11 +47,13 @@ const validateSignup = [
 // adding the validateSignup middleware to this endpoint to make sure the req body is not empty, or missing info
 router.post('/', validateSignup, async (req, res, next) => {
     //deconstruct the req.body
-    const { email, username, password } = req.body
+    const { firstName, lastName, email, username, password } = req.body
     //use hashSync to hash the users password
     const hashedPassword = bcrypt.hashSync(password, 12);
     //create a new user
     const newUser = await User.create({
+        firstName,
+        lastName,
         email,
         username,
         hashedPassword
@@ -51,6 +61,8 @@ router.post('/', validateSignup, async (req, res, next) => {
 // create a new user object that does not contain any private information
     const safeUser = {
         id: newUser.id,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
         email: newUser.email,
         username: newUser.username
     }

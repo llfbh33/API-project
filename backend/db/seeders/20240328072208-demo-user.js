@@ -14,27 +14,37 @@ const seedUsers = [
   {
     email: 'testUser1@testing.com',
     username: "First-Test-User",
-    hashedPassword: bcrypt.hashSync('password1')
+    hashedPassword: bcrypt.hashSync('password1'),
+    firstName: 'First',
+    lastName: 'TestingUser'
   },
   {
     email: 'testUser2@testing.com',
     username: "Second-Test-User",
-    hashedPassword: bcrypt.hashSync('password2')
+    hashedPassword: bcrypt.hashSync('password2'),
+    firstName: 'Second',
+    lastName: 'TestingUser'
   },
   {
     email: 'testUser3@testing.com',
     username: "Third-Test-User",
-    hashedPassword: bcrypt.hashSync('password3')
+    hashedPassword: bcrypt.hashSync('password3'),
+    firstName: 'Third',
+    lastName: 'TestingUser'
   },
   {
     email: 'testUser4@testing.com',
     username: "Fourth-Test-User",
-    hashedPassword: bcrypt.hashSync('password4')
+    hashedPassword: bcrypt.hashSync('password4'),
+    firstName: 'Fourth',
+    lastName: 'TestingUser'
   },
   {
     email: 'testUser5@testing.com',
     username: "Fifth-Test-User",
-    hashedPassword: bcrypt.hashSync('password5')
+    hashedPassword: bcrypt.hashSync('password5'),
+    firstName: 'Fifth',
+    lastName: 'TestingUser'
   },
 ]
 
