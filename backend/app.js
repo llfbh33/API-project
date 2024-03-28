@@ -47,6 +47,7 @@ app.use(routes); // Connect all the routes
 const { ValidationError } = require('sequelize');
 
 
+// live server is running
 app.get('/', (_req, res) => {
   res.json('Server is running')
 })
