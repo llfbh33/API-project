@@ -1,4 +1,4 @@
-# Play Dates
+# Meet Dogs
 
 ## Database Schema Design
 
