@@ -57,7 +57,6 @@ router.post('/', validateLogin, async (req, res, next) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        username: user.username,
       };
 // we need to set a cookie token upon sign in, if this cookie expires and the user has to be authenticated within the site
 // they will be logged out.
