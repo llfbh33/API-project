@@ -9,6 +9,7 @@ if (process.env.NODE_ENV === 'production') {
 
 const { Group } = require('../models');
 const { Op } = require('sequelize');
+options.tableName = "Groups";
 
 const seedGroups = [
   {
@@ -44,7 +45,6 @@ const seedGroups = [
 module.exports = {
   async up (queryInterface, Sequelize) {
 
-    options.tableName = "Groups";
     options.validate = true;
 
     await Group.bulkCreate(seedGroups, options);
@@ -52,7 +52,6 @@ module.exports = {
 
   async down (queryInterface, Sequelize) {
 
-    options.tableName = "Groups";
     return queryInterface.bulkDelete(options, {
       name: { [Op.in]: ['Time for a Play Date!', 'Hikes for Days', 'The Little Ones']}
     }, {});
