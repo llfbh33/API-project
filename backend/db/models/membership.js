@@ -10,7 +10,15 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define proper associations between users and Groups through this table
+      // define proper associations for users and Groups in this table
+
+      Membership.belongsTo(models.User, {
+        foreignKey: "userId"
+      });
+
+      Membership.belongsTo(models.Group, {
+        foreignKey: "groupId"
+      });
     }
   }
   Membership.init({

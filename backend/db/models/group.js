@@ -24,16 +24,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "groupId"
       });
 
-      Group.belongsToMany(models.User, {
-        through: models.Membership,
-        foreignKey: "groupId",
-        otherKey: "userId"
+      Group.hasMany(models.Membership, {
+        foreignKey: "groupId"
       });
 
-      Group.belongsToMany(models.Venue, {
-        through: models.Event,
+      Group.hasMany(models.Event, {
         foreignKey: "groupId",
-        otherKey: "venueId"
       });
 
     }

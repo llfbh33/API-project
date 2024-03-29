@@ -29,7 +29,7 @@ module.exports = {
         allowNull: false,
         references: {
           model: "Groups",
-          key: "key"
+          key: 'id'
         },
         onDelete: 'CASCADE'
       },
