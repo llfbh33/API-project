@@ -33,7 +33,7 @@ module.exports = {
       },
       type: {
         type: Sequelize.ENUM,
-        values: ["socializing", "active", "training", "elder-dogs", "puppies", "small dogs", "large dogs"],
+        values: ["In person", "Online"],
         allowNull: false
       },
       private: {

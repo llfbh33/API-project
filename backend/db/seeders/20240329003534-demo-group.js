@@ -16,7 +16,7 @@ const seedGroups = [
     organizerId: 1,
     name: 'Time for a Play Date!',
     about: 'This group is all about providing our pups with and opertunity to make lots of friends!',
-    type: 'socializing',
+    type: 'In person',
     private: false,
     city: 'Chicago',
     state: 'Illinois'
@@ -25,7 +25,7 @@ const seedGroups = [
     organizerId: 2,
     name: 'Hikes for Days',
     about: "Calling all dogs who just can't sit still! Lets enjoy all the beautiful nature trails around together.",
-    type: 'active',
+    type: 'In person',
     private: false,
     city: 'Chicago',
     state: 'Illinois'
@@ -34,7 +34,7 @@ const seedGroups = [
     organizerId: 3,
     name: 'The Little Ones',
     about: "Are you nervous to bring your little one around all those large dogs at the dog park?  Don't worry, come hang out with us instead!",
-    type: 'small dogs',
+    type: 'In person',
     private: false,
     city: 'Chicago',
     state: 'Illinois'
@@ -57,3 +57,4 @@ module.exports = {
     }, {});
   }
 };
+
