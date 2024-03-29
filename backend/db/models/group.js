@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
   Group.init({
     organizerId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      // removed alloNull false for now so that we do not need to delete on cascade the coresponding group
     },
     name: {
       type: DataTypes.STRING,

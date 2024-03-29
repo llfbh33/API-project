@@ -17,7 +17,7 @@ module.exports = {
       },
       organizerId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+      // removed alloNull false for now so that we do not need to delete on cascade the coresponding group
         references: {
           model: 'Users',
           key: 'id'
