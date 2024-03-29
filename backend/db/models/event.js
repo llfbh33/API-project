@@ -43,7 +43,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        isAlpha: true,
         len: [0, 100]
       }
     },
@@ -51,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: false,
       validate: {
-        len: [10, 255]
+        len: [10, 500]
       }
     },
     type: {
@@ -69,7 +68,7 @@ module.exports = (sequelize, DataTypes) => {
           }
         },
         intimateCapacity(value) {
-          if(this.type === "intimate" && value > 3) {
+          if(this.type === "intimate" && value > 4) {
             throw new Error("Intimate gatherings are defined as 3 or less dogs");
           }
         }
@@ -95,7 +94,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         isDate: true,
-        isAfter: this.startDate
       }
     },
   }, {
