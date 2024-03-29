@@ -161,12 +161,12 @@ const validGroupCreation = [
 router.post('/', requireAuth, async (req, res, next) => {
 
     const { user } = req;
-    const { organizerId } = user.id;
+    const organizerId  = user.id;
 
     const {name, about, type, private, city, state} = req.body;
 // organizerId is comingup Null when running in live
     const newGroup = await Group.create({
-        organizerId: parseInt(organizerId),
+        organizerId: organizerId,
         name,
         about,
         type,
