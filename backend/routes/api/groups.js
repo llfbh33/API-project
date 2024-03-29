@@ -166,7 +166,7 @@ router.post('/', requireAuth, async (req, res, next) => {
     const {name, about, type, private, city, state} = req.body;
 // organizerId is comingup Null when running in live
     const newGroup = await Group.create({
-        organizerId,
+        organizerId: parseInt(organizerId),
         name,
         about,
         type,
