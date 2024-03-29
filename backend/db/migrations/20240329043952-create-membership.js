@@ -1,5 +1,11 @@
 'use strict';
 /** @type {import('sequelize-cli').Migration} */
+
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA; // define schema for production
+}
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Memberships', {
@@ -10,25 +16,45 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       userId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Users",
+          key: 'id'
+        },
+        onDelete: 'CASCADE'
       },
       groupId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Groups",
+          key: "key"
+        },
+        onDelete: 'CASCADE'
       },
       status: {
-        type: Sequelize.ENUM
+        type: Sequelize.ENUM,
+        values: ["active", "in-active"],
+        allowNull: false
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
-    });
+    }, options);
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Memberships');
+    options.tableName = "Memberships"
+    await queryInterface.dropTable(options);
   }
 };
+
+
+// Memberships is a join table, make sure to create the proper associations

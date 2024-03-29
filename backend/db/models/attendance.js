@@ -11,12 +11,27 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      // associations for eventId and userId in event and user models through this model
+
     }
   }
   Attendance.init({
-    eventId: DataTypes.INTEGER,
-    userId: DataTypes.INTEGER,
-    status: DataTypes.ENUM
+    eventId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      onDelete: 'CASCADE',
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      onDelete: 'CASCADE',
+    },
+    status: {
+      type: DataTypes.ENUM,
+      defaultValue: "unknown",
+      values: ["attending", "maybe", "can't make it"],
+      allowNull: false
+    },
   }, {
     sequelize,
     modelName: 'Attendance',

@@ -10,13 +10,25 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // define proper associations between users and Groups through this table
     }
   }
   Membership.init({
-    userId: DataTypes.INTEGER,
-    groupId: DataTypes.INTEGER,
-    status: DataTypes.ENUM
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      onDelete: 'CASCADE'
+    },
+    groupId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      onDelete: 'CASCADE'
+    },
+    status: {
+      type: DataTypes.ENUM,
+      values: ["active", "in-active"],
+      allowNull: false
+    },
   }, {
     sequelize,
     modelName: 'Membership',
