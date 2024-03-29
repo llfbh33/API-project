@@ -94,31 +94,30 @@ router.get('/:groupId', async (req, res, next) => {
 // Get all Groups
 router.get('/', async (req, res, next) => {
 
-    const listOfGroups = await Group.findAll(
+    const listOfGroups = await Group.findAll({
         // need to include the number of members
         // need to indlude group preview image
-        // attributes: [Sequelize.col('"previewImage"."distributionKeyId"'), "costKey"],
-        // include: [
-        //     {
-        //     model: GroupImage,
-        //     // as: "previewImage",
-        //     attributes: ['url'],
-        //     where: {
-        //         preview: true
-        //         }
-        //     },
-        // ]
-    );
-
-    // for (let group of listOfGroups) {
-    //     let sum = await Membership.count({
-    //         where: {
-    //             groupId : group.id
-    //         }
-    //     })
-    //     group.dataValues.numMembers = sum
-    //     group.dataValues.GroupImages = group.dataValues.GroupImages[0].url
-    // }
+        include: [
+            {
+            model: GroupImage,
+            // as: "previewImage",
+            attributes: [['url', "previewImage"]], // can alias an attribute with nested brackets
+            where: {
+                preview: true
+                }
+            },
+        ]
+    });
+// try to remove the title of GroupImages, attempt to create new objects to present?
+    for (let group of listOfGroups) {
+        let sum = await Membership.count({
+            where: {
+                groupId : group.id
+            }
+        })
+        group.dataValues.numMembers = sum
+        group.dataValues.GroupImages = group.dataValues.GroupImages[0]
+    }
 
     res.json({Groups: listOfGroups})
   }
@@ -161,10 +160,10 @@ const validGroupCreation = [
 router.post('/', requireAuth, async (req, res, next) => {
 
     const { user } = req;
-    const organizerId  = user.id;
+    const organizerId  = user.id; // needed to set user.id to a variable to allow organizerId to not be null in production
 
     const {name, about, type, private, city, state} = req.body;
-// organizerId is comingup Null when running in live
+
     const newGroup = await Group.create({
         organizerId: organizerId,
         name,
