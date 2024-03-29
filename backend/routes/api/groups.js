@@ -6,7 +6,7 @@ const { sequelize } = require('sequelize');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
-const { setTokenCookie, restoreUser } = require('../../utils/auth');
+const { setTokenCookie, restoreUser, requireAuth } = require('../../utils/auth');
 
 const { GroupImage, Membership, Venue, Group, User } = require('../../db/models');
 
@@ -21,16 +21,17 @@ const router = express.Router();
         // add preview image to the response body
         // do not let a duplicate when the organizer is also a member
 // Get all Groups joined or organized by the Current User
-router.get('/current', async (req, res, next) => {
+router.get('/current', requireAuth, async (req, res, next) => {
     const {user} = req;
-// check here is there is a user signed in, if not set an error
-    if (!user) {
-        res.status(401),
-        res.json({
-            "message": "Authentication required"
-          })
-    }
-    // use user.id
+
+// ask if they want you to use the function or create your own like below for authentication
+    // if (!user) {
+    //     res.status(401),
+    //     res.json({
+    //         "message": "Authentication required"
+    //       })
+    // }
+
     const currentGroups = await User.findByPk(user.id, {
         include: [
             {model: Group},
@@ -157,15 +158,9 @@ const validGroupCreation = [
   ];
 
 // Create a Group  -- endpoint is complete
-router.post('/', validGroupCreation, async (req, res, next) => {
-    const {user} = req;
+router.post('/', requireAuth, async (req, res, next) => {
 
-    if(!user) {
-        res.status(401),
-        res.json({
-            "message": "Authentication required"
-          })
-    };
+    const { user } = req;
 
     const {name, about, type, private, city, state} = req.body;
 
@@ -181,6 +176,48 @@ router.post('/', validGroupCreation, async (req, res, next) => {
     res.json(newGroup);
 });
 
+
+// I believe this endpoint is all set
+// Add an Image to a Group based on the Group's id
+router.post('/:groupId/images', requireAuth, async (req, res, next) => {
+
+    const { user } = req;
+    const { groupId } = req.params;
+
+    const foundGroup = await Group.findByPk(groupId);
+
+    if(!foundGroup) {
+        const err = new Error("Group couldn't be found");
+        err.status = 404;
+        err.title = 'Group Missing';
+        err.errors = { Group: `The group at ID ${groupId} does not exist` };
+        return next(err);
+    }
+
+    if(foundGroup.organizerId !== user.id) {
+        const err = new Error('Posting Image Failed');
+        err.status = 401;
+        err.title = 'Posting Failed';
+        err.errors = { Organizer: 'You are not the organizer of this group' };
+        return next(err);
+    }
+
+    const { url, preview } = req.body;
+
+    const newImage = await GroupImage.create({
+        groupId: foundGroup.id,
+        url,
+        preview
+    });
+
+    const safeImage = {
+        id: newImage.id,
+        url,
+        preview
+    };
+
+    res.json(safeImage)
+});
 
 // you can use authentication to see ifa user is logged in or not by checking
 //if there is a user cookie within the req
