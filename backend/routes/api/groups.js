@@ -219,6 +219,34 @@ router.post('/:groupId/images', requireAuth, async (req, res, next) => {
     res.json(safeImage)
 });
 
+// I believe this endpoint is complete
+router.delete('/:groupId', requireAuth, async (req, res, next) => {
+    const { user } = req;
+    const { groupId } = req.params
+
+    const foundGroup = await Group.findByPk(groupId);
+
+    if(!foundGroup) {
+        const err = new Error("Group couldn't be found");
+        err.status = 404;
+        err.title = 'Group Missing';
+        err.errors = { Group: `The group at ID ${groupId} does not exist` };
+        return next(err);
+    };
+
+    if(foundGroup.organizerId !== user.id) {
+        const err = new Error('Deleting specified group failed');
+        err.status = 401;
+        err.title = 'Deletion failed';
+        err.errors = { Organizer: `You are not the organizer of this group` };
+        return next(err);
+    };
+
+    await foundGroup.destroy();
+
+    res.json({ message: "Successfully deleted" })
+});
+
 // you can use authentication to see ifa user is logged in or not by checking
 //if there is a user cookie within the req
 
