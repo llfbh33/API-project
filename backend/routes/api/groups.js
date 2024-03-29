@@ -165,6 +165,7 @@ router.post('/', requireAuth, async (req, res, next) => {
     const {name, about, type, private, city, state} = req.body;
 
     const newGroup = await Group.create({
+        organizedId: user.id,
         name,
         about,
         type,

@@ -9,7 +9,7 @@ const { GroupImage, Group } = require('../../db/models');
 
 const router = express.Router();
 
-// I think this endpoint is completed
+// Need to include information for if the current user is labeled the "co-host"
 // Delete an Image for a Group
 router.delete('/:imageId', requireAuth, async (req, res, next) => {
     const { user } = req;
