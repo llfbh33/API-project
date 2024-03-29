@@ -1,8 +1,4 @@
 const router = require('express').Router();
-const sessionRouter = require('./session.js');
-const usersRouter = require('./users.js');
-const groupsRouter = require('./groups.js');
-const gImagesRouter = require('./group-images.js')
 const { restoreUser } = require('../../utils/auth.js');
 
 // Connect restoreUser middleware to the API router
@@ -10,10 +6,13 @@ const { restoreUser } = require('../../utils/auth.js');
   // If current user session is not valid, set req.user to null
 router.use(restoreUser);
 
-router.use('/session', sessionRouter);
-router.use('/users', usersRouter);
-router.use('/groups', groupsRouter);
-router.use('/group-images', gImagesRouter);
+router.use('/session', require('./session.js'));
+router.use('/users', require('./users.js'));
+router.use('/groups', require('./groups.js'));
+router.use('/group-images', require('./group-images.js'));
+router.use('/event-images', require('./event-images.js'));
+router.use('/events', require('./events.js'));
+router.use('/venues', require('./venues.js'));
 
 
 

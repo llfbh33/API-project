@@ -12,7 +12,7 @@ const { GroupImage, Membership, Venue, Group, User } = require('../../db/models'
 
 const router = express.Router();
 
-
+router.use('/:groupId/membership', require('./membership.js')); // this route can stay up here
 
 
 
