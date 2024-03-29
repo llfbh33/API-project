@@ -10,17 +10,43 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // define connection between group and user
+      //a group belongs to an organizer, an organizer has many groups
+      Group.belongsTo(models.User, {
+        foreignKey: 'organizerId'
+      });
+      
     }
   }
   Group.init({
-    organizerId: DataTypes.INTEGER,
-    name: DataTypes.STRING,
-    about: DataTypes.TEXT,
-    type: DataTypes.ENUM,
-    private: DataTypes.BOOLEAN,
-    city: DataTypes.STRING,
-    state: DataTypes.STRING
+    organizerId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    about: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    type: {
+      type: DataTypes.ENUM,
+      values: ["socializing", "active", "training", "elder-dogs", "puppies", "small dogs", "large dogs"],
+      allowNull: false
+    },
+    private: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false
+    },
+    city: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    state: {
+      type: DataTypes.STRING,
+    },
   }, {
     sequelize,
     modelName: 'Group',
