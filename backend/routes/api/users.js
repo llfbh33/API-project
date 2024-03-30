@@ -18,27 +18,18 @@ const validateSignup = [
     check('firstName')
         .exists({ checkFalsy: true })
         .isLength({ min: 2 })
-        .withMessage('Please provide a valid first name'),
+        .withMessage("First Name is required"),
     check('lastName')
         .exists({ checkFalsy: true })
         .isLength({ min: 2 })
-        .withMessage('Please provide a valid last name'),
+        .withMessage("last Name is required"),
     check('email')
-      .exists({ checkFalsy: true })
-      .isEmail()
-      .withMessage('Please provide a valid email.'),
+        .exists({ checkFalsy: true })
+        .isEmail()
+        .withMessage("Invalid email"),
     check('username')
       .exists({ checkFalsy: true })
-      .isLength({ min: 4 })
-      .withMessage('Please provide a username with at least 4 characters.'),
-    check('username')
-      .not()
-      .isEmail()
-      .withMessage('Username cannot be an email.'),
-    check('password')
-      .exists({ checkFalsy: true })
-      .isLength({ min: 6 })
-      .withMessage('Password must be 6 characters or more.'),
+      .withMessage("Username is required"),
     handleValidationErrors
   ];
 
@@ -50,6 +41,26 @@ router.post('/', validateSignup, async (req, res, next) => {
     const { firstName, lastName, email, username, password } = req.body
     //use hashSync to hash the users password
     const hashedPassword = bcrypt.hashSync(password, 12);
+
+    const allUsers = await User.findAll();
+
+    for (let thisUser of allUsers) {
+      if (thisUser.email === email) {
+        const err = new Error("User already exists");
+        err.status = 500;
+        err.title = 'User already exists';
+        err.errors = { username: "User with that email already exists" };
+        return next(err);
+      };
+      if (thisUser.username === username) {
+        const err = new Error("User already exists");
+        err.status = 500;
+        err.title = 'User already exists';
+        err.errors = { username: "User with that username already exists" };
+        return next(err);
+      };
+    }
+
     //create a new user
     const newUser = await User.create({
         firstName,
@@ -64,6 +75,7 @@ router.post('/', validateSignup, async (req, res, next) => {
         firstName: newUser.firstName,
         lastName: newUser.lastName,
         email: newUser.email,
+        username: newUser.username
     }
     //use the function setTokencookie to create a JWT cookie
     await setTokenCookie(res, newUser);
