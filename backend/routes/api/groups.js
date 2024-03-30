@@ -16,36 +16,91 @@ router.use('/:groupId/members', require('./members.js')); // this route can stay
 router.use('/:groupId/membership', require('./membership.js')); // this route can stay up here
 
 
-// to finish this endpoint you need:
-        // add numMembers to the response body
-        // add preview image to the response body
+
         // do not let a duplicate when the organizer is also a member
 // ===>>> Get all Groups joined or organized by the Current User <<<===
 router.get('/current', requireAuth, async (req, res, next) => {
     const {user} = req;
-// figure out how to count the members within the querry
+
     const currentGroups = await User.findByPk(user.id, {
         include: [
-            {model: Group},
+            {model: Group,
+                include: {
+                    model: GroupImage,
+                    attributes: ['url'],
+                    where: {
+                        preview: true
+                    }
+                }
+            },
             {
                 model: Membership,
-                include: Group
+                include: {
+                    model: Group,
+                    include: {
+                        model: GroupImage,
+                        attributes: ['url'],
+                        where: {
+                            preview: true
+                        }
+                    }
+                }
             }
         ]
     });
 
-    const members = currentGroups.Memberships
-    const organized = currentGroups.Groups
+    const groupsArray = []
+// this loop is for all groups organized by this user
+    for (let group of currentGroups.Groups) {
+        let sum = await Membership.count({
+            where: {
+                groupId : group.id
+            }
+        });
 
-    members.forEach(group => {
-        if (!organized.includes(group.dataValues.Group)){
-            organized.push(group.dataValues.Group)
-        }
-    });
+        const result = {
+            id: group.id,
+            organizerId: group.organizerId,
+            name: group.name,
+            about: group.about,
+            type: group.type,
+            private: group.private,
+            city: group.city,
+            state: group.state,
+            createdAt: group.createdAt,
+            updatedAt: group.updatedAt,
+            numMembers: sum,
+            previewImage: group.GroupImages[0].url
+        };
+        groupsArray.push(result)
+    };
+// this loop is for all memberships of this user
+    for (let member of currentGroups.Memberships) {
+        let sum = await Membership.count({
+            where: {
+                groupId : member.Group.id
+            }
+        });
 
-    res.json(organized)
-});
+        const result = {
+            id: member.groupId,
+            organizerId: member.Group.organizerId,
+            name: member.Group.name,
+            about: member.Group.about,
+            type: member.Group.type,
+            private: member.Group.private,
+            city: member.Group.city,
+            state: member.Group.state,
+            createdAt: member.Group.createdAt,
+            updatedAt: member.Group.updatedAt,
+            numMembers: sum,
+            previewImage: member.Group.GroupImages[0].url
+        };
+        groupsArray.push(result)
+    };
 
+    res.json({Groups: groupsArray})
+  });
 
 
 // to finish this endpoint you need:
