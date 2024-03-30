@@ -39,7 +39,7 @@ const validQueryInput = [
       .withMessage("Start date must be a valid datetime"),
     handleValidationErrors  // reads out all the errors added to the array
   ];
-  
+
 // need to add either my own errors or figure outhowto properly use
   // the express validators
 // add querry options with pagination : validation errors to specify on the bottom of the readMe
@@ -138,7 +138,35 @@ router.put('/:eventId', requireAuth, async (req, res, next) => {
 
 // ===>>> Delete an Event specified by its id <<<===
 router.delete('/:eventId', requireAuth, async (req, res, next) => {
-    // Require proper authorization: Current User must be an attendee, host, or co-host of the event
+    // Require proper authorization: Current User must be organizer or co-host of the event
+
+    const { user } = req;
+    const { eventId } = req.params;
+
+    const deleteEvent = await Event.findByPk(eventId, {
+        include: Group
+    });
+
+    if(!deleteEvent) {
+        const err = new Error("Event couldn't be found");
+        err.status = 404;
+        err.title = 'Event Missing';
+        err.errors = { Event: `The event at ID ${eventId} does not exist` };
+        return next(err);
+    }
+
+    if(deleteEvent.Group.organizerId !== user.id) {
+        const err = new Error('Forbidden');
+        err.status = 403;
+        err.title = 'Authentication Failed';
+        err.errors = { Organizer: 'You are not the organizer of this event' };
+        return next(err);
+    };
+
+    await deleteEvent.destroy();
+
+    res.status(200);
+    res.json({ message: "Successfully deleted" });
 });
 
 
