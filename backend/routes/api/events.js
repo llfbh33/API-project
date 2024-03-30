@@ -12,7 +12,7 @@ const { Event, Group, EventImage, Venue, User } = require('../../db/models');
 const router = express.Router();
 
 router.use('/:eventId/attendees', require('./attendance.js'));  // this may have to go lower depending on how it activates
-router.use('/:eventId/attendance', require('./attendance.js'));
+router.use('/:eventId/attendees', require('./attendees.js'));
 
 
 // add querry options with pagination : validation errors to specify on the bottom of the readMe
