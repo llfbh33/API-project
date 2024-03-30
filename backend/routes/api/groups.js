@@ -79,10 +79,8 @@ router.get('/:groupId', async (req, res, next) => {
 });
 
 
-// no authorization is needed to see all the groups that exist
-// figure out how to not use a loop within the querry, and the num of
-//members needs to be switched with the preview image
-// can we set up the previewImage so it does not need to take on an alias?
+
+// completed
 // ===>>> Get all Groups <<<===
 router.get('/', async (req, res, next) => {
 
@@ -90,26 +88,41 @@ router.get('/', async (req, res, next) => {
         include: [
             {
             model: GroupImage,
-            // as: "previewImage",
-            attributes: [['url', "previewImage"]], // can alias an attribute with nested brackets
+            attributes: ['url'],
             where: {
                 preview: true
                 }
             },
         ]
     });
-// try to remove the title of GroupImages, attempt to create new objects to present?
+
+    const groupsArray = []
+
     for (let group of listOfGroups) {
         let sum = await Membership.count({
             where: {
                 groupId : group.id
             }
-        })
-        group.dataValues.numMembers = sum
-        group.dataValues.GroupImages = group.dataValues.GroupImages[0]
-    }
+        });
 
-    res.json({Groups: listOfGroups})
+        const result = {
+            id: group.id,
+            organizerId: group.organizerId,
+            name: group.name,
+            about: group.about,
+            type: group.type,
+            private: group.private,
+            city: group.city,
+            state: group.state,
+            createdAt: group.createdAt,
+            updatedAt: group.updatedAt,
+            numMembers: sum,
+            previewImage: group.GroupImages[0].url
+        };
+        groupsArray.push(result)
+    };
+
+    res.json({Groups: groupsArray})
   }
 );
 
@@ -210,7 +223,7 @@ router.post('/:groupId/images', requireAuth, async (req, res, next) => {
     res.json(safeImage)
 });
 
-// I believe this endpoint is complete
+
 // ===>>> Delete a Group <<<===
 router.delete('/:groupId', requireAuth, async (req, res, next) => {
     const { user } = req;

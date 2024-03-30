@@ -5,11 +5,11 @@ const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { GroupImage, Group } = require('../../db/models');
+const { GroupImage, Group, Membership } = require('../../db/models');
 
 const router = express.Router();
 
-// Need to include information for if the current user is labeled the "co-host"
+
 // ===>>> Delete an Image for a Group <<<===
 router.delete('/:imageId', requireAuth, async (req, res, next) => {
     const { user } = req;
@@ -27,12 +27,18 @@ router.delete('/:imageId', requireAuth, async (req, res, next) => {
         return next(err);
     };
 
-// Require proper authorization: Current user must be the organizer or "co-host" of the Group
-    if(image.Group.organizerId !== user.id) {
-        const err = new Error('Deleting specified Image failed');
+    const membershipAuth = await Membership.scope('findAuth').findOne({
+        where: {
+            userId: user.id,
+            groupId: image.Group.id
+        }
+    });
+
+    if(!membershipAuth || image.Group.organizerId !== user.id && membershipAuth.auth !== 'co-host') {
+        const err = new Error('Forbidden');
         err.status = 401;
-        err.title = 'Deletion failed';
-        err.errors = { Organizer: `You are not the organizer of the group image at is ${imageId} is associated with` };
+        err.title = 'Authentication Failed';
+        err.errors = { Organizer: `You are not the organizer or co-host of this group` };
         return next(err);
     };
 

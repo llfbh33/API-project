@@ -38,6 +38,11 @@ module.exports = {
         values: ["active", "in-active"],
         allowNull: false
       },
+      auth: {
+        type: Sequelize.ENUM,
+        values: ["host", "co-host", "member"],
+        defaultValue: 'member'
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

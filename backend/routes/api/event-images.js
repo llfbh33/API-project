@@ -7,19 +7,22 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const { setTokenCookie, restoreUser, requireAuth } = require('../../utils/auth');
 
-const { EventImage, Event, User } = require('../../db/models');
+const { EventImage, Event, Group, User, Membership } = require('../../db/models');
+const membership = require('../../db/models/membership');
 
 const router = express.Router();
 
 
-// copied over from GroupImage, make sure to double check code changes
 // ===>>> Delete an Image for an Event <<<===
 router.delete('/:imageId', requireAuth, async (req, res, next) => {
     const { user } = req;
     const { imageId } = req.params;
 
     const image = await EventImage.findByPk(imageId, {
-        include: Event
+        include: {
+            model: Event,
+            include: Group
+        }
     });
 
     if(!image) {
@@ -30,18 +33,24 @@ router.delete('/:imageId', requireAuth, async (req, res, next) => {
         return next(err);
     };
 
-// Require proper authorization: Current user must be the organizer or "co-host" of the Group
-    if(image.Event.groupId.organizerId !== user.id) {
-        const err = new Error('Deleting specified Image failed');
-        err.status = 401;
+    const membershipAuth = await Membership.scope('findAuth').findOne({
+        where: {
+            userId: user.id,
+            groupId: image.Event.Group.id
+        }
+    });
+
+    if(image.Event.Group.organizerId !== user.id && membershipAuth.auth !== 'co-host') {
+        const err = new Error("Forbidden");
+        err.status = 403;
         err.title = 'Deletion failed';
-        err.errors = { Organizer: `You are not the organizer of the group image at is ${imageId} is associated with` };
+        err.errors = { Organizer: `You are not the organizer or co-host of the event that the image with an id of ${imageId} is associated with` };
         return next(err);
     };
 
     await image.destroy();
 
-    res.json({ "message": "Successfully deleted" })
+    res.json({ message: "Successfully deleted" })
 });
 
 

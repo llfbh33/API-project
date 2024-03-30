@@ -7,7 +7,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const { setTokenCookie, restoreUser, requireAuth } = require('../../utils/auth');
 
-const { Event, Group, EventImage, Venue, User } = require('../../db/models');
+const { Event, Group, EventImage, Venue, Attendance, User } = require('../../db/models');
 
 const router = express.Router();
 
@@ -16,29 +16,6 @@ router.use('/:eventId/attendees', require('./attendees.js'));
 
 
 
-const validQueryInput = [
-    query('page')
-        .exists({ checkFalsy: true })
-        .isLength({ min: 1 })
-        .withMessage("Page must be greater than or equal to 1"),
-    query('size')
-        .exists({ checkFalsy: true })
-        .isLength({ min: 1 })
-        .withMessage("Size must be greater than or equal to 1"),
-    query('name')
-        .exists({ checkFalsy: false })
-        .isString()
-        .withMessage("Name must be a string"),
-    query('type')
-      .exists({ checkFalsy: true })
-      .isIn(["Online", "In person"])
-      .withMessage("Type must be 'Online' or 'In Person'"),
-    query('startDate')
-      .exists({ checkFalsy: true })
-      .isDate()
-      .withMessage("Start date must be a valid datetime"),
-    handleValidationErrors  // reads out all the errors added to the array
-  ];
 
 // need to add either my own errors or figure outhowto properly use
   // the express validators
@@ -84,6 +61,7 @@ router.get('/', async (req, res, next) => {
     }
 
 
+
     const listOfEvents = await Event.findAll({
         attributes: {exclude: ['description', 'capacity', 'price']},
         where,
@@ -95,12 +73,44 @@ router.get('/', async (req, res, next) => {
             {
                 model: Venue,
                 attributes: ['id', 'city', 'state']
+            },
+            {
+                model: EventImage,
+                attributes: ['url'],
+                where: {
+                    preview: true
+                    }
             }
         ],
         ...pagination
     });
 
-    res.json({Events: listOfEvents});
+    const eventsArray = []
+
+    for (let event of listOfEvents) {
+        let sum = await Attendance.count({
+            where: {
+                eventId: event.id  // count each record with the eventId of this event
+            }
+        });
+
+        const result = {
+            id: event.id,
+            groupId: event.Group.id,
+            venueId: event.Venue.id,
+            name: event.name,
+            type: event.type,
+            startDate: event.startDate,
+            endDate: event.endDate,
+            numAttending: sum,
+            previewImage: event.EventImages[0].url,
+            Group: event.Group,
+            Venue: event.Venue,
+        };
+        eventsArray.push(result)
+    };
+
+    res.json({Events: eventsArray});
 });
 
 

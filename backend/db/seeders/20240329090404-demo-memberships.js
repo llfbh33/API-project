@@ -15,52 +15,62 @@ const seedMemberships = [
   {
     userId: 1,
     groupId: 1,
-    status: "active"
+    status: "active",
+    auth: "host"
   },
   {
     userId: 2,
     groupId: 1,
-    status: "active"
+    status: "active",
+    auth: "member"
   },
   {
     userId: 3,
-    groupId: 1,
-    status: "active"
+    groupId: 3,
+    status: "active",
+    auth: "host"
   },
   {
     userId: 1,
     groupId: 2,
-    status: "in-active"
+    status: "in-active",
+    auth: "co-host"
   },
   {
     userId: 3,
     groupId: 2,
-    status: "active"
+    status: "active",
+    auth: "member"
   },
   {
     userId: 4,
     groupId: 3,
-    status: "active"
+    status: "active",
+    auth: "co-host"
   },
   {
     userId: 5,
     groupId: 3,
-    status: "active"
+    status: "active",
+    auth: "member"
   },
   {
     userId: 4,
     groupId: 2,
-    status: "active"
+    status: "active",
+    auth: "member"
   },
   {
     userId: 2,
-    groupId: 3,
-    status: "in-active"
+    groupId: 2,
+    status: "in-active",
+    auth: "host"
   },
   {
     userId: 5,
     groupId: 1,
-    status: "active"
+    status: "active",
+    auth: "member"
   },
 ];
 
