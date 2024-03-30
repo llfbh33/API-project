@@ -17,26 +17,47 @@ router.use('/:eventId/attendees', require('./attendees.js'));
 
 // add querry options with pagination : validation errors to specify on the bottom of the readMe
     // Query Parameters:
-            // page: integer, minimum: 1, maximum: 10, default: 1
-            // size: integer, minimum: 1, maximum: 20, default: 20
             // name: string, optional
             // type: string, optional
             // startDate: string, optional
 // ===>>> Get all Events <<<===
 router.get('/', async (req, res, next) => {
-// no authorization or authentication needed
+// include numAttending and previewImage
+
+    let { page, size, name, type, startDate } = req.query;
+
+    let pagination = {};
+
+    page = parseInt(page);
+    size = parseInt(size);
+
+    if(!page || isNaN(page) || page <= 0) page = 1;
+    if(!size || isNaN(size) || size <= 0) size = 20;
+
+    if (page > 10) page = 10;
+    if (size > 20) size = 20;
+
+    pagination.limit = size;
+    pagination.offset = size * (page - 1);
+
     const listOfEvents = await Event.findAll({
+        attributes: {exclude: ['description', 'capacity', 'price']},
         include: [
             {
-                model: Group
+                model: Group,
+                attributes: ['id', 'name', 'city', 'state']
             },
             {
-                model: Venue
+                model: Venue,
+                attributes: ['id', 'city', 'state']
             }
-        ]
+        ],
+        ...pagination
     });
 
-    res.json(listOfEvents);
+
+
+    res.json({Events: listOfEvents, page, size});
 });
 
 
