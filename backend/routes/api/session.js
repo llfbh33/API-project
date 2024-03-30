@@ -21,10 +21,10 @@ const validateLogin = [
     check('credential')
       .exists({ checkFalsy: true })
       .notEmpty()
-      .withMessage('Please provide a valid email or username.'),
+      .withMessage("Email or username is required"),
     check('password')
       .exists({ checkFalsy: true })
-      .withMessage('Please provide a password.'),
+      .withMessage("Password is required"),
     handleValidationErrors
   ];
 
@@ -42,10 +42,11 @@ router.post('/', validateLogin, async (req, res, next) => {
           }
         }
       });
+      // when they say invalid credentials we should set a validat
 // if there is no user with the provided credentials or when the password is hashed it does not match any of the hashed passwords
       if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
 // throw an error
-        const err = new Error('Login failed');
+        const err = new Error('Invalid credentials');
         err.status = 401;
         err.title = 'Login failed';
         err.errors = { credential: 'The provided credentials were invalid.' };
@@ -57,6 +58,7 @@ router.post('/', validateLogin, async (req, res, next) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        username: user.username
       };
 // we need to set a cookie token upon sign in, if this cookie expires and the user has to be authenticated within the site
 // they will be logged out.
@@ -85,6 +87,7 @@ router.get('/', (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        username: user.username
       };
       return res.json({
         user: safeUser
