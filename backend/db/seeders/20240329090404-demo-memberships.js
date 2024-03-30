@@ -62,6 +62,21 @@ const seedMemberships = [
     groupId: 1,
     status: "member",
   },
+  {
+    userId: 6,
+    groupId: 1,
+    status: "pending",
+  },
+  {
+    userId: 7,
+    groupId: 1,
+    status: "pending",
+  },
+  {
+    userId: 8,
+    groupId: 1,
+    status: "co-host",
+  },
 ];
 
 module.exports = {

@@ -46,6 +46,27 @@ const seedUsers = [
     firstName: 'Fifth',
     lastName: 'TestingUser'
   },
+  {
+    email: 'testUser6@testing.com',
+    username: "Sixth-Test-User",
+    hashedPassword: bcrypt.hashSync('password6'),
+    firstName: 'Sixth',
+    lastName: 'TestingUser'
+  },
+  {
+    email: 'testUser7@testing.com',
+    username: "Seventh-Test-User",
+    hashedPassword: bcrypt.hashSync('password7'),
+    firstName: 'Seventh',
+    lastName: 'TestingUser'
+  },
+  {
+    email: 'testUser8@testing.com',
+    username: "Eighth-Test-User",
+    hashedPassword: bcrypt.hashSync('password8'),
+    firstName: 'Eighth',
+    lastName: 'TestingUser'
+  },
 ]
 
 module.exports = {

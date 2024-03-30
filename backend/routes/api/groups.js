@@ -333,38 +333,8 @@ router.delete('/:groupId', requireAuth, async (req, res, next) => {
 });
 
 
-
-// These will only check if the req.body element was provided.  use for pagination at the end of readme
-const validGroupEdit = [
-    check('name')
-        .if(body('name').notEmpty())
-        .isLength({ max: 60 })
-        .withMessage("Name must be 60 characters or less"),
-    check('about')
-        .if(body('about').notEmpty())
-        .isLength({ min: 50 })
-        .withMessage("About must be 50 characters or more"),
-    check('type')
-        .if(body('type').notEmpty())
-        .isIn(["Online", "In person"])
-        .withMessage("Type must be 'Online' or 'In person'"),
-    check('private')
-        .if(body('private').notEmpty())
-        .isBoolean()
-        .withMessage("Private must be a boolean"),
-    check('city')
-        .if(body('city').notEmpty())
-        .notEmpty()
-        .withMessage("City is required"),
-    check('state')
-        .if(body('state').notEmpty())
-        .notEmpty()
-        .withMessage("State is required"),
-    handleValidationErrors
-  ];
-
 // ===>>> Edit a Group <<<===
-router.put('/:groupId', requireAuth, validGroupEdit, async (req, res, next) => {
+router.put('/:groupId', requireAuth, validGroupCreation, async (req, res, next) => {
     const { user } = req;
     const { groupId } = req.params
 
@@ -433,28 +403,63 @@ router.post('/:groupId/events', requireAuth, async (req, res, next) => {
 
 // ===>>> Get all Members of a Group specified by its id <<<===
 router.get('/:groupId/members', async (req, res, next) => {
-    // does not require authentication or authorization
-    const  { groupId }  = req.params
 
+    const { user } = req;
+    const  { groupId }  = req.params;
+    let host = false;
+
+// could do the querying better, maybe find one, organizer, then include
+// the members of the group they are an organizer of?
     const allMembers = await Membership.findAll({
         where: {
-            groupId: groupId
+            groupId: groupId,
         },
         include: User
     });
 
+    if(!allMembers.length) {
+        const err = new Error("Group couldn't be found");
+        err.status = 404;
+        err.title = 'Group Missing';
+        err.errors = { message: "Group couldn't be found" };
+        return next(err);
+    };
+
+    const organizer = await Membership.findOne({
+        where: {
+            groupId: groupId,
+            status: "organizer"
+        }
+    });
+
+    if (organizer.userId === user.id) host = true;
+
     const returnMembers = [];
 
     for (let member of allMembers) {
-        const result = {
-            id: member.userId,
-            firstName: member.User.firstName,
-            lastName: member.User.lastName,
-            Membership: {
-                status: member.status
+
+        if ( host === false && member.status !== 'pending') {
+            const result = {
+                id: member.userId,
+                firstName: member.User.firstName,
+                lastName: member.User.lastName,
+                Membership: {
+                    status: member.status
+                }
             }
-        }
-        returnMembers.push(result);
+            returnMembers.push(result);
+
+        } else if (host === true) {
+            const result = {
+                id: member.userId,
+                firstName: member.User.firstName,
+                lastName: member.User.lastName,
+                Membership: {
+                    status: member.status
+                }
+            }
+            returnMembers.push(result);
+        };
     };
     res.json({Members: returnMembers})
 });

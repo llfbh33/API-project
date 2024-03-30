@@ -60,8 +60,6 @@ router.get('/', async (req, res, next) => {
         // need to fix the output of dates and figure out a test for date with check
     }
 
-
-
     const listOfEvents = await Event.findAll({
         attributes: {exclude: ['description', 'capacity', 'price']},
         where,
@@ -120,23 +118,88 @@ router.get('/:eventId', async (req, res, next) => {
 
     const thisEvent = await Event.findByPk(req.params.eventId, {
         include: [{
-            model: Group
+            model: Group,
+            attributes: ["id", "name", "private", "city", "state"]
         },
         {
-            model: Venue
+            model: Venue,
+            attributes: ["id", "address", "city", "state", "lat", "lng"]
         },
         {
-            model: EventImage
+            model: EventImage,
+            attributes: ["id", "url", "preview"]
         }]
     });
 
+    if(!thisEvent) {
+        const err = new Error("Event couldn't be found");
+        err.status = 404;
+        err.title = "Event couldn't be found";
+        err.errors = { Event: "Event couldn't be found"};
+        return next(err);
+    };
 
+    const totalAttending = await Attendance.count({
+        where: {
+            eventId: thisEvent.id
+        }
+    });
+
+    const eventDetails = {
+        id: thisEvent.id,
+        groupId: thisEvent.Group.id,
+        venueId: thisEvent.Venue.id,
+        name: thisEvent.name,
+        description: thisEvent.description,
+        type: thisEvent.type,
+        capacity: thisEvent.capacity,
+        price: thisEvent.price,
+        startDate: thisEvent.startDate,
+        endDate: thisEvent.endDate,
+        numAttending: totalAttending || 0,
+        Group: thisEvent.Group,
+        Venue: thisEvent.Venue,
+        EventImages: thisEvent.EventImages
+    };
+
+    res.json(eventDetails)
 });
 
 
 // ===>>> Add an Image to an Event based on the Event's id <<<===
 router.post('/:eventId/images', requireAuth, async (req, res, next) => {
     // Require proper authorization: Current User must be an attendee, host, or co-host of the event
+    const { user } = req;
+    const { eventId } = req.params;
+    // find the event
+
+    const thisEvent = await Event.findByPk(eventId, {
+        include: [
+            {
+                model: Group
+            }
+        ]
+    });
+
+    if (!thisEvent) {
+        const err = new Error("Event couldn't be found");
+        err.status = 404;
+        err.title = "Event couldn't be found";
+        err.errors = { Event: "Event couldn't be found"};
+        return next(err);
+    };
+
+    const thisUser = await Membership.findOne({
+        where: {
+            userId: user.id,
+            groupId: thisEvent.Group.id
+        }
+    });
+
+    
+
+
+    //
 });
 
 
