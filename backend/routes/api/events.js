@@ -7,7 +7,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const { setTokenCookie, restoreUser, requireAuth } = require('../../utils/auth');
 
-const { Event, Group, EventImage, Venue, Attendance, User } = require('../../db/models');
+const { Event, Group, EventImage, Venue, Attendance, Membership, User } = require('../../db/models');
 
 const router = express.Router();
 
@@ -148,7 +148,6 @@ router.put('/:eventId', requireAuth, async (req, res, next) => {
 
 // ===>>> Delete an Event specified by its id <<<===
 router.delete('/:eventId', requireAuth, async (req, res, next) => {
-    // Require proper authorization: Current User must be organizer or co-host of the event
 
     const { user } = req;
     const { eventId } = req.params;
@@ -163,13 +162,20 @@ router.delete('/:eventId', requireAuth, async (req, res, next) => {
         err.title = 'Event Missing';
         err.errors = { Event: `The event at ID ${eventId} does not exist` };
         return next(err);
-    }
+    };
 
-    if(deleteEvent.Group.organizerId !== user.id) {
+    const membershipAuth = await Membership.scope('findAuth').findOne({
+        where: {
+            userId: user.id,
+            groupId: deleteEvent.Group.id
+        }
+    });
+
+    if(!membershipAuth || deleteEvent.Group.organizerId !== user.id && membershipAuth.auth !== 'co-host') {
         const err = new Error('Forbidden');
         err.status = 403;
         err.title = 'Authentication Failed';
-        err.errors = { Organizer: 'You are not the organizer of this event' };
+        err.errors = { Organizer: 'You are not the organizer or co-host of this event' };
         return next(err);
     };
 

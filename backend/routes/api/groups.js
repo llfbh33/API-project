@@ -3,7 +3,7 @@ const { Op } = require('sequelize');
 const { sequelize } = require('sequelize');
 
 
-const { check } = require('express-validator');
+const { check, body } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 const { setTokenCookie, restoreUser, requireAuth } = require('../../utils/auth');
@@ -12,7 +12,7 @@ const { GroupImage, Membership, Venue, Group, User } = require('../../db/models'
 
 const router = express.Router();
 
-router.use('/:groupId/members', require('./members.js')); // this route can stay up here
+// router.use('/:groupId/members', require('./members.js')); // this route can stay up here
 router.use('/:groupId/membership', require('./membership.js')); // this route can stay up here
 
 
@@ -103,12 +103,13 @@ router.get('/current', requireAuth, async (req, res, next) => {
   });
 
 
-// to finish this endpoint you need:
-    // to change the name of User to Organizer
+
 // ===>>> Get details of a Group from an id <<<===
 router.get('/:groupId', async (req, res, next) => {
 
-    const thisGroup = await Group.findByPk(req.params.groupId, {
+    const { groupId } = req.params;
+
+    const thisGroup = await Group.findByPk(groupId, {
         include:[
             {
                 model: GroupImage,
@@ -125,12 +126,38 @@ router.get('/:groupId', async (req, res, next) => {
         ]
     });
 
-    if(thisGroup) {
-        res.json(thisGroup)
-    } else {
-        res.status(404);
-        res.json({"message": "Group couldn't be found"})
-    }
+    if(!thisGroup) {
+        const err = new Error("Group couldn't be found");
+        err.status = 404;
+        err.title = "Group couldn't be found";
+        err.errors = { Group: "Group couldn't be found"};
+        return next(err);
+    };
+
+    const totalMembers = await Membership.count({
+        where: {
+            groupId: thisGroup.id
+        }
+    });
+
+    const completeGroup = {
+        id: thisGroup.id,
+        organizerId: thisGroup.organizerId,
+        name: thisGroup.name,
+        about: thisGroup.about,
+        type: thisGroup.type,
+        private: thisGroup.private,
+        city: thisGroup.city,
+        state: thisGroup.state,
+        createdAt: thisGroup.createdAt,
+        updatedAt: thisGroup.updatedAt,
+        numMembers: totalMembers || 0,
+        GroupImages: thisGroup.GroupImage,
+        Organizer: thisGroup.User,
+        Venues: thisGroup.Venues
+    };
+
+    res.json(completeGroup)
 });
 
 
@@ -184,8 +211,6 @@ router.get('/', async (req, res, next) => {
 
 
 
-// change migration for specified requirements
-// change models for specified requirements
 const validGroupCreation = [
     check('name')
         .exists({ checkFalsy: true })
@@ -309,8 +334,37 @@ router.delete('/:groupId', requireAuth, async (req, res, next) => {
 
 
 
+// These will only check if the req.body element was provided.  use for pagination at the end of readme
+const validGroupEdit = [
+    check('name')
+        .if(body('name').notEmpty())
+        .isLength({ max: 60 })
+        .withMessage("Name must be 60 characters or less"),
+    check('about')
+        .if(body('about').notEmpty())
+        .isLength({ min: 50 })
+        .withMessage("About must be 50 characters or more"),
+    check('type')
+        .if(body('type').notEmpty())
+        .isIn(["Online", "In person"])
+        .withMessage("Type must be 'Online' or 'In person'"),
+    check('private')
+        .if(body('private').notEmpty())
+        .isBoolean()
+        .withMessage("Private must be a boolean"),
+    check('city')
+        .if(body('city').notEmpty())
+        .notEmpty()
+        .withMessage("City is required"),
+    check('state')
+        .if(body('state').notEmpty())
+        .notEmpty()
+        .withMessage("State is required"),
+    handleValidationErrors
+  ];
+
 // ===>>> Edit a Group <<<===
-router.put('/:groupId', requireAuth, async (req, res, next) => {
+router.put('/:groupId', requireAuth, validGroupEdit, async (req, res, next) => {
     const { user } = req;
     const { groupId } = req.params
 
@@ -320,7 +374,7 @@ router.put('/:groupId', requireAuth, async (req, res, next) => {
         const err = new Error("Group couldn't be found");
         err.status = 404;
         err.title = 'Group Missing';
-        err.errors = { Group: `The group at ID ${groupId} does not exist` };
+        err.errors = { message: "Group couldn't be found" };
         return next(err);
     };
 
@@ -334,9 +388,19 @@ router.put('/:groupId', requireAuth, async (req, res, next) => {
 
     const { name, about, type, private, city, state } = req.body;
 
-     // use set to set the values with this or that, depending if it exists
-     // validate and save
-    // send response
+     foundGroup.set({
+        name: name || foundGroup.name,
+        about: about || foundGroup.about,
+        type: type || foundGroup.type,
+        private: private || foundGroup.private,
+        city: city || foundGroup.city,
+        state: state || foundGroup.state
+     });
+
+     await foundGroup.validate();
+     await foundGroup.save();
+
+    res.json(foundGroup);
 });
 
 
@@ -366,6 +430,34 @@ router.post('/:groupId/events', requireAuth, async (req, res, next) => {
         //must be organizer or a member, status of co-host
 })
 
+
+// ===>>> Get all Members of a Group specified by its id <<<===
+router.get('/:groupId/members', async (req, res, next) => {
+    // does not require authentication or authorization
+    const  { groupId }  = req.params
+
+    const allMembers = await Membership.findAll({
+        where: {
+            groupId: groupId
+        },
+        include: User
+    });
+
+    const returnMembers = [];
+
+    for (let member of allMembers) {
+        const result = {
+            id: member.userId,
+            firstName: member.User.firstName,
+            lastName: member.User.lastName,
+            Membership: {
+                status: member.status
+            }
+        }
+        returnMembers.push(result);
+    };
+    res.json({Members: returnMembers})
+});
 
 // you can use authentication to see ifa user is logged in or not by checking
 //if there is a user cookie within the req

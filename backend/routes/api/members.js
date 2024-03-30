@@ -7,16 +7,16 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const { setTokenCookie, restoreUser, requireAuth } = require('../../utils/auth');
 
-const { EventImage, User } = require('../../db/models');
+const { EventImage, Membership, User } = require('../../db/models');
 
 const router = express.Router();
 
 
 
 // ===>>> Get all Members of a Group specified by its id <<<===
-router.get('/', async (req, res, next) => {
+router.get('/:groupId/members', async (req, res, next) => {
     // does not require authentication or authorization
-    const  groupId  = req.params.groupId
+    const  { groupId }  = req.params.groupId
 
     res.json('testing 1')
 
