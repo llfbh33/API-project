@@ -35,13 +35,8 @@ module.exports = {
       },
       status: {
         type: Sequelize.ENUM,
-        values: ["active", "in-active"],
+        values: ["organizer", "co-host", "member", "pending"],
         allowNull: false
-      },
-      auth: {
-        type: Sequelize.ENUM,
-        values: ["host", "co-host", "member"],
-        defaultValue: 'member'
       },
       createdAt: {
         allowNull: false,

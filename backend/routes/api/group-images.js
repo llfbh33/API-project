@@ -27,14 +27,14 @@ router.delete('/:imageId', requireAuth, async (req, res, next) => {
         return next(err);
     };
 
-    const membershipAuth = await Membership.scope('findAuth').findOne({
+    const membershipAuth = await Membership.findOne({
         where: {
             userId: user.id,
             groupId: image.Group.id
         }
     });
 
-    if(!membershipAuth || image.Group.organizerId !== user.id && membershipAuth.auth !== 'co-host') {
+    if(!membershipAuth || image.Group.organizerId !== user.id && membershipAuth.status !== 'co-host') {
         const err = new Error('Forbidden');
         err.status = 401;
         err.title = 'Authentication Failed';

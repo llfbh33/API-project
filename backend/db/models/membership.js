@@ -34,25 +34,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     status: {
       type: DataTypes.ENUM,
-      values: ["active", "in-active"],
+      values: ["organizer", "co-host", "member", "pending"],
       allowNull: false
     },
-    auth: {
-      type: DataTypes.ENUM,
-      values: ["host", "co-host", "member"],
-      defaultValue: 'member'
-    }
   }, {
     sequelize,
-    modelName: 'Membership',
-    defaultScope: {
-      attributes: {exclude: ['auth']}
-    },
-    scopes: {
-      findAuth: {
-        auth: 'co-host'
-      }
-    }
+    modelName: 'Membership'
   });
   return Membership;
 };
