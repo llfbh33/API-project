@@ -116,7 +116,7 @@ router.get('/:groupId', async (req, res, next) => {
                 attributes: ["id", "url", "preview"]
             },
             {
-                model: User, // need to alias without including in model.
+                model: User,
                 attributes: ["id", "firstName", "lastName"]
             },
             {
@@ -152,7 +152,7 @@ router.get('/:groupId', async (req, res, next) => {
         createdAt: thisGroup.createdAt,
         updatedAt: thisGroup.updatedAt,
         numMembers: totalMembers || 0,
-        GroupImages: thisGroup.GroupImage,
+        GroupImages: thisGroup.GroupImages,
         Organizer: thisGroup.User,
         Venues: thisGroup.Venues
     };
