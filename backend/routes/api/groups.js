@@ -12,26 +12,18 @@ const { GroupImage, Membership, Venue, Group, User } = require('../../db/models'
 
 const router = express.Router();
 
+router.use('/:groupId/members', require('./membership.js')); // this route can stay up here
 router.use('/:groupId/membership', require('./membership.js')); // this route can stay up here
-
 
 
 // to finish this endpoint you need:
         // add numMembers to the response body
         // add preview image to the response body
         // do not let a duplicate when the organizer is also a member
-// Get all Groups joined or organized by the Current User
+// ===>>> Get all Groups joined or organized by the Current User <<<===
 router.get('/current', requireAuth, async (req, res, next) => {
     const {user} = req;
-
-// ask if they want you to use the function or create your own like below for authentication
-    // if (!user) {
-    //     res.status(401),
-    //     res.json({
-    //         "message": "Authentication required"
-    //       })
-    // }
-
+// figure out how to count the members within the querry
     const currentGroups = await User.findByPk(user.id, {
         include: [
             {model: Group},
@@ -58,7 +50,7 @@ router.get('/current', requireAuth, async (req, res, next) => {
 
 // to finish this endpoint you need:
     // to change the name of User to Organizer
-// Get details of a Group from an id
+// ===>>> Get details of a Group from an id <<<===
 router.get('/:groupId', async (req, res, next) => {
 
     const thisGroup = await Group.findByPk(req.params.groupId, {
@@ -68,7 +60,7 @@ router.get('/:groupId', async (req, res, next) => {
                 attributes: ["id", "url", "preview"]
             },
             {
-                model: User,
+                model: User, // need to alias without including in model.
                 attributes: ["id", "firstName", "lastName"]
             },
             {
@@ -91,12 +83,10 @@ router.get('/:groupId', async (req, res, next) => {
 // figure out how to not use a loop within the querry, and the num of
 //members needs to be switched with the preview image
 // can we set up the previewImage so it does not need to take on an alias?
-// Get all Groups
+// ===>>> Get all Groups <<<===
 router.get('/', async (req, res, next) => {
 
     const listOfGroups = await Group.findAll({
-        // need to include the number of members
-        // need to indlude group preview image
         include: [
             {
             model: GroupImage,
@@ -156,7 +146,7 @@ const validGroupCreation = [
     handleValidationErrors
   ];
 
-// Create a Group  -- endpoint is complete
+// ===>>> Create a Group <<<=== -- endpoint is complete
 router.post('/', requireAuth, async (req, res, next) => {
 
     const { user } = req;
@@ -179,7 +169,7 @@ router.post('/', requireAuth, async (req, res, next) => {
 
 
 // I believe this endpoint is all set
-// Add an Image to a Group based on the Group's id
+// ===>>> Add an Image to a Group based on the Group's id <<<===
 router.post('/:groupId/images', requireAuth, async (req, res, next) => {
 
     const { user } = req;
@@ -196,9 +186,9 @@ router.post('/:groupId/images', requireAuth, async (req, res, next) => {
     }
 
     if(foundGroup.organizerId !== user.id) {
-        const err = new Error('Posting Image Failed');
-        err.status = 401;
-        err.title = 'Posting Failed';
+        const err = new Error('Forbidden');
+        err.status = 403;
+        err.title = 'Authentication Failed';
         err.errors = { Organizer: 'You are not the organizer of this group' };
         return next(err);
     }
@@ -221,6 +211,7 @@ router.post('/:groupId/images', requireAuth, async (req, res, next) => {
 });
 
 // I believe this endpoint is complete
+// ===>>> Delete a Group <<<===
 router.delete('/:groupId', requireAuth, async (req, res, next) => {
     const { user } = req;
     const { groupId } = req.params
@@ -236,9 +227,9 @@ router.delete('/:groupId', requireAuth, async (req, res, next) => {
     };
 
     if(foundGroup.organizerId !== user.id) {
-        const err = new Error('Deleting specified group failed');
-        err.status = 401;
-        err.title = 'Deletion failed';
+        const err = new Error('Forbidden');
+        err.status = 403;
+        err.title = 'Authentication Failed';
         err.errors = { Organizer: `You are not the organizer of this group` };
         return next(err);
     };
@@ -247,6 +238,66 @@ router.delete('/:groupId', requireAuth, async (req, res, next) => {
 
     res.json({ message: "Successfully deleted" })
 });
+
+
+
+// ===>>> Edit a Group <<<===
+router.put('/:groupId', requireAuth, async (req, res, next) => {
+    const { user } = req;
+    const { groupId } = req.params
+
+    const foundGroup = await Group.findByPk(groupId);
+
+    if(!foundGroup) {
+        const err = new Error("Group couldn't be found");
+        err.status = 404;
+        err.title = 'Group Missing';
+        err.errors = { Group: `The group at ID ${groupId} does not exist` };
+        return next(err);
+    };
+
+    if(foundGroup.organizerId !== user.id) {
+        const err = new Error('Forbidden');
+        err.status = 403;
+        err.title = 'Authentication Failed';
+        err.errors = { Organizer: `You are not the organizer of this group` };
+        return next(err);
+    };
+
+    const { name, about, type, private, city, state } = req.body;
+
+     // use set to set the values with this or that, depending if it exists
+     // validate and save
+    // send response
+});
+
+
+// ===>>> Get All Venues for a Group specified by its id <<<===
+router.get('/:groupId/venues', requireAuth, async (req, res, next) => {
+    // requires authentication
+        //must be organizer or a member, status of co-host
+});
+
+// ===>>> Create a new Venue for a Group specified by its id <<<===
+router.post('/:groupId/venues', requireAuth, async (req, res, next) => {
+    // requires authentication
+        //must be organizer or a member, status of co-host
+});
+
+
+// ===>>> Get all Events of a Group specified by its id <<<===
+router.get('/:groupId/events', async (req, res, next) => {
+    // no authentication, or authorization needed
+
+});
+
+
+// ===> Create an Event for a Group specified by its id <<<===
+router.post('/:groupId/events', requireAuth, async (req, res, next) => {
+        // requires authentication
+        //must be organizer or a member, status of co-host
+})
+
 
 // you can use authentication to see ifa user is logged in or not by checking
 //if there is a user cookie within the req

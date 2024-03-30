@@ -10,7 +10,7 @@ const { GroupImage, Group } = require('../../db/models');
 const router = express.Router();
 
 // Need to include information for if the current user is labeled the "co-host"
-// Delete an Image for a Group
+// ===>>> Delete an Image for a Group <<<===
 router.delete('/:imageId', requireAuth, async (req, res, next) => {
     const { user } = req;
     const { imageId } = req.params;
@@ -27,6 +27,7 @@ router.delete('/:imageId', requireAuth, async (req, res, next) => {
         return next(err);
     };
 
+// Require proper authorization: Current user must be the organizer or "co-host" of the Group
     if(image.Group.organizerId !== user.id) {
         const err = new Error('Deleting specified Image failed');
         err.status = 401;
