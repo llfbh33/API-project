@@ -2,7 +2,7 @@ const express = require('express');
 const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs');
 
-const { check } = require('express-validator');
+const { query } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 const { setTokenCookie, restoreUser, requireAuth } = require('../../utils/auth');
@@ -15,10 +15,35 @@ router.use('/:eventId/attendees', require('./attendance.js'));  // this may have
 router.use('/:eventId/attendees', require('./attendees.js'));
 
 
+
+const validQueryInput = [
+    query('page')
+        .exists({ checkFalsy: true })
+        .isLength({ min: 1 })
+        .withMessage("Page must be greater than or equal to 1"),
+    query('size')
+        .exists({ checkFalsy: true })
+        .isLength({ min: 1 })
+        .withMessage("Size must be greater than or equal to 1"),
+    query('name')
+        .exists({ checkFalsy: false })
+        .isString()
+        .withMessage("Name must be a string"),
+    query('type')
+      .exists({ checkFalsy: true })
+      .isIn(["Online", "In person"])
+      .withMessage("Type must be 'Online' or 'In Person'"),
+    query('startDate')
+      .exists({ checkFalsy: true })
+      .isDate()
+      .withMessage("Start date must be a valid datetime"),
+    handleValidationErrors  // reads out all the errors added to the array
+  ];
+  
+// need to add either my own errors or figure outhowto properly use
+  // the express validators
 // add querry options with pagination : validation errors to specify on the bottom of the readMe
     // Query Parameters:
-            // name: string, optional
-            // type: string, optional
             // startDate: string, optional
 // ===>>> Get all Events <<<===
 router.get('/', async (req, res, next) => {
@@ -31,7 +56,7 @@ router.get('/', async (req, res, next) => {
     page = parseInt(page);
     size = parseInt(size);
 
-    if(!page || isNaN(page) || page <= 0) page = 1;
+    if(!page || isNaN(page) || size <= 0) page = 1;
     if(!size || isNaN(size) || size <= 0) size = 20;
 
     if (page > 10) page = 10;
@@ -40,8 +65,28 @@ router.get('/', async (req, res, next) => {
     pagination.limit = size;
     pagination.offset = size * (page - 1);
 
+    where = {};
+
+    if (name) where.name = {[Op.substring]: name};
+
+    if (type && type.toLowerCase() === 'online') {
+        where.type = type[0].toUpperCase() + type.slice(1);
+        console.log(where.type)
+    } else if (type && type.toLowerCase() === 'in person') {
+        let inPerson = type.split(' ')
+        inPerson[0] = inPerson[0][0].toUpperCase() + inPerson[0].slice(1);
+        inPerson[1] = inPerson[1][0].toUpperCase() + inPerson[1].slice(1);
+        where.type = inPerson.join(' ')
+    };
+
+    if (startDate) {
+        // need to fix the output of dates and figure out a test for date with check
+    }
+
+
     const listOfEvents = await Event.findAll({
         attributes: {exclude: ['description', 'capacity', 'price']},
+        where,
         include: [
             {
                 model: Group,
@@ -55,9 +100,7 @@ router.get('/', async (req, res, next) => {
         ...pagination
     });
 
-
-
-    res.json({Events: listOfEvents, page, size});
+    res.json({Events: listOfEvents});
 });
 
 

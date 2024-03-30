@@ -147,7 +147,7 @@ const validGroupCreation = [
   ];
 
 // ===>>> Create a Group <<<=== -- endpoint is complete
-router.post('/', requireAuth, async (req, res, next) => {
+router.post('/', requireAuth, validGroupCreation, async (req, res, next) => {
 
     const { user } = req;
     const organizerId  = user.id; // needed to set user.id to a variable to allow organizerId to not be null in production
