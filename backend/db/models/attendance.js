@@ -35,8 +35,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     status: {
       type: DataTypes.ENUM,
-      defaultValue: "unknown",
-      values: ["attending", "maybe", "can't make it"],
+      values: ["attending", "waitlist", "pending"],
       allowNull: false
     },
   }, {

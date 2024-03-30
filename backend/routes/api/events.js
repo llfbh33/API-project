@@ -168,15 +168,25 @@ router.get('/:eventId', async (req, res, next) => {
 
 // ===>>> Add an Image to an Event based on the Event's id <<<===
 router.post('/:eventId/images', requireAuth, async (req, res, next) => {
-    // Require proper authorization: Current User must be an attendee, host, or co-host of the event
     const { user } = req;
     const { eventId } = req.params;
-    // find the event
+    const { url, preview } = req.body;
+    let authorized = false;
 
     const thisEvent = await Event.findByPk(eventId, {
         include: [
             {
-                model: Group
+                model: Group,
+                attributes: ["id", "organizerId"],
+                include: [{
+                    model: Membership,
+                    attributes: ["userId","status"]
+                }]
+            },
+            {
+                model: User,
+                attributes: ["id"],
+                through: Attendance,
             }
         ]
     });
@@ -188,24 +198,52 @@ router.post('/:eventId/images', requireAuth, async (req, res, next) => {
         err.errors = { Event: "Event couldn't be found"};
         return next(err);
     };
-
-    const thisUser = await Membership.findOne({
-        where: {
-            userId: user.id,
-            groupId: thisEvent.Group.id
+// if the user is the organizer
+    if (thisEvent.Group.organizerId === user.id) {
+        authorized = true;
+    };
+// if user is the co-host
+    for(let member of thisEvent.Group.Memberships) {
+        if (member.status === "co-host" && member.userId === user.id) {
+            authorized = true
         }
-    });
+    };
+// if user is an attendee
+    for (let attendee of thisEvent.Users) {
+        if (attendee.Attendance.status === "attending" && attendee.id === user.id) {
+            authorized = true;
+        }
+    };
 
-    
+    if (authorized === true) {
+        const newImage = await EventImage.create({
+            eventId: eventId,
+            url,
+            preview
+        });
 
+        const safeImage = {
+            id: newImage.id,
+            url,
+            preview
+        }
+        res.json(safeImage)
+    }
 
-    //
+    const err = new Error("Forbidden");
+    err.status = 403;
+    err.title = 'Addition failed';
+    err.errors = { Attendee: `You are not the organizer, co-host, or attending this event` };
+    return next(err);
 });
 
 
 // ===>>> Edit an Event specified by its id <<<===
 router.put('/:eventId', requireAuth, async (req, res, next) => {
-    // Require proper authorization: Current User must be an attendee, host, or co-host of the event
+    const { user } = req;
+    const { eventId } = req.params;
+    let authorized = false;
+
 });
 
 

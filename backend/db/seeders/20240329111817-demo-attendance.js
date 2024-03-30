@@ -30,7 +30,7 @@ const seedAttendances = [
   {
     eventId: 1,
     userId: 3,
-    status: "can't make it"
+    status: "waitlist"
   },
   {
     eventId: 3,
@@ -40,6 +40,21 @@ const seedAttendances = [
   {
     eventId: 3,
     userId: 4,
+    status: "attending"
+  },
+  {
+    eventId: 1,
+    userId: 6,
+    status: "pending"
+  },
+  {
+    eventId: 1,
+    userId: 7,
+    status: "pending"
+  },
+  {
+    eventId: 1,
+    userId: 8,
     status: "attending"
   },
 ]
