@@ -11,7 +11,7 @@ const { EventImage, User } = require('../../db/models');
 
 const router = express.Router();
 
-
+// testing
 
 // ===>>> Request to Attend an Event based on the Event's id <<<===
 router.post('/', requireAuth, async (req, res, next) => {
