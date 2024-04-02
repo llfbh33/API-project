@@ -3,12 +3,12 @@ const { Op } = require('sequelize');
 const { sequelize } = require('sequelize');
 
 
-const { check, body } = require('express-validator');
+const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 const { setTokenCookie, restoreUser, requireAuth } = require('../../utils/auth');
 
-const { GroupImage, Membership, Venue, Group, User } = require('../../db/models');
+const { GroupImage, Membership, Venue, Group, User, Event, EventImage, Attendance } = require('../../db/models');
 
 const router = express.Router();
 
@@ -389,8 +389,65 @@ router.post('/:groupId/venues', requireAuth, async (req, res, next) => {
 
 // ===>>> Get all Events of a Group specified by its id <<<===
 router.get('/:groupId/events', async (req, res, next) => {
-    // no authentication, or authorization needed
+    const { groupId } = req.params;
 
+    const thisGroup = await Group.findByPk(groupId);
+    if (!thisGroup) {
+        const err = new Error("Group couldn't be found");
+        err.status = 404;
+        err.title = 'Group Missing';
+        err.errors = { message: "Group couldn't be found" };
+        return next(err);
+    };
+
+    const allEvents = await Event.findAll({
+        where: {
+            groupId: groupId
+        },
+        include: [{
+            model: Group,
+            attributes: ['id', 'name', 'city', 'state']
+        },
+        {
+            model: Venue,
+            attributes: ['id', 'city', 'state']
+        },
+        {
+            model: EventImage,
+            where: {
+                preview: true
+            }
+        }]
+    });
+
+    const responseEvent = [];
+
+    for (let oneEvent of allEvents) {
+
+        let sum = await Attendance.count({
+            where: {
+                eventId : oneEvent.id,
+                status: "attending"
+            }
+        });
+
+        const singleEvent = {
+            id: oneEvent.id,
+            groupId: oneEvent.groupId,
+            venueId: oneEvent.venueId,
+            name: oneEvent.name,
+            type: oneEvent.type,
+            startDate: oneEvent.startDate,
+            endDate: oneEvent.endDate,
+            numAttending: sum,
+            previewImage: oneEvent.EventImages[0].url,
+            Group: oneEvent.Group,
+            Venue: oneEvent.Venue
+        };
+        responseEvent.push(singleEvent);
+    };
+
+    res.json({Events: responseEvent});
 });
 
 

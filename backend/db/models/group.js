@@ -41,11 +41,17 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        len: [0, 60]
+      }
     },
     about: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        min: 50
+      }
     },
     type: {
       type: DataTypes.ENUM,

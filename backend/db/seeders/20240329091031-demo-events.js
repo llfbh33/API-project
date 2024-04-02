@@ -25,7 +25,7 @@ const seedEvents = [
   },
   {
     venueId: 5,
-    groupId: 2,
+    groupId: 1,
     name: "Hiking Date with the Fluffers",
     description: "You know they have been begging you, its time to get out those hiking boots and hit the trails with your best friend!  As well as a few others you will make along the way!",
     type: "In Person",

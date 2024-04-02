@@ -11,9 +11,7 @@ const { EventImage, User } = require('../../db/models');
 
 const router = express.Router();
 
-// testing
 
-// does it though?  I am not so sure  lets keep testing
 
 // ===>>> Request to Attend an Event based on the Event's id <<<===
 router.post('/', requireAuth, async (req, res, next) => {

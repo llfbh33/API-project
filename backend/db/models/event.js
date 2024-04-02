@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        len: [0, 100]
+        min: 5
       }
     },
     description: {
@@ -63,26 +63,9 @@ module.exports = (sequelize, DataTypes) => {
     capacity: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      validate: {
-        casualCapacity(value) {
-          if(this.type === "casual" && value > 10) {
-            throw new Error("Casual gatherings are defined as 10 or less dogs");
-          }
-        },
-        intimateCapacity(value) {
-          if(this.type === "intimate" && value > 4) {
-            throw new Error("Intimate gatherings are defined as 3 or less dogs");
-          }
-        }
-      }
     },
     price: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      validate: {
-        min: 0,
-        max: 100
-      }
+      type: DataTypes.DECIMAL(2, 2),
     },
     startDate: {
       type: DataTypes.DATE,

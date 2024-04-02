@@ -2,7 +2,7 @@ const express = require('express');
 const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs');
 
-const { query } = require('express-validator');
+const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 const { setTokenCookie, restoreUser, requireAuth } = require('../../utils/auth');
@@ -238,12 +238,134 @@ router.post('/:eventId/images', requireAuth, async (req, res, next) => {
 });
 
 
+const validEventUpdate = [
+    check('name')
+        .exists({ checkFalsy: true })
+        .isLength({ min: 5 })
+        .withMessage("Name must be at least 5 characters"),
+    check('type')
+      .exists({ checkFalsy: true })
+      .isIn(["Online", "In Person"])
+      .withMessage("Type must be Online or In Person"),
+    check('capacity')
+      .exists({ checkFalsy: true })
+      .isNumeric()
+      .withMessage("Capacity must be an integer"),
+    check('price')
+      .exists({ checkFalsy: true })
+      .notEmpty()
+      .isDecimal()
+      .withMessage("Price is invalid"),
+    check('description')
+      .exists({ checkFalsy: true })
+      .notEmpty()
+      .withMessage("Description is required"),
+    check('startDate')
+      .exists({ checkFalsy: true })
+      .notEmpty() // figure out how to use isAfter() current date
+      .withMessage("Start date must be in the future"),
+    check('endDate')
+      .exists({ checkFalsy: true })
+      .notEmpty() // figure out how to use isAfter() startDate - toISOString()?
+      .withMessage("End date is less than start date"),
+    handleValidationErrors
+]
+
 // ===>>> Edit an Event specified by its id <<<===
-router.put('/:eventId', requireAuth, async (req, res, next) => {
+router.put('/:eventId', requireAuth, validEventUpdate, async (req, res, next) => {
     const { user } = req;
     const { eventId } = req.params;
+    const { venueId, name, type, capacity, price, description, startDate, endDate } = req.body;
     let authorized = false;
 
+    const thisEvent = await Event.findByPk(eventId, {
+        include: [
+            {
+                model: Group,
+                attributes: ["id", "organizerId"],
+                include: [{
+                    model: Membership,
+                    attributes: ["userId","status"]
+                }]
+            },
+            {
+                model: User,
+                attributes: ["id"],
+                through: Attendance,
+            }
+        ]
+    });
+
+    const thisVenue = await Venue.findByPk(venueId);
+    if (!thisVenue) {
+        const err = new Error("Venue couldn't be found");
+        err.status = 404;
+        err.title = "Venue couldn't be found";
+        err.errors = { Venue: "Venue couldn't be found"};
+        return next(err);
+    };
+
+
+    if (!thisEvent) {
+        const err = new Error("Event couldn't be found");
+        err.status = 404;
+        err.title = "Event couldn't be found";
+        err.errors = { Event: "Event couldn't be found"};
+        return next(err);
+    };
+// if the user is the organizer
+    if (thisEvent.Group.organizerId === user.id) {
+        authorized = true;
+    };
+// if user is the co-host
+    for(let member of thisEvent.Group.Memberships) {
+        if (member.status === "co-host" && member.userId === user.id) {
+            authorized = true
+        }
+    };
+// if user is an attendee
+    for (let attendee of thisEvent.Users) {
+        if (attendee.Attendance.status === "attending" && attendee.id === user.id) {
+            authorized = true;
+        }
+    };
+
+    if (authorized == true) {
+        thisEvent.set({
+            venueId,
+            // groupId: thisEvent.groupId,
+            name: name,
+            type,
+            description,
+            capacity,
+            price,
+            startDate,
+            endDate
+        });
+
+        await thisEvent.validate();
+        await thisEvent.save();
+
+        const eventReturn = {
+            id: thisEvent.id,
+            groupId: thisEvent.groupId,
+            venueId: venueId,
+            name: name,
+            type,
+            capacity,
+            price,
+            description,
+            startDate,
+            endDate
+        };
+        res.json(eventReturn);
+    };
+
+    const err = new Error("Forbidden");
+    err.status = 403;
+    err.title = 'Update failed';
+    err.errors = { Event: `You are not the organizer, co-host, or attending this event` };
+    return next(err);
 });
 
 
