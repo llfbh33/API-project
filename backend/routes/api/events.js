@@ -576,4 +576,173 @@ router.delete('/:eventId/attendance/:userId', requireAuth, async (req, res, next
 });
 
 
+
+// ===>>> Request to Attend an Event based on the Event's id <<<===
+router.post('/:eventId/attendance', requireAuth, async (req, res, next) => {
+    // Require Authorization: Current User must be a member of the group
+    const { user } = req;
+    const { eventId } = req.params;
+
+    const thisEvent = await Event.findByPk(eventId);
+
+    if (!thisEvent) {
+        const err = new Error("Event couldn't be found");
+        err.status = 404;
+        err.title = "Event couldn't be found";
+        err.errors = { Message: "Event couldn't be found" };
+        return next(err);
+    };
+
+    const thisMembership = await Membership.findOne({
+        where: {
+            groupId: thisEvent.groupId,
+            userId: user.id
+        }
+    });
+
+    if (!thisMembership) {
+        const err = new Error("Must be a member of a group to attend events");
+        err.status = 403;
+        err.title = "Must be a member of a group to attend events";
+        err.errors = { Message: "Must be a member of a group to attend events" };
+        return next(err);
+    }
+
+    // check if they have a status for attending this event
+    const thisUser = await User.findByPk(user.id, {
+        include: [{
+            model: Event,
+            where: {
+                id: eventId
+            }
+        }]
+    });
+
+    if (!thisUser) {
+        const newAttend = await Attendance.create({
+            userId: user.id,
+            eventId: eventId,
+            status: "pending"
+        });
+
+        const returnAttend = {
+            userId: newAttend.userId,
+            status: newAttend.status
+        };
+
+        res.json(returnAttend);
+    };
+
+    if (thisUser) {
+        if (thisUser.Events[0].Attendance.status === "attending") {
+            const err = new Error("User is already an attendee of the event");
+            err.status = 400;
+            err.title = "User is already an attendee of the event";
+            err.errors = { Message: "User is already an attendee of the event" };
+            return next(err);
+        } else {
+            const err = new Error("Attendance has already been requested");
+            err.status = 400;
+            err.title = "Attendance has already been requested";
+            err.errors = { Message: "Attendance has already been requested" };
+            return next(err);
+        }
+    };
+});
+
+
+// ===>>> Change the status of an attendance for an event specified by id <<<===
+router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
+    const { user } = req;
+    const { eventId } = req.params;
+    const { userId, status } = req.body;
+    let authorized = false;
+
+    const thisEvent = await Event.findByPk(eventId, {
+        include: Group
+    });
+
+    if (!thisEvent) {
+        const err = new Error("Event couldn't be found");
+        err.status = 404;
+        err.title = "Event couldn't be found";
+        err.errors = { Message: "Event couldn't be found" };
+        return next(err);
+    };
+
+    const findUser = await User.findByPk(userId);
+
+    if (!findUser) {
+        const err = new Error("User couldn't be found");
+        err.status = 404;
+        err.title = "User couldn't be found";
+        err.errors = { Message: "User couldn't be found" };
+        return next(err);
+    };
+
+    const thisUser = await User.findByPk(userId, {
+        include: [{
+            model: Event,
+            where: {
+                id: eventId
+            },
+        }, {
+            model: Membership,
+            where: {
+                groupId: thisEvent.groupId
+            }
+        }]
+    });
+
+    if (!thisUser) {
+        const err = new Error("Attendance between the user and the event does not exist");
+        err.status = 404;
+        err.title = "Attendance not found";
+        err.errors = { Message: "Attendance between the user and the event does not exist" };
+        return next(err);
+    };
+
+    if (thisEvent.Group.organizerId === user.id) authorized = true;
+    if (thisUser.Memberships[0].status === "co-host") authorized = true;
+
+    if (authorized === false) {
+        const err = new Error('Forbidden');
+        err.status = 403;
+        err.title = 'Authentication Failed';
+        err.errors = { Organizer: 'You are not the organizer or co-host of this event' };
+        return next(err);
+    };
+
+    if (status === "pending"){
+        const err = new Error("Bad Request");
+        err.status = 400;
+        err.title = "Bad Request";
+        err.errors = { status: "Cannot change an attendance status to pending" };
+        return next(err);
+    };
+
+    const thisAttendance = await Attendance.findOne({
+        where: {
+            eventId: eventId,
+            userId: userId
+        }
+    });
+
+    thisAttendance.set({
+        status,
+    });
+
+    await thisAttendance.validate();
+    await thisAttendance.save();
+
+    const safeAttendee = {
+        id: thisAttendance.id,
+        eventId: thisAttendance.eventId,
+        userId: thisAttendance.userId,
+        status: thisAttendance.status
+    };
+
+    res.json(thisAttendance)
+});
+
 module.exports = router;

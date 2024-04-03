@@ -960,15 +960,69 @@ router.delete('/:groupId/membership/:memberId', requireAuth, async (req, res, ne
 
 
 
+// look into something like this to refactor small searches
+const hello = async (groupId) => {
+    const thisGroup = await Group.findByPk(groupId)
+    return thisGroup;
+};
+//inside the endpoint:
+// const thisGroup = await hello(groupId)
+
+
 // ===>>> Request a Membership for a Group based on the Group's id <<<===
-router.post('groups/:groupId/membership', requireAuth, async (req, res, next) => {
+router.post('/:groupId/membership', requireAuth, async (req, res, next) => {
     // does not require authorization
+    const { user } = req;
     const { groupId } = req.params;
-    const { memberId, status } = req.body;
 
     const thisGroup = await Group.findByPk(groupId)
 
-    res.json(thisGroup)
+    if (!thisGroup) {
+        const err = new Error("Group couldn't be found");
+        err.status = 404;
+        err.title = "Group couldn't be found";
+        err.errors = { message: "Group couldn't be found" };
+        return next(err);
+    };
+
+    const thisUser = await User.findByPk(user.id, {
+        include: {
+            model: Membership,
+            where: {
+                groupId: groupId
+            }
+        }
+    });
+
+    if (thisUser) {
+        if (thisUser.Memberships[0] && thisUser.Memberships[0].status === "pending") {
+            const err = new Error("Membership has already been requested");
+            err.status = 400;
+            err.title = "Membership has already been requested";
+            err.errors = { message: "Membership has already been requested" };
+            return next(err);
+        };
+        if (thisUser.Memberships[0]) {
+            const err = new Error("User is already a member of the group");
+            err.status = 400;
+            err.title = "User is already a member of the group";
+            err.errors = { message: "User is already a member of the group" };
+            return next(err);
+        };
+    };
+
+    const newMembership = await Membership.create({
+        userId: user.id,
+        groupId: groupId,
+        status: "pending"
+    });
+
+    const safeMembership = {
+        memberId: newMembership.userId,
+        status: newMembership.status
+    };
+
+    res.json(safeMembership);
 });
 
 // you can use authentication to see ifa user is logged in or not by checking
