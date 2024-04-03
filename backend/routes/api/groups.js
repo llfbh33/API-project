@@ -374,6 +374,57 @@ router.put('/:groupId', requireAuth, validGroupCreation, async (req, res, next) 
 router.get('/:groupId/venues', requireAuth, async (req, res, next) => {
     // requires authentication
         //must be organizer or a member, status of co-host
+        const { user } = req;
+        const { groupId } = req.params;
+        let authorized = false;
+
+        const thisGroup = await Group.findByPk(groupId, {
+            include: Venue
+        });
+
+        if (!thisGroup) {
+            const err = new Error("Group couldn't be found");
+            err.status = 404;
+            err.title = 'Group Missing';
+            err.errors = { message: "Group couldn't be found" };
+            return next(err);
+        };
+
+        const thisUser = await Membership.findOne({
+            where: {
+                userId: user.id,
+                groupId: groupId
+            }
+        });
+
+        if (thisGroup.organizerId === user.id) authorized = true;
+        if (thisUser) {
+            if (thisUser.status === 'co-host') authorized = true
+        };
+
+        if (authorized === false) {
+            const err = new Error("Forbidden");
+            err.status = 403;
+            err.title = "Forbidden";
+            err.errors = { forbidden: "You are not the organizer or co-host of the associated group" };
+            return next(err);
+        }
+
+        const result = [];
+
+        for (let single of thisGroup.Venues) {
+            const returnVenue = {
+                id: single.id,
+                groupId: single.groupId,
+                address: single.address,
+                city: single.city,
+                lat: single.lat,
+                lng: single.lng
+            }
+            result.push(returnVenue)
+        };
+
+        res.json({Venues: result});
 });
 
 // ===>>> Create a new Venue for a Group specified by its id <<<===

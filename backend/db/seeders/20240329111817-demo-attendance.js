@@ -57,6 +57,11 @@ const seedAttendances = [
     userId: 8,
     status: "attending"
   },
+  {
+    eventId: 3,
+    userId: 1,
+    status: "attending"
+  },
 ]
 
 module.exports = {

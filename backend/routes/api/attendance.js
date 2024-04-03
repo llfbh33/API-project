@@ -27,11 +27,7 @@ router.put('/', requireAuth, async (req, res, next) => {
 });
 
 
-// ===>>> Delete attendance to an event specified by id <<<===
-router.delete('/:userId', requireAuth, async (req, res, next) => {
-    // Require proper authorization: Current User must be the host of the group, or the user whose attendance is being deleted
-     res.json("testing 2")
-});
+
 
 
 module.exports = router;

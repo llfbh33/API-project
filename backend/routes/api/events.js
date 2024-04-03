@@ -505,4 +505,75 @@ router.get('/:eventId/attendees', async (req, res, next) => {
 });
 
 
+// ===>>> Delete attendance to an event specified by id <<<===
+router.delete('/:eventId/attendance/:userId', requireAuth, async (req, res, next) => {
+    // Require proper authorization: Current User must be the host of the group, or the user whose attendance is being deleted
+    const { user } = req;
+    const { eventId, userId } = req.params;
+    let organizer = false;
+
+    const thisEvent = await Event.findByPk(eventId, {
+        include: [{
+            model: Group,
+            attributes: ['id', 'organizerId']
+        }]
+    });
+
+    if(!thisEvent) {
+        const err = new Error("Event couldn't be found");
+        err.status = 404;
+        err.title = "Event couldn't be found";
+        err.errors = { Message: "Event couldn't be found" };
+        return next(err);
+    }
+
+    if (thisEvent.Group.organizerId === user.id) organizer = true;
+
+    const thisUser = await User.findByPk(userId, {
+        attributes: ['id', 'firstName', 'lastName'],
+        include: {
+            model: Event,
+            attributes: ['id'],
+            through: {
+                // attributes: ['status', 'eventId', 'userId', 'id'],
+                where: {
+                    eventId: eventId
+                }
+            },
+        }
+    });
+
+    if(!thisUser) {
+        const err = new Error("User couldn't be found");
+        err.status = 404;
+        err.title = "User couldn't be found";
+        err.errors = { Message: "User couldn't be found" };
+        return next(err);
+    };
+
+    if(!thisUser.Events[0]) {
+        const err = new Error("Attendance does not exist for this User");
+        err.status = 404;
+        err.title = "Attendance does not exist for this User";
+        err.errors = { Message: "Attendance does not exist for this User" };
+        return next(err);
+    };
+
+    const attendancePk = thisUser.Events[0].Attendance.id;
+
+    const deleteAttendance = await Attendance.findByPk(attendancePk);
+
+    if (organizer === true || deleteAttendance.userId === user.id) {
+        await deleteAttendance.destroy();
+        res.json({ "message": "Successfully deleted attendance from event" });
+    } else {
+        const err = new Error('Forbidden');
+        err.status = 403;
+        err.title = 'Authentication Failed';
+        err.errors = { Organizer: 'You are not the organizer or attendee of this event' };
+        return next(err);
+    };
+});
+
+
 module.exports = router;

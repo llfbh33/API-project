@@ -22,6 +22,15 @@ router.get('/', (req, res) => {
 router.put('/:venueId', requireAuth, async (req, res, next) => {
     // requires authentication
         //must be organizer or a member, status of co-host
+    const { user } = req;
+    const { venueId } = req.params;
+    let authorized = false;
+
+
+    if (thisGroup.organizerId === user.id) authorized = true;
+    if (thisUser) {
+        if (thisUser.status === 'co-host') authorized = true
+    };
 });
 
 
