@@ -19,8 +19,8 @@ const seedMemberships = [
   },
   {
     userId: 2,
-    groupId: 1,
-    status: "member",
+    groupId: 2,
+    status: "organizer",
   },
   {
     userId: 3,
@@ -29,37 +29,37 @@ const seedMemberships = [
   },
   {
     userId: 1,
-    groupId: 2,
-    status: "co-host",
-  },
-  {
-    userId: 3,
-    groupId: 2,
-    status: "member",
-  },
-  {
-    userId: 4,
-    groupId: 3,
-    status: "co-host",
-  },
-  {
-    userId: 5,
-    groupId: 3,
-    status: "member",
-  },
-  {
-    userId: 4,
-    groupId: 1,
-    status: "member",
-  },
-  {
-    userId: 2,
-    groupId: 2,
+    groupId: 4,
     status: "organizer",
   },
   {
     userId: 5,
-    groupId: 1,
+    groupId: 5,
+    status: "organizer",
+  },
+  {
+    userId: 1,
+    groupId: 2,
+    status: "member",
+  },
+  {
+    userId: 1,
+    groupId: 3,
+    status: "co-host",
+  },
+  {
+    userId: 6,
+    groupId: 2,
+    status: "co-host",
+  },
+  {
+    userId: 4,
+    groupId: 2,
+    status: "member",
+  },
+  {
+    userId: 4,
+    groupId: 3,
     status: "member",
   },
   {
@@ -68,14 +68,54 @@ const seedMemberships = [
     status: "pending",
   },
   {
+    userId: 5,
+    groupId: 1,
+    status: "member",
+  },
+  {
+    userId: 6,
+    groupId: 5,
+    status: "pending",
+  },
+  {
     userId: 7,
     groupId: 1,
     status: "pending",
   },
   {
+    userId: 7,
+    groupId: 3,
+    status: "pending",
+  },
+  {
+    userId: 8,
+    groupId: 4,
+    status: "member",
+  },
+  {
+    userId: 8,
+    groupId: 3,
+    status: "member",
+  },
+  {
+    userId: 2,
+    groupId: 1,
+    status: "member",
+  },
+  {
     userId: 8,
     groupId: 1,
-    status: "co-host",
+    status: "member",
+  },
+  {
+    userId: 5,
+    groupId: 3,
+    status: "member",
+  },
+  {
+    userId: 3,
+    groupId: 1,
+    status: "pending",
   },
 ];
 

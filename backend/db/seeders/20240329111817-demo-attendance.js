@@ -18,11 +18,6 @@ const seedAttendances = [
     status: "attending"
   },
   {
-    eventId: 2,
-    userId: 1,
-    status: "attending"
-  },
-  {
     eventId: 1,
     userId: 2,
     status: "attending"
@@ -33,18 +28,8 @@ const seedAttendances = [
     status: "waitlist"
   },
   {
-    eventId: 3,
-    userId: 5,
-    status: "attending"
-  },
-  {
-    eventId: 3,
-    userId: 4,
-    status: "attending"
-  },
-  {
     eventId: 1,
-    userId: 6,
+    userId: 6,//
     status: "pending"
   },
   {
@@ -59,9 +44,48 @@ const seedAttendances = [
   },
   {
     eventId: 2,
+    userId: 1,
+    status: "attending"
+  },
+  {
+    eventId: 2,
+    userId: 2,
+    status: "attending"
+  },
+  {
+    eventId: 2,
     userId: 4,
     status: "attending"
   },
+  {
+    eventId: 2,
+    userId: 6,
+    status: "pending"
+  },
+  {
+    eventId: 3,
+    userId: 3,
+    status: "attending"
+  },
+  {
+    eventId: 3,
+    userId: 4,
+    status: "attending"
+  },
+  {
+    eventId: 3,
+    userId: 5,
+    status: "attending"
+  },
+  {
+    eventId: 3,
+    userId: 1,
+    status: "pending"
+  },
+
+
+
+
 ]
 
 module.exports = {

@@ -39,6 +39,24 @@ const seedGroups = [
     city: 'Chicago',
     state: 'Illinois'
   },
+  {
+    organizerId: 1,
+    name: 'Test Group',
+    about: "Are you nervous to bring your little one around all those large dogs at the dog park?  Don't worry, come hang out with us instead!",
+    type: 'In person',
+    private: false,
+    city: 'Chicago',
+    state: 'Illinois'
+  },
+  {
+    organizerId: 5,
+    name: 'The Little Ones',
+    about: "Are you nervous to bring your little one around all those large dogs at the dog park?  Don't worry, come hang out with us instead!",
+    type: 'In person',
+    private: false,
+    city: 'Chicago',
+    state: 'Illinois'
+  },
 ];
 
 
@@ -57,4 +75,3 @@ module.exports = {
     }, {});
   }
 };
-

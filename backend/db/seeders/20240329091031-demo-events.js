@@ -20,8 +20,8 @@ const seedEvents = [
     type: "In Person",
     capacity: 20,
     price: 0,
-    startDate: "2024-04-04",
-    endDate:  "2024-04-05"
+    startDate: "2024-05-04",
+    endDate:  "2024-05-05"
   },
   {
     venueId: 5,
@@ -31,8 +31,8 @@ const seedEvents = [
     type: "In Person",
     capacity: 8,
     price: 0,
-    startDate: "2024-04-04",
-    endDate:  "2024-04-05"
+    startDate: "2024-05-04",
+    endDate:  "2024-05-05"
   },
   {
     venueId: 6,
@@ -42,8 +42,19 @@ const seedEvents = [
     type: "In Person",
     capacity: 4,
     price: 50,
-    startDate: "2024-04-04",
-    endDate:  "2024-04-05"
+    startDate: "2024-05-04",
+    endDate:  "2024-05-05"
+  },
+  {
+    venueId: 4,
+    groupId: 2,
+    name: "Test Event",
+    description: "Make some good friends, eat some good food, and let your sweet little one join in the fun at the Lazy Dog resturant this weekend!",
+    type: "In Person",
+    capacity: 4,
+    price: 50,
+    startDate: "2024-05-04",
+    endDate:  "2024-05-05"
   },
 ]
 
