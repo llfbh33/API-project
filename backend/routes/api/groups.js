@@ -598,13 +598,27 @@ const validEventCreation = [
       .notEmpty()
       .withMessage("Description is required"),
     check('startDate')
-      .exists({ checkFalsy: true })
-      .notEmpty()
+      .custom((value) => {
+        const curr = new Date().getTime();
+        const given = new Date(value).getTime();
+// could throw an error here and not use .withMessage, it is like that in the Edit an Event endpoint
+// leaving both to see different ways to do things
+        if (given < curr) {
+            return false
+        }
+        return true
+      })
       .withMessage("Start date must be in the future"),
     check('endDate')
-      .exists({ checkFalsy: true })
-      .notEmpty()
-      .withMessage("End date is less than start date"),
+        .custom((value, {req}) => {
+            const start = new Date(req.body.startDate).getTime();
+            const end = new Date(value).getTime();
+            if (end < start) {
+                return false
+            }
+            return true
+        })
+        .withMessage("End date is less than start date"),
     handleValidationErrors
   ];
 
@@ -667,7 +681,9 @@ router.post('/:groupId/events', requireAuth, validEventCreation, async (req, res
             return next(err);
         }
 // -------------- check that the venue exists in the database
+        // const thisDate = new Date("2021-11-19 20:00:00").getTime();
 
+        // res.json(thisDate)
         const newEvent = await Event.create({
             venueId,
             groupId,
@@ -676,21 +692,21 @@ router.post('/:groupId/events', requireAuth, validEventCreation, async (req, res
             type,
             capacity,
             price,
-            startDate,
-            endDate
+            startDate: startDate,
+            endDate: endDate,
         });
 
         const safeEvent = {
             id: newEvent.id,
-            groupId,
-            venueId,
-            name,
-            type,
-            capacity,
-            price,
-            description,
-            startDate,
-            endDate
+            groupId: newEvent.groupId,
+            venueId: newEvent.ivenueId,
+            name: newEvent.name,
+            type: newEvent.type,
+            capacity: newEvent.capacity,
+            price: newEvent.price,
+            description: newEvent.description,
+            startDate: newEvent.startDate,
+            endDate: newEvent.endDate,
         };
 
         res.json(safeEvent);

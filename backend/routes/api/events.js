@@ -270,13 +270,23 @@ const validEventUpdate = [
       .notEmpty()
       .withMessage("Description is required"),
     check('startDate')
-      .exists({ checkFalsy: true })
-      .notEmpty() // figure out how to use isAfter() current date
-      .withMessage("Start date must be in the future"),
+      .custom((value) => {
+        const curr = new Date().getTime();
+        const given = new Date(value).getTime();
+        if (given < curr) {
+            throw new Error("Start date must be in the future")
+        }
+        return true
+      }),
     check('endDate')
-      .exists({ checkFalsy: true })
-      .notEmpty() // figure out how to use isAfter() startDate - toISOString()?
-      .withMessage("End date is less than start date"),
+        .custom((value, {req}) => {
+            const start = new Date(req.body.startDate).getTime();
+            const end = new Date(value).getTime();
+            if (end < start) {
+                throw new Error("End date is less than start date")
+            }
+            return true
+        }),
     handleValidationErrors
 ]
 
