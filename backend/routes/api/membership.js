@@ -19,17 +19,7 @@ router.post('/membership/', requireAuth, async (req, res, next) => {
 });
 
 
-// ===>>> Change the status of a membership for a group specified by id <<<===
-router.put('/', requireAuth, async (req, res, next) => {
 
-
-    // To change the status from "pending" to "member":
-    // Current User must already be the organizer or have a membership to the group with the status of "co-host"
-    // To change the status from "member" to "co-host":
-    // Current User must already be the organizer
-
-     res.json("testing 3")
-});
 
 
 // ===>>> Delete membership to a group specified by id <<<===

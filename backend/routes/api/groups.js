@@ -12,10 +12,6 @@ const { GroupImage, Membership, Venue, Group, User, Event, EventImage, Attendanc
 
 const router = express.Router();
 
-// router.use('/:groupId/members', require('./members.js')); // this route can stay up here
-router.use('/:groupId/membership', require('./membership.js')); // this route can stay up here
-
-
 
         // do not let a duplicate when the organizer is also a member
 // ===>>> Get all Groups joined or organized by the Current User <<<===
@@ -520,6 +516,158 @@ router.get('/:groupId/members', async (req, res, next) => {
     };
     res.json({Members: returnMembers})
 });
+
+
+
+// ===>>> Change the status of a membership for a group specified by id <<<===
+router.put('/:groupId/membership', requireAuth, async (req, res, next) => {
+    const { user } = req;
+    const { groupId } = req.params;
+    const { memberId, status } = req.body // member id is the member of the user not the membership id
+
+    const thisGroup = await Group.findByPk(groupId);
+
+    if (!thisGroup) {
+        const err = new Error("Group couldn't be found");
+        err.status = 404;
+        err.title = "Group couldn't be found";
+        err.errors = { message: "Group couldn't be found" };
+        return next(err);
+    };
+
+    const currentUser = await User.findByPk(user.id, {
+        include: [
+        {
+            model: Membership,
+            where: {
+                groupId: groupId
+            },
+            include: {
+                model: Group,
+                where: {
+                    id: groupId
+                }
+            }
+        }]
+    });
+
+    let host = false;
+    let coHost = false;
+
+    if (currentUser){
+        if (currentUser.Memberships[0].status === "co-host") {
+            coHost = true;
+        } else if (currentUser.Memberships[0].Group.organizerId === user.id) {
+            host = true;
+        };
+    };
+
+    if (host !== true && coHost !== true) {
+        const err = new Error("Forbidden");
+        err.status = 403;
+        err.title = "Forbidden";
+        err.errors = { forbidden: "You are not the organizer or co-host of the associated group" };
+        return next(err);
+    };
+
+    if (status === "pending") {
+        const err = new Error("Bad Request");
+        err.status = 400;
+        err.title = "Bad request";
+        err.errors = { status: "Cannot change a membership status to pending" };
+        return next(err);
+    };
+
+    if (status === "co-host" && host === false) {
+        const err = new Error("Forbidden");
+        err.status = 403;
+        err.title = "Forbidden";
+        err.errors = { message: "You are not the host of this group" };
+        return next(err);
+    };
+
+    const thisUser = await User.findByPk(memberId, {
+        include: Membership
+    });
+
+    if(!thisUser) {
+        const err = new Error("User couldn't be found");
+        err.status = 404;
+        err.title = "User couldn't be found";
+        err.errors = { message: "User couldn't be found" };
+        return next(err);
+    }
+
+    let membershipMatch = false;
+
+    for (let oneMembership of thisUser.Memberships) {
+        if (oneMembership.groupId === parseInt(groupId)) {
+            membershipMatch = true;
+        }
+    };
+
+    if (membershipMatch === false) {
+        const err = new Error("Membership between the user and the group does not exist");
+        err.status = 404;
+        err.title = "Membership couldn't be found";
+        err.errors = { message: "Membership between the user and the group does not exist" };
+        return next(err);
+    };
+//------------------ setting new status
+
+    const thisMembership = await Membership.findOne({
+        where: {
+            userId: memberId,
+            groupId: groupId
+        }
+    });
+
+    thisMembership.set({
+        status: status
+    });
+
+    await thisMembership.validate();
+    await thisMembership.save();
+
+    const safeMember = {
+        id: thisMembership.id,
+        groupId: thisMembership.groupId,
+        memberId: memberId,
+        status: thisMembership.status
+    };
+
+     res.json(safeMember);
+});
+
+
+// ===>>> Delete membership to a group specified by id <<<===
+router.delete('/:groupId/membership/:memberId', requireAuth, async (req, res, next) => {
+    // Require proper authorization: Current User must be the host of the group, or the user whose membership is being deleted
+    const { groupId, memberId } = req.params;
+    const { user } = req;
+// add errors here
+    const thisGroup = await Group.findByPk(groupId);
+
+    if(user.id !== memberId && thisGroup.organizerId !== user.id) {
+        const err = new Error("Forbidden");
+        err.status = 403;
+        err.title = "Forbidden";
+        err.errors = { forbidden: "You are not the organizer or member of this membership" };
+        return next(err);
+    };
+
+    const deleteMembership = await Membership.findOne({
+        where: {
+            userId: memberId,
+            groupId: groupId
+        }
+    });
+
+    deleteMembership.destroy();
+
+     res.json({ "message": "Successfully deleted membership from group" })
+});
+
 
 // you can use authentication to see ifa user is logged in or not by checking
 //if there is a user cookie within the req
