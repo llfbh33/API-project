@@ -598,18 +598,22 @@ const validEventCreation = [
       .notEmpty()
       .withMessage("Description is required"),
     check('startDate')
-      .custom((value) => {
-        const curr = new Date().getTime();
-        const given = new Date(value).getTime();
-// could throw an error here and not use .withMessage, it is like that in the Edit an Event endpoint
-// leaving both to see different ways to do things
-        if (given < curr) {
-            return false
-        }
-        return true
-      })
-      .withMessage("Start date must be in the future"),
+        .notEmpty()
+        .withMessage("Start date must be in the future")
+        .custom((value) => {
+            const curr = new Date().getTime();
+            const given = new Date(value).getTime();
+    // could throw an error here and not use .withMessage, it is like that in the Edit an Event endpoint
+    // leaving both to see different ways to do things
+            if (given < curr) {
+                return false
+            }
+            return true
+        })
+        .withMessage("Start date must be in the future"),
     check('endDate')
+        .notEmpty()
+        .withMessage("End date is less than start date")
         .custom((value, {req}) => {
             const start = new Date(req.body.startDate).getTime();
             const end = new Date(value).getTime();
