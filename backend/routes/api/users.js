@@ -15,21 +15,23 @@ const router = express.Router();
 // Middleware which checks on all the information within the req.body username, email, password
 // to make sure that it was included in the req
 const validateSignup = [
-    check('firstName')
-        .exists({ checkFalsy: true })
-        .isLength({ min: 2 })
-        .withMessage("First Name is required"),
-    check('lastName')
-        .exists({ checkFalsy: true })
-        .isLength({ min: 2 })
-        .withMessage("last Name is required"),
     check('email')
         .exists({ checkFalsy: true })
         .isEmail()
         .withMessage("Invalid email"),
     check('username')
-      .exists({ checkFalsy: true })
-      .withMessage("Username is required"),
+        .exists({ checkFalsy: true })
+        .withMessage("Username is required"),
+    check('firstName')
+        .exists({ checkFalsy: true })
+        .withMessage("First Name is required"),
+    check('lastName')
+        .exists({ checkFalsy: true })
+        .withMessage("last Name is required"),
+    check('password')
+        .exists({ checkFalsy: true })
+        .notEmpty()
+        .withMessage("password is required"),
     handleValidationErrors
   ];
 
@@ -49,7 +51,7 @@ router.post('/', validateSignup, async (req, res, next) => {
         const err = new Error("User already exists");
         err.status = 500;
         err.title = 'User already exists';
-        err.errors = { username: "User with that email already exists" };
+        err.errors = { email: "User with that email already exists" };
         return next(err);
       };
       if (thisUser.username === username) {

@@ -24,6 +24,7 @@ const validateLogin = [
       .withMessage("Email or username is required"),
     check('password')
       .exists({ checkFalsy: true })
+      .notEmpty()
       .withMessage("Password is required"),
     handleValidationErrors
   ];
@@ -49,7 +50,6 @@ router.post('/', validateLogin, async (req, res, next) => {
         const err = new Error('Invalid credentials');
         err.status = 401;
         err.title = 'Login failed';
-        err.errors = { credential: 'The provided credentials were invalid.' };
         return next(err);
       }
 // since no error was triggered we found a matching user and create a user object to return

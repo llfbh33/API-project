@@ -22,8 +22,8 @@ router.delete('/:imageId', requireAuth, async (req, res, next) => {
     if(!image) {
         const err = new Error("Image couldn't be found");
         err.status = 404;
-        err.title = 'Image Missing';
-        err.errors = { GroupImage: `The image at ID ${imageId} does not exist` };
+        // err.title = 'Image Missing';
+        // err.errors = { GroupImage: `The image at ID ${imageId} does not exist` };
         return next(err);
     };
 

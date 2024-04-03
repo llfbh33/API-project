@@ -85,7 +85,8 @@ router.get('/', async (req, res, next) => {
     for (let event of listOfEvents) {
         let sum = await Attendance.count({
             where: {
-                eventId: event.id  // count each record with the eventId of this event
+                eventId: event.id,
+                status: "attending"
             }
         });
 
@@ -142,8 +143,8 @@ router.get('/:eventId', async (req, res, next) => {
     if(!thisEvent) {
         const err = new Error("Event couldn't be found");
         err.status = 404;
-        err.title = "Event couldn't be found";
-        err.errors = { Event: "Event couldn't be found"};
+        // err.title = "Event couldn't be found";
+        // err.errors = { Event: "Event couldn't be found"};
         return next(err);
     };
 
@@ -202,8 +203,8 @@ router.post('/:eventId/images', requireAuth, async (req, res, next) => {
     if (!thisEvent) {
         const err = new Error("Event couldn't be found");
         err.status = 404;
-        err.title = "Event couldn't be found";
-        err.errors = { Event: "Event couldn't be found"};
+        // err.title = "Event couldn't be found";
+        // err.errors = { Event: "Event couldn't be found"};
         return next(err);
     };
 // if the user is the organizer
@@ -308,8 +309,8 @@ router.put('/:eventId', requireAuth, validEventUpdate, async (req, res, next) =>
     if (!thisVenue) {
         const err = new Error("Venue couldn't be found");
         err.status = 404;
-        err.title = "Venue couldn't be found";
-        err.errors = { Venue: "Venue couldn't be found"};
+        // err.title = "Venue couldn't be found";
+        // err.errors = { Venue: "Venue couldn't be found"};
         return next(err);
     };
 
@@ -317,8 +318,8 @@ router.put('/:eventId', requireAuth, validEventUpdate, async (req, res, next) =>
     if (!thisEvent) {
         const err = new Error("Event couldn't be found");
         err.status = 404;
-        err.title = "Event couldn't be found";
-        err.errors = { Event: "Event couldn't be found"};
+        // err.title = "Event couldn't be found";
+        // err.errors = { Event: "Event couldn't be found"};
         return next(err);
     };
 // if the user is the organizer
@@ -390,8 +391,8 @@ router.delete('/:eventId', requireAuth, async (req, res, next) => {
     if(!deleteEvent) {
         const err = new Error("Event couldn't be found");
         err.status = 404;
-        err.title = 'Event Missing';
-        err.errors = { Event: `The event at ID ${eventId} does not exist` };
+        // err.title = 'Event Missing';
+        // err.errors = { Event: `The event at ID ${eventId} does not exist` };
         return next(err);
     };
 
@@ -429,8 +430,8 @@ router.get('/:eventId/attendees', async (req, res, next) => {
     if(!thisEvent) {
         const err = new Error("Event couldn't be found");
         err.status = 404;
-        err.title = "Event couldn't be found";
-        err.errors = { Event: "Event couldn't be found" };
+        // err.title = "Event couldn't be found";
+        // err.errors = { Event: "Event couldn't be found" };
         return next(err);
     }
 
@@ -522,8 +523,8 @@ router.delete('/:eventId/attendance/:userId', requireAuth, async (req, res, next
     if(!thisEvent) {
         const err = new Error("Event couldn't be found");
         err.status = 404;
-        err.title = "Event couldn't be found";
-        err.errors = { Message: "Event couldn't be found" };
+        // err.title = "Event couldn't be found";
+        // err.errors = { Message: "Event couldn't be found" };
         return next(err);
     }
 
@@ -546,8 +547,8 @@ router.delete('/:eventId/attendance/:userId', requireAuth, async (req, res, next
     if(!thisUser) {
         const err = new Error("User couldn't be found");
         err.status = 404;
-        err.title = "User couldn't be found";
-        err.errors = { Message: "User couldn't be found" };
+        // err.title = "User couldn't be found";
+        // err.errors = { Message: "User couldn't be found" };
         return next(err);
     };
 
@@ -555,7 +556,7 @@ router.delete('/:eventId/attendance/:userId', requireAuth, async (req, res, next
         const err = new Error("Attendance does not exist for this User");
         err.status = 404;
         err.title = "Attendance does not exist for this User";
-        err.errors = { Message: "Attendance does not exist for this User" };
+        // err.errors = { Message: "Attendance does not exist for this User" };
         return next(err);
     };
 
@@ -588,8 +589,8 @@ router.post('/:eventId/attendance', requireAuth, async (req, res, next) => {
     if (!thisEvent) {
         const err = new Error("Event couldn't be found");
         err.status = 404;
-        err.title = "Event couldn't be found";
-        err.errors = { Message: "Event couldn't be found" };
+        // err.title = "Event couldn't be found";
+        // err.errors = { Message: "Event couldn't be found" };
         return next(err);
     };
 
@@ -604,7 +605,7 @@ router.post('/:eventId/attendance', requireAuth, async (req, res, next) => {
         const err = new Error("Must be a member of a group to attend events");
         err.status = 403;
         err.title = "Must be a member of a group to attend events";
-        err.errors = { Message: "Must be a member of a group to attend events" };
+        // err.errors = { Message: "Must be a member of a group to attend events" };
         return next(err);
     }
 
@@ -638,13 +639,13 @@ router.post('/:eventId/attendance', requireAuth, async (req, res, next) => {
             const err = new Error("User is already an attendee of the event");
             err.status = 400;
             err.title = "User is already an attendee of the event";
-            err.errors = { Message: "User is already an attendee of the event" };
+            // err.errors = { Message: "User is already an attendee of the event" };
             return next(err);
         } else {
             const err = new Error("Attendance has already been requested");
             err.status = 400;
             err.title = "Attendance has already been requested";
-            err.errors = { Message: "Attendance has already been requested" };
+            // err.errors = { Message: "Attendance has already been requested" };
             return next(err);
         }
     };
@@ -665,8 +666,8 @@ router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
     if (!thisEvent) {
         const err = new Error("Event couldn't be found");
         err.status = 404;
-        err.title = "Event couldn't be found";
-        err.errors = { Message: "Event couldn't be found" };
+        // err.title = "Event couldn't be found";
+        // err.errors = { Message: "Event couldn't be found" };
         return next(err);
     };
 
@@ -675,8 +676,8 @@ router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
     if (!findUser) {
         const err = new Error("User couldn't be found");
         err.status = 404;
-        err.title = "User couldn't be found";
-        err.errors = { Message: "User couldn't be found" };
+        // err.title = "User couldn't be found";
+        // err.errors = { Message: "User couldn't be found" };
         return next(err);
     };
 
@@ -698,7 +699,7 @@ router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
         const err = new Error("Attendance between the user and the event does not exist");
         err.status = 404;
         err.title = "Attendance not found";
-        err.errors = { Message: "Attendance between the user and the event does not exist" };
+        // err.errors = { Message: "Attendance between the user and the event does not exist" };
         return next(err);
     };
 
@@ -742,7 +743,7 @@ router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
         status: thisAttendance.status
     };
 
-    res.json(thisAttendance)
+    res.json(safeAttendee)
 });
 
 module.exports = router;

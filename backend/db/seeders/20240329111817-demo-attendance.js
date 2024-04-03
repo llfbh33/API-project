@@ -58,8 +58,8 @@ const seedAttendances = [
     status: "attending"
   },
   {
-    eventId: 3,
-    userId: 1,
+    eventId: 2,
+    userId: 4,
     status: "attending"
   },
 ]

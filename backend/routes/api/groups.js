@@ -13,46 +13,39 @@ const { GroupImage, Membership, Venue, Group, User, Event, EventImage, Attendanc
 const router = express.Router();
 
 
-        // do not let a duplicate when the organizer is also a member
+
 // ===>>> Get all Groups joined or organized by the Current User <<<===
 router.get('/current', requireAuth, async (req, res, next) => {
     const {user} = req;
 
-    const currentGroups = await User.findByPk(user.id, {
-        include: [
-            {model: Group,
-                include: {
-                    model: GroupImage,
-                    attributes: ['url'],
-                    where: {
-                        preview: true
-                    }
-                }
-            },
-            {
-                model: Membership,
-                include: {
-                    model: Group,
-                    include: {
-                        model: GroupImage,
-                        attributes: ['url'],
-                        where: {
-                            preview: true
-                        }
-                    }
-                }
+    const allMemberships = await Group.findAll({
+        include: {
+            model: Membership,
+            where: {
+                userId: user.id
             }
-        ]
+        }
     });
 
     const groupsArray = []
-// this loop is for all groups organized by this user
-    for (let group of currentGroups.Groups) {
+
+    for (let group of allMemberships) {
+        let prev;
+
         let sum = await Membership.count({
             where: {
                 groupId : group.id
             }
         });
+
+        const image = await GroupImage.findOne({
+            where: {
+                groupId: group.id,
+                preview: true
+            }
+        });
+
+        if (image) prev = image.url;
 
         const result = {
             id: group.id,
@@ -66,37 +59,12 @@ router.get('/current', requireAuth, async (req, res, next) => {
             createdAt: group.createdAt,
             updatedAt: group.updatedAt,
             numMembers: sum,
-            previewImage: group.GroupImages[0].url
+            previewImage: prev || null
         };
         groupsArray.push(result)
     };
-// this loop is for all memberships of this user
-    for (let member of currentGroups.Memberships) {
-        let sum = await Membership.count({
-            where: {
-                groupId : member.Group.id
-            }
-        });
-
-        const result = {
-            id: member.groupId,
-            organizerId: member.Group.organizerId,
-            name: member.Group.name,
-            about: member.Group.about,
-            type: member.Group.type,
-            private: member.Group.private,
-            city: member.Group.city,
-            state: member.Group.state,
-            createdAt: member.Group.createdAt,
-            updatedAt: member.Group.updatedAt,
-            numMembers: sum,
-            previewImage: member.Group.GroupImages[0].url
-        };
-        groupsArray.push(result)
-    };
-
     res.json({Groups: groupsArray})
-  });
+});
 
 
 
@@ -125,8 +93,6 @@ router.get('/:groupId', async (req, res, next) => {
     if(!thisGroup) {
         const err = new Error("Group couldn't be found");
         err.status = 404;
-        err.title = "Group couldn't be found";
-        err.errors = { Group: "Group couldn't be found"};
         return next(err);
     };
 
@@ -167,9 +133,6 @@ router.get('/', async (req, res, next) => {
             {
             model: GroupImage,
             attributes: ['url'],
-            where: {
-                preview: true
-                }
             },
         ]
     });
@@ -177,11 +140,22 @@ router.get('/', async (req, res, next) => {
     const groupsArray = []
 
     for (let group of listOfGroups) {
+        let prev;
+
         let sum = await Membership.count({
             where: {
                 groupId : group.id
             }
         });
+
+        const image = await GroupImage.findOne({
+            where: {
+                groupId: group.id,
+                preview: true
+            }
+        });
+
+        if (image) prev = image.url;
 
         const result = {
             id: group.id,
@@ -195,7 +169,7 @@ router.get('/', async (req, res, next) => {
             createdAt: group.createdAt,
             updatedAt: group.updatedAt,
             numMembers: sum,
-            previewImage: group.GroupImages[0].url
+            previewImage: prev || null
         };
         groupsArray.push(result)
     };
@@ -211,10 +185,12 @@ const validGroupCreation = [
     check('name')
         .exists({ checkFalsy: true })
         .isLength({ max: 60 })
+        .notEmpty()
         .withMessage("Name must be 60 characters or less"),
     check('about')
         .exists({ checkFalsy: true })
         .isLength({ min: 50 })
+        .notEmpty()
         .withMessage("About must be 50 characters or more"),
     check('type')
       .exists({ checkFalsy: true })
@@ -244,13 +220,22 @@ router.post('/', requireAuth, validGroupCreation, async (req, res, next) => {
     const {name, about, type, private, city, state} = req.body;
 
     const newGroup = await Group.create({
-        organizerId: organizerId,
+        organizerId: user.id,
         name,
         about,
         type,
         private,
         city,
         state
+    });
+
+ // for some reason the group comes up null when placed into
+    // let thisGroupId = newGroup.id
+
+    const newMembership = await Membership.create({
+        userId: user.id,
+        groupId: newGroup.id,
+        status: "organizer"
     });
 
     res.json(newGroup);
@@ -269,8 +254,7 @@ router.post('/:groupId/images', requireAuth, async (req, res, next) => {
     if(!foundGroup) {
         const err = new Error("Group couldn't be found");
         err.status = 404;
-        err.title = 'Group Missing';
-        err.errors = { Group: `The group at ID ${groupId} does not exist` };
+        // err.title = "Group couldn't be found";
         return next(err);
     }
 
@@ -310,8 +294,8 @@ router.delete('/:groupId', requireAuth, async (req, res, next) => {
     if(!foundGroup) {
         const err = new Error("Group couldn't be found");
         err.status = 404;
-        err.title = 'Group Missing';
-        err.errors = { Group: `The group at ID ${groupId} does not exist` };
+        // err.title = 'Group Missing';
+        // err.errors = { Group: `The group at ID ${groupId} does not exist` };
         return next(err);
     };
 
@@ -339,8 +323,8 @@ router.put('/:groupId', requireAuth, validGroupCreation, async (req, res, next) 
     if(!foundGroup) {
         const err = new Error("Group couldn't be found");
         err.status = 404;
-        err.title = 'Group Missing';
-        err.errors = { message: "Group couldn't be found" };
+        // err.title = 'Group Missing';
+        // err.errors = { message: "Group couldn't be found" };
         return next(err);
     };
 
@@ -385,8 +369,8 @@ router.get('/:groupId/venues', requireAuth, async (req, res, next) => {
         if (!thisGroup) {
             const err = new Error("Group couldn't be found");
             err.status = 404;
-            err.title = 'Group Missing';
-            err.errors = { message: "Group couldn't be found" };
+            // err.title = 'Group Missing';
+            // err.errors = { message: "Group couldn't be found" };
             return next(err);
         };
 
@@ -455,8 +439,7 @@ const validVenueCreation = [
 
 // ===>>> Create a new Venue for a Group specified by its id <<<===
 router.post('/:groupId/venues', requireAuth, validVenueCreation, async (req, res, next) => {
-    // requires authentication
-        //must be organizer or a member, status of co-host
+
     const { user } = req;
     const { groupId } = req.params;
     const { address, city, state, lat, lng } = req.body;
@@ -469,8 +452,8 @@ router.post('/:groupId/venues', requireAuth, validVenueCreation, async (req, res
     if(!thisGroup) {
         const err = new Error("Group couldn't be found");
         err.status = 404;
-        err.title = "Group couldn't be found";
-        err.errors = { message: "Group couldn't be found" };
+        // err.title = "Group couldn't be found";
+        // err.errors = { message: "Group couldn't be found" };
         return next(err);
     };
 
@@ -525,8 +508,8 @@ router.get('/:groupId/events', async (req, res, next) => {
     if (!thisGroup) {
         const err = new Error("Group couldn't be found");
         err.status = 404;
-        err.title = "Group couldn't be found";
-        err.errors = { message: "Group couldn't be found" };
+        // err.title = "Group couldn't be found";
+        // err.errors = { message: "Group couldn't be found" };
         return next(err);
     };
 
@@ -627,8 +610,6 @@ const validEventCreation = [
 
 // ===> Create an Event for a Group specified by its id <<<===
 router.post('/:groupId/events', requireAuth, validEventCreation, async (req, res, next) => {
-        // requires authentication
-        //must be organizer or a member, status of co-host
         const { user } = req;
         const  { groupId }  = req.params;
         const { venueId, name, type, capacity, price, description, startDate, endDate } = req.body;
@@ -639,8 +620,8 @@ router.post('/:groupId/events', requireAuth, validEventCreation, async (req, res
         if (!thisGroup) {
             const err = new Error("Group couldn't be found");
             err.status = 404;
-            err.title = "Group couldn't be found";
-            err.errors = { message: "Group couldn't be found" };
+            // err.title = "Group couldn't be found";
+            // err.errors = { message: "Group couldn't be found" };
             return next(err);
         };
 // ------------------ make sure the group exists
@@ -681,8 +662,8 @@ router.post('/:groupId/events', requireAuth, validEventCreation, async (req, res
         if (!thisVenue) {
             const err = new Error("Venue couldn't be found");
             err.status = 404;
-            err.title = "Venue couldn't be found";
-            err.errors = { message: "Venue couldn't be found" };
+            // err.title = "Venue couldn't be found";
+            // err.errors = { message: "Venue couldn't be found" };
             return next(err);
         }
 // -------------- check that the venue exists in the database
@@ -698,8 +679,6 @@ router.post('/:groupId/events', requireAuth, validEventCreation, async (req, res
             startDate,
             endDate
         });
-
-        console.log(newEvent)
 
         const safeEvent = {
             id: newEvent.id,
@@ -737,8 +716,8 @@ router.get('/:groupId/members', async (req, res, next) => {
     if(!allMembers.length) {
         const err = new Error("Group couldn't be found");
         err.status = 404;
-        err.title = 'Group Missing';
-        err.errors = { message: "Group couldn't be found" };
+        // err.title = 'Group Missing';
+        // err.errors = { message: "Group couldn't be found" };
         return next(err);
     };
 
@@ -794,8 +773,8 @@ router.put('/:groupId/membership', requireAuth, async (req, res, next) => {
     if (!thisGroup) {
         const err = new Error("Group couldn't be found");
         err.status = 404;
-        err.title = "Group couldn't be found";
-        err.errors = { message: "Group couldn't be found" };
+        // err.title = "Group couldn't be found";
+        // err.errors = { message: "Group couldn't be found" };
         return next(err);
     };
 
@@ -846,7 +825,7 @@ router.put('/:groupId/membership', requireAuth, async (req, res, next) => {
         const err = new Error("Forbidden");
         err.status = 403;
         err.title = "Forbidden";
-        err.errors = { message: "You are not the host of this group" };
+        err.errors = { message: "You are not the organizer of this group" };
         return next(err);
     };
 
@@ -857,8 +836,8 @@ router.put('/:groupId/membership', requireAuth, async (req, res, next) => {
     if(!thisUser) {
         const err = new Error("User couldn't be found");
         err.status = 404;
-        err.title = "User couldn't be found";
-        err.errors = { message: "User couldn't be found" };
+        // err.title = "User couldn't be found";
+        // err.errors = { message: "User couldn't be found" };
         return next(err);
     }
 
@@ -873,8 +852,8 @@ router.put('/:groupId/membership', requireAuth, async (req, res, next) => {
     if (membershipMatch === false) {
         const err = new Error("Membership between the user and the group does not exist");
         err.status = 404;
-        err.title = "Membership couldn't be found";
-        err.errors = { message: "Membership between the user and the group does not exist" };
+        // err.title = "Membership couldn't be found";
+        // err.errors = { message: "Membership between the user and the group does not exist" };
         return next(err);
     };
 //------------------ setting new status
@@ -915,8 +894,8 @@ router.delete('/:groupId/membership/:memberId', requireAuth, async (req, res, ne
     if(!thisUser) {
         const err = new Error("User couldn't be found");
         err.status = 404;
-        err.title = "User couldn't be found";
-        err.errors = { message: "User couldn't be found" };
+        // err.title = "User couldn't be found";
+        // err.errors = { message: "User couldn't be found" };
         return next(err);
     }
 
@@ -925,8 +904,8 @@ router.delete('/:groupId/membership/:memberId', requireAuth, async (req, res, ne
     if (!thisGroup) {
         const err = new Error("Group couldn't be found");
         err.status = 404;
-        err.title = "Group couldn't be found";
-        err.errors = { message: "Group couldn't be found" };
+        // err.title = "Group couldn't be found";
+        // err.errors = { message: "Group couldn't be found" };
         return next(err);
     }
 // checks if you are the organizer or the current user of the membership
@@ -942,18 +921,43 @@ router.delete('/:groupId/membership/:memberId', requireAuth, async (req, res, ne
         where: {
             userId: memberId,
             groupId: groupId
-        }
+        },
     });
 
     if (!deleteMembership) {
         const err = new Error("Membership does not exist for this User");
         err.status = 404;
-        err.title = "Membership does not exist for this User";
-        err.errors = { message: "Membership does not exist for this User" };
+        // err.title = "Membership does not exist for this User";
+        // err.errors = { message: "Membership does not exist for this User" };
         return next(err);
     };
 
-    deleteMembership.destroy();
+    const attending = await User.findAll({
+        where: {
+            id: memberId
+        },
+        include: [{
+            model: Event,
+            through: Attendance,
+            where: {
+                groupId: groupId
+            }
+        }]
+    });
+
+    if (attending) {
+        for(let one of attending) {
+            let attendId = one.Events[0].Attendance.id
+            const attend = await Attendance.findByPk(attendId, {
+                where: {
+                    userId: memberId
+                }
+            })
+            await attend.destroy();
+        }
+    }
+
+    await deleteMembership.destroy();
 
      res.json({ "message": "Successfully deleted membership from group" })
 });
@@ -980,8 +984,8 @@ router.post('/:groupId/membership', requireAuth, async (req, res, next) => {
     if (!thisGroup) {
         const err = new Error("Group couldn't be found");
         err.status = 404;
-        err.title = "Group couldn't be found";
-        err.errors = { message: "Group couldn't be found" };
+        // err.title = "Group couldn't be found";
+        // err.errors = { message: "Group couldn't be found" };
         return next(err);
     };
 
@@ -998,15 +1002,15 @@ router.post('/:groupId/membership', requireAuth, async (req, res, next) => {
         if (thisUser.Memberships[0] && thisUser.Memberships[0].status === "pending") {
             const err = new Error("Membership has already been requested");
             err.status = 400;
-            err.title = "Membership has already been requested";
-            err.errors = { message: "Membership has already been requested" };
+            // err.title = "Membership has already been requested";
+            // err.errors = { message: "Membership has already been requested" };
             return next(err);
         };
         if (thisUser.Memberships[0]) {
             const err = new Error("User is already a member of the group");
             err.status = 400;
-            err.title = "User is already a member of the group";
-            err.errors = { message: "User is already a member of the group" };
+            // err.title = "User is already a member of the group";
+            // err.errors = { message: "User is already a member of the group" };
             return next(err);
         };
     };

@@ -56,8 +56,8 @@ router.put('/:venueId', requireAuth, validVenueEdits, async (req, res, next) => 
     if (!thisVenue) {
         const err = new Error("Venue couldn't be found");
         err.status = 404;
-        err.title = "Venue couldn't be found";
-        err.errors = { message: "Venue couldn't be found" };
+        // err.title = "Venue couldn't be found";
+        // err.errors = { message: "Venue couldn't be found" };
         return next(err);
     }
 
