@@ -123,8 +123,6 @@ router.get('/', async (req, res, next) => {
 
 // ===>>> Get details of an Event specified by its id <<<===
 router.get('/:eventId', async (req, res, next) => {
-    // no authorization or authentication needed
-
     const thisEvent = await Event.findByPk(req.params.eventId, {
         include: [{
             model: Group,
@@ -143,8 +141,6 @@ router.get('/:eventId', async (req, res, next) => {
     if(!thisEvent) {
         const err = new Error("Event couldn't be found");
         err.status = 404;
-        // err.title = "Event couldn't be found";
-        // err.errors = { Event: "Event couldn't be found"};
         return next(err);
     };
 
@@ -170,7 +166,6 @@ router.get('/:eventId', async (req, res, next) => {
         Venue: thisEvent.Venue,
         EventImages: thisEvent.EventImages
     };
-
     res.json(eventDetails)
 });
 
@@ -183,8 +178,7 @@ router.post('/:eventId/images', requireAuth, async (req, res, next) => {
     let authorized = false;
 
     const thisEvent = await Event.findByPk(eventId, {
-        include: [
-            {
+        include: [{
                 model: Group,
                 attributes: ["id", "organizerId"],
                 include: [{
@@ -196,32 +190,29 @@ router.post('/:eventId/images', requireAuth, async (req, res, next) => {
                 model: User,
                 attributes: ["id"],
                 through: Attendance,
-            }
-        ]
+            }]
     });
 
     if (!thisEvent) {
         const err = new Error("Event couldn't be found");
         err.status = 404;
-        // err.title = "Event couldn't be found";
-        // err.errors = { Event: "Event couldn't be found"};
         return next(err);
     };
-// if the user is the organizer
+
     if (thisEvent.Group.organizerId === user.id) {
         authorized = true;
     };
-// if user is the co-host
+
     for(let member of thisEvent.Group.Memberships) {
         if (member.status === "co-host" && member.userId === user.id) {
             authorized = true
-        }
+        };
     };
-// if user is an attendee
+
     for (let attendee of thisEvent.Users) {
         if (attendee.Attendance.status === "attending" && attendee.id === user.id) {
             authorized = true;
-        }
+        };
     };
 
     if (authorized === true) {
@@ -303,8 +294,7 @@ router.put('/:eventId', requireAuth, validEventUpdate, async (req, res, next) =>
     let authorized = false;
 
     const thisEvent = await Event.findByPk(eventId, {
-        include: [
-            {
+        include: [{
                 model: Group,
                 attributes: ["id", "organizerId"],
                 include: [{
@@ -316,25 +306,19 @@ router.put('/:eventId', requireAuth, validEventUpdate, async (req, res, next) =>
                 model: User,
                 attributes: ["id"],
                 through: Attendance,
-            }
-        ]
+            }]
     });
 
     const thisVenue = await Venue.findByPk(venueId);
     if (!thisVenue) {
         const err = new Error("Venue couldn't be found");
         err.status = 404;
-        // err.title = "Venue couldn't be found";
-        // err.errors = { Venue: "Venue couldn't be found"};
         return next(err);
     };
-
 
     if (!thisEvent) {
         const err = new Error("Event couldn't be found");
         err.status = 404;
-        // err.title = "Event couldn't be found";
-        // err.errors = { Event: "Event couldn't be found"};
         return next(err);
     };
 // if the user is the organizer
@@ -357,7 +341,6 @@ router.put('/:eventId', requireAuth, validEventUpdate, async (req, res, next) =>
     if (authorized == true) {
         thisEvent.set({
             venueId,
-            // groupId: thisEvent.groupId,
             name: name,
             type,
             description,
@@ -406,8 +389,6 @@ router.delete('/:eventId', requireAuth, async (req, res, next) => {
     if(!deleteEvent) {
         const err = new Error("Event couldn't be found");
         err.status = 404;
-        // err.title = 'Event Missing';
-        // err.errors = { Event: `The event at ID ${eventId} does not exist` };
         return next(err);
     };
 
@@ -435,7 +416,6 @@ router.delete('/:eventId', requireAuth, async (req, res, next) => {
 
 // ===>>> Get all Attendees of an Event specified by its id <<<===
 router.get('/:eventId/attendees', async (req, res, next) => {
-    // no authorization or authentication needed
     const { user } = req;
     const { eventId } = req.params;
     let authorized = false;
@@ -445,8 +425,6 @@ router.get('/:eventId/attendees', async (req, res, next) => {
     if(!thisEvent) {
         const err = new Error("Event couldn't be found");
         err.status = 404;
-        // err.title = "Event couldn't be found";
-        // err.errors = { Event: "Event couldn't be found" };
         return next(err);
     }
 
@@ -462,10 +440,11 @@ router.get('/:eventId/attendees', async (req, res, next) => {
             groupId: thisEvent.groupId
         }
     });
+
     if (thisStatus) {
         if (thisGroup.organizerId === user.id) authorized = true;
         if (thisStatus.status === "co-host") authorized = true;
-    }
+    };
 
 
     const allAttendees = await User.findAll({
@@ -485,7 +464,6 @@ router.get('/:eventId/attendees', async (req, res, next) => {
     const results = [];
 
     if(authorized) {
-
         for (let attendee of allAttendees) {
 
             const newAttendee = {
@@ -523,7 +501,6 @@ router.get('/:eventId/attendees', async (req, res, next) => {
 
 // ===>>> Delete attendance to an event specified by id <<<===
 router.delete('/:eventId/attendance/:userId', requireAuth, async (req, res, next) => {
-    // Require proper authorization: Current User must be the host of the group, or the user whose attendance is being deleted
     const { user } = req;
     const { eventId, userId } = req.params;
     let organizer = false;
@@ -538,8 +515,6 @@ router.delete('/:eventId/attendance/:userId', requireAuth, async (req, res, next
     if(!thisEvent) {
         const err = new Error("Event couldn't be found");
         err.status = 404;
-        // err.title = "Event couldn't be found";
-        // err.errors = { Message: "Event couldn't be found" };
         return next(err);
     }
 
@@ -562,8 +537,6 @@ router.delete('/:eventId/attendance/:userId', requireAuth, async (req, res, next
     if(!thisUser) {
         const err = new Error("User couldn't be found");
         err.status = 404;
-        // err.title = "User couldn't be found";
-        // err.errors = { Message: "User couldn't be found" };
         return next(err);
     };
 
@@ -571,7 +544,6 @@ router.delete('/:eventId/attendance/:userId', requireAuth, async (req, res, next
         const err = new Error("Attendance does not exist for this User");
         err.status = 404;
         err.title = "Attendance does not exist for this User";
-        // err.errors = { Message: "Attendance does not exist for this User" };
         return next(err);
     };
 
@@ -604,8 +576,6 @@ router.post('/:eventId/attendance', requireAuth, async (req, res, next) => {
     if (!thisEvent) {
         const err = new Error("Event couldn't be found");
         err.status = 404;
-        // err.title = "Event couldn't be found";
-        // err.errors = { Message: "Event couldn't be found" };
         return next(err);
     };
 
@@ -620,7 +590,6 @@ router.post('/:eventId/attendance', requireAuth, async (req, res, next) => {
         const err = new Error("Must be a member of a group to attend events");
         err.status = 403;
         err.title = "Must be a member of a group to attend events";
-        // err.errors = { Message: "Must be a member of a group to attend events" };
         return next(err);
     }
 
@@ -654,13 +623,11 @@ router.post('/:eventId/attendance', requireAuth, async (req, res, next) => {
             const err = new Error("User is already an attendee of the event");
             err.status = 400;
             err.title = "User is already an attendee of the event";
-            // err.errors = { Message: "User is already an attendee of the event" };
             return next(err);
         } else {
             const err = new Error("Attendance has already been requested");
             err.status = 400;
             err.title = "Attendance has already been requested";
-            // err.errors = { Message: "Attendance has already been requested" };
             return next(err);
         }
     };
@@ -681,8 +648,6 @@ router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
     if (!thisEvent) {
         const err = new Error("Event couldn't be found");
         err.status = 404;
-        // err.title = "Event couldn't be found";
-        // err.errors = { Message: "Event couldn't be found" };
         return next(err);
     };
 
@@ -691,8 +656,6 @@ router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
     if (!findUser) {
         const err = new Error("User couldn't be found");
         err.status = 404;
-        // err.title = "User couldn't be found";
-        // err.errors = { Message: "User couldn't be found" };
         return next(err);
     };
 
@@ -714,7 +677,6 @@ router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
         const err = new Error("Attendance between the user and the event does not exist");
         err.status = 404;
         err.title = "Attendance not found";
-        // err.errors = { Message: "Attendance between the user and the event does not exist" };
         return next(err);
     };
 
