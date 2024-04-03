@@ -11,8 +11,8 @@ const { Event, Group, EventImage, Venue, Attendance, Membership, User } = requir
 
 const router = express.Router();
 
-router.use('/:eventId/attendees', require('./attendance.js'));  // this may have to go lower depending on how it activates
-router.use('/:eventId/attendees', require('./attendees.js'));
+// router.use('/:eventId/attendees', require('./attendance.js'));  // this may have to go lower depending on how it activates
+// router.use('/:eventId/attendees', require('./attendees.js'));
 
 
 
@@ -24,45 +24,45 @@ router.use('/:eventId/attendees', require('./attendees.js'));
             // startDate: string, optional
 // ===>>> Get all Events <<<===
 router.get('/', async (req, res, next) => {
-// include numAttending and previewImage
 
-    let { page, size, name, type, startDate } = req.query;
 
-    let pagination = {};
+    // let { page, size, name, type, startDate } = req.query;
 
-    page = parseInt(page);
-    size = parseInt(size);
+    // let pagination = {};
 
-    if(!page || isNaN(page) || size <= 0) page = 1;
-    if(!size || isNaN(size) || size <= 0) size = 20;
+    // page = parseInt(page);
+    // size = parseInt(size);
 
-    if (page > 10) page = 10;
-    if (size > 20) size = 20;
+    // if(!page || isNaN(page) || size <= 0) page = 1;
+    // if(!size || isNaN(size) || size <= 0) size = 20;
 
-    pagination.limit = size;
-    pagination.offset = size * (page - 1);
+    // if (page > 10) page = 10;
+    // if (size > 20) size = 20;
 
-    where = {};
+    // pagination.limit = size;
+    // pagination.offset = size * (page - 1);
 
-    if (name) where.name = {[Op.substring]: name};
+    // where = {};
 
-    if (type && type.toLowerCase() === 'online') {
-        where.type = type[0].toUpperCase() + type.slice(1);
-        console.log(where.type)
-    } else if (type && type.toLowerCase() === 'in person') {
-        let inPerson = type.split(' ')
-        inPerson[0] = inPerson[0][0].toUpperCase() + inPerson[0].slice(1);
-        inPerson[1] = inPerson[1][0].toUpperCase() + inPerson[1].slice(1);
-        where.type = inPerson.join(' ')
-    };
+    // if (name) where.name = {[Op.substring]: name};
 
-    if (startDate) {
-        // need to fix the output of dates and figure out a test for date with check
-    }
+    // if (type && type.toLowerCase() === 'online') {
+    //     where.type = type[0].toUpperCase() + type.slice(1);
+    //     console.log(where.type)
+    // } else if (type && type.toLowerCase() === 'in person') {
+    //     let inPerson = type.split(' ')
+    //     inPerson[0] = inPerson[0][0].toUpperCase() + inPerson[0].slice(1);
+    //     inPerson[1] = inPerson[1][0].toUpperCase() + inPerson[1].slice(1);
+    //     where.type = inPerson.join(' ')
+    // };
 
-    const listOfEvents = await Event.findAll({
+    // if (startDate) {
+    //     // need to fix the output of dates and figure out a test for date with check
+    // }
+
+    let listOfEvents = await Event.findAll({
         attributes: {exclude: ['description', 'capacity', 'price']},
-        where,
+        // where,
         include: [
             {
                 model: Group,
@@ -74,16 +74,13 @@ router.get('/', async (req, res, next) => {
             },
             {
                 model: EventImage,
-                attributes: ['url'],
-                where: {
-                    preview: true
-                    }
+                attributes: ['url', 'preview'],
             }
         ],
-        ...pagination
+        // ...pagination
     });
 
-    const eventsArray = []
+    let eventsArray = []
 
     for (let event of listOfEvents) {
         let sum = await Attendance.count({
@@ -91,6 +88,18 @@ router.get('/', async (req, res, next) => {
                 eventId: event.id  // count each record with the eventId of this event
             }
         });
+
+        const prevImage = await EventImage.findOne({
+            attributes: ['url'],
+            where: {
+                eventId: event.id,
+                preview: true
+            }
+        });
+
+        const previewImage = {}
+        if (prevImage)  previewImage.previewImage = prevImage.url;
+        if(!prevImage) previewImage.previewImage = prevImage;
 
         const result = {
             id: event.id,
@@ -101,14 +110,13 @@ router.get('/', async (req, res, next) => {
             startDate: event.startDate,
             endDate: event.endDate,
             numAttending: sum,
-            previewImage: event.EventImages[0].url,
+            ...previewImage,
             Group: event.Group,
             Venue: event.Venue,
         };
         eventsArray.push(result)
     };
-
-    res.json({Events: eventsArray});
+    res.json(eventsArray);
 });
 
 
@@ -406,6 +414,94 @@ router.delete('/:eventId', requireAuth, async (req, res, next) => {
 
     res.status(200);
     res.json({ message: "Successfully deleted" });
+});
+
+
+// ===>>> Get all Attendees of an Event specified by its id <<<===
+router.get('/:eventId/attendees', async (req, res, next) => {
+    // no authorization or authentication needed
+    const { user } = req;
+    const { eventId } = req.params;
+    let authorized = false;
+
+    const thisEvent = await Event.findByPk(eventId);
+
+    if(!thisEvent) {
+        const err = new Error("Event couldn't be found");
+        err.status = 404;
+        err.title = "Event couldn't be found";
+        err.errors = { Event: "Event couldn't be found" };
+        return next(err);
+    }
+
+    const thisGroup = await Group.findOne({
+        where: {
+            id: thisEvent.groupId
+        }
+    });
+
+    const thisStatus = await Membership.findOne({
+        where: {
+            userId: user.id,
+            groupId: thisEvent.groupId
+        }
+    });
+    if (thisStatus) {
+        if (thisGroup.organizerId === user.id) authorized = true;
+        if (thisStatus.status === "co-host") authorized = true;
+    }
+
+
+    const allAttendees = await User.findAll({
+        attributes: ['id', 'firstName', 'lastName'],
+        include: {
+            model: Event,
+            attributes: ['id'],
+            where: {
+                id: parseInt(eventId)
+            },
+            through: {
+                attributes: ['status', 'eventId']
+            }
+        }
+    });
+
+    const results = [];
+
+    if(authorized) {
+
+        for (let attendee of allAttendees) {
+
+            const newAttendee = {
+                id: attendee.id,
+                firstName: attendee.firstName,
+                lastName: attendee.lastName,
+                Attendance: {
+                    status: attendee.Events[0].Attendance.status
+                }
+            }
+            results.push(newAttendee);
+        }
+        res.json({Attendees: results});
+    };
+
+    if (!authorized) {
+        for (let attendee of allAttendees) {
+
+            if (attendee.Events[0].Attendance.status !== "pending") {
+                const newAttendee = {
+                    id: attendee.id,
+                    firstName: attendee.firstName,
+                    lastName: attendee.lastName,
+                    Attendance: {
+                        status: attendee.Events[0].Attendance.status
+                    }
+                }
+                results.push(newAttendee);
+            }
+        }
+        res.json({Attendees: results});
+    };
 });
 
 

@@ -410,9 +410,7 @@ router.get('/:groupId/events', async (req, res, next) => {
         },
         {
             model: EventImage,
-            where: {
-                preview: true
-            }
+            attributes: ['url', 'preview']
         }]
     });
 
@@ -427,6 +425,18 @@ router.get('/:groupId/events', async (req, res, next) => {
             }
         });
 
+        const prevImage = await EventImage.findOne({
+            attributes: ['url'],
+            where: {
+                eventId: oneEvent.id,
+                preview: true
+            }
+        });
+
+        const previewImage = {}
+        if (prevImage)  previewImage.previewImage = prevImage.url;
+        if(!prevImage) previewImage.previewImage = prevImage;
+
         const singleEvent = {
             id: oneEvent.id,
             groupId: oneEvent.groupId,
@@ -436,7 +446,7 @@ router.get('/:groupId/events', async (req, res, next) => {
             startDate: oneEvent.startDate,
             endDate: oneEvent.endDate,
             numAttending: sum,
-            previewImage: oneEvent.EventImages[0].url,
+            ...previewImage,
             Group: oneEvent.Group,
             Venue: oneEvent.Venue
         };
@@ -447,11 +457,131 @@ router.get('/:groupId/events', async (req, res, next) => {
 });
 
 
+
+
+const validEventCreation = [
+    check('name')
+        .exists({ checkFalsy: true })
+        .isLength({ min: 5 })
+        .withMessage("Name must be at least 5 characters"),
+    check('type')
+        .exists({ checkFalsy: true })
+        .isIn(["Online", "In person"])
+        .withMessage("Type must be 'Online' or 'In person'"),
+    check('capacity')
+        .exists({ checkFalsy: true })
+        .isNumeric()
+        .withMessage("Capacity must be an integer"),
+    check('price')
+      .exists({ checkFalsy: true })
+      .isNumeric()
+      .withMessage("Price is invalid"),
+    check('description')
+      .exists({ checkFalsy: true })
+      .notEmpty()
+      .withMessage("Description is required"),
+    check('startDate')
+      .exists({ checkFalsy: true })
+      .notEmpty()
+      .withMessage("Start date must be in the future"),
+    check('endDate')
+      .exists({ checkFalsy: true })
+      .notEmpty()
+      .withMessage("End date is less than start date"),
+    handleValidationErrors
+  ];
+
 // ===> Create an Event for a Group specified by its id <<<===
-router.post('/:groupId/events', requireAuth, async (req, res, next) => {
+router.post('/:groupId/events', requireAuth, validEventCreation, async (req, res, next) => {
         // requires authentication
         //must be organizer or a member, status of co-host
-})
+        const { user } = req;
+        const  { groupId }  = req.params;
+        const { venueId, name, type, capacity, price, description, startDate, endDate } = req.body;
+        let host = false;
+ //---------------destructure necessary information
+        const thisGroup = await Group.findByPk(groupId);
+
+        if (!thisGroup) {
+            const err = new Error("Group couldn't be found");
+            err.status = 404;
+            err.title = "Group couldn't be found";
+            err.errors = { message: "Group couldn't be found" };
+            return next(err);
+        };
+// ------------------ make sure the group exists
+        const currentUser = await User.findByPk(user.id, {
+            include: [
+            {
+                model: Membership,
+                where: {
+                    groupId: groupId
+                },
+                // include: {
+                //     model: Group,
+                //     where: {
+                //         id: groupId
+                //     }
+                // }
+            }]
+        });
+
+        if (currentUser){
+            if (currentUser.Memberships[0].status === "co-host") {
+                host = true;
+            } else if (thisGroup.organizerId === user.id) {
+                host = true;
+            };
+        };
+
+        if (!host) {
+            const err = new Error("Forbidden");
+            err.status = 403;
+            err.title = "Forbidden";
+            err.errors = { forbidden: "You are not the organizer or co-host of the associated group" };
+            return next(err);
+        };
+//  --------------- check that the current user is the host or co-host
+        const thisVenue = await Venue.findByPk(venueId);
+
+        if (!thisVenue) {
+            const err = new Error("Venue couldn't be found");
+            err.status = 404;
+            err.title = "Venue couldn't be found";
+            err.errors = { message: "Venue couldn't be found" };
+            return next(err);
+        }
+// -------------- check that the venue exists in the database
+
+        const newEvent = await Event.create({
+            venueId,
+            groupId,
+            name,
+            description,
+            type,
+            capacity,
+            price,
+            startDate,
+            endDate
+        });
+
+        console.log(newEvent)
+
+        const safeEvent = {
+            id: newEvent.id,
+            groupId,
+            venueId,
+            name,
+            type,
+            capacity,
+            price,
+            description,
+            startDate,
+            endDate
+        };
+
+        res.json(safeEvent);
+});
 
 
 // ===>>> Get all Members of a Group specified by its id <<<===
@@ -645,10 +775,28 @@ router.delete('/:groupId/membership/:memberId', requireAuth, async (req, res, ne
     // Require proper authorization: Current User must be the host of the group, or the user whose membership is being deleted
     const { groupId, memberId } = req.params;
     const { user } = req;
-// add errors here
+
+    const thisUser = await User.findByPk(memberId);
+
+    if(!thisUser) {
+        const err = new Error("User couldn't be found");
+        err.status = 404;
+        err.title = "User couldn't be found";
+        err.errors = { message: "User couldn't be found" };
+        return next(err);
+    }
+
     const thisGroup = await Group.findByPk(groupId);
 
-    if(user.id !== memberId && thisGroup.organizerId !== user.id) {
+    if (!thisGroup) {
+        const err = new Error("Group couldn't be found");
+        err.status = 404;
+        err.title = "Group couldn't be found";
+        err.errors = { message: "Group couldn't be found" };
+        return next(err);
+    }
+// checks if you are the organizer or the current user of the membership
+    if(user.id !== parseInt(memberId) && thisGroup.organizerId !== user.id) {
         const err = new Error("Forbidden");
         err.status = 403;
         err.title = "Forbidden";
@@ -662,6 +810,14 @@ router.delete('/:groupId/membership/:memberId', requireAuth, async (req, res, ne
             groupId: groupId
         }
     });
+
+    if (!deleteMembership) {
+        const err = new Error("Membership does not exist for this User");
+        err.status = 404;
+        err.title = "Membership does not exist for this User";
+        err.errors = { message: "Membership does not exist for this User" };
+        return next(err);
+    };
 
     deleteMembership.destroy();
 
