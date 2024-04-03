@@ -427,10 +427,93 @@ router.get('/:groupId/venues', requireAuth, async (req, res, next) => {
         res.json({Venues: result});
 });
 
+
+
+const validVenueCreation = [
+    check('address')
+        .exists({ checkFalsy: true })
+        .notEmpty()
+        .withMessage("Street address is required"),
+    check('city')
+        .exists({ checkFalsy: true })
+        .notEmpty()
+        .withMessage("City is required"),
+    check('state')
+        .exists({ checkFalsy: true })
+        .notEmpty()
+        .withMessage("State is required"),
+    check('lat')
+        .exists({ checkFalsy: true })
+        .isFloat({ min: -90, max: 90 })
+        .withMessage("Latitude must be within -90 and 90"),
+    check('lng')
+        .exists({ checkFalsy: true })
+        .isFloat({ min: -180, max: 180 })
+        .withMessage("Longitude must be within -180 and 180"),
+    handleValidationErrors
+  ];
+
 // ===>>> Create a new Venue for a Group specified by its id <<<===
-router.post('/:groupId/venues', requireAuth, async (req, res, next) => {
+router.post('/:groupId/venues', requireAuth, validVenueCreation, async (req, res, next) => {
     // requires authentication
         //must be organizer or a member, status of co-host
+    const { user } = req;
+    const { groupId } = req.params;
+    const { address, city, state, lat, lng } = req.body;
+    let authorized = false;
+
+    const thisGroup = await Group.findByPk(groupId, {
+        include: Venue
+    });
+
+    if(!thisGroup) {
+        const err = new Error("Group couldn't be found");
+        err.status = 404;
+        err.title = "Group couldn't be found";
+        err.errors = { message: "Group couldn't be found" };
+        return next(err);
+    };
+
+    const thisUser = await Membership.findOne({
+        where: {
+            groupId: groupId,
+            userId: user.id
+        }
+    });
+
+    if (user.id === thisGroup.organizerId) authorized = true;
+    if (thisUser) {
+        if (thisUser.status === "co-host") authorized = true;
+    };
+
+    if (authorized !== true) {
+        const err = new Error("Forbidden");
+        err.status = 403;
+        err.title = "Forbidden";
+        err.errors = { forbidden: "You are not the organizer or co-host of this group" };
+        return next(err);
+    };
+
+    const newVenue = await Venue.create({
+        groupId: groupId,
+        address,
+        city,
+        state,
+        lat,
+        lng
+    });
+
+    const safeVenue = {
+        id: newVenue.id,
+        groupId: newVenue.groupId,
+        address: newVenue.address,
+        city: newVenue.city,
+        state: newVenue.state,
+        lat: newVenue.lat,
+        lng: newVenue.lng
+    };
+
+    res.json(safeVenue);
 });
 
 
@@ -442,7 +525,7 @@ router.get('/:groupId/events', async (req, res, next) => {
     if (!thisGroup) {
         const err = new Error("Group couldn't be found");
         err.status = 404;
-        err.title = 'Group Missing';
+        err.title = "Group couldn't be found";
         err.errors = { message: "Group couldn't be found" };
         return next(err);
     };
@@ -875,6 +958,18 @@ router.delete('/:groupId/membership/:memberId', requireAuth, async (req, res, ne
      res.json({ "message": "Successfully deleted membership from group" })
 });
 
+
+
+// ===>>> Request a Membership for a Group based on the Group's id <<<===
+router.post('groups/:groupId/membership', requireAuth, async (req, res, next) => {
+    // does not require authorization
+    const { groupId } = req.params;
+    const { memberId, status } = req.body;
+
+    const thisGroup = await Group.findByPk(groupId)
+
+    res.json(thisGroup)
+});
 
 // you can use authentication to see ifa user is logged in or not by checking
 //if there is a user cookie within the req
