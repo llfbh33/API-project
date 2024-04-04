@@ -420,15 +420,18 @@ router.get('/:groupId/members', noGroup, async (req, res, next) => {
 
     const returnMembers = [];
 
-    if (authorized) {
-        const allMembers = await Membership.findAll({  // or test issue here (code block)
-            where: {
-                groupId: groupId
-            },
-            include: User
-        });
 
+    const allMembers = await Membership.findAll({  // or test issue here (code block)
+        where: {
+            groupId: groupId
+        },
+        include: User
+    });
+
+    if (authorized) {
+        
         for (let member of allMembers) {
+
             const result = {
                 id: member.userId,
                 firstName: member.User.firstName,
@@ -439,31 +442,24 @@ router.get('/:groupId/members', noGroup, async (req, res, next) => {
             }
             returnMembers.push(result);
         };
-
     };
 
     if (!authorized) {
-        const allMembersNoPending = await Membership.findAll({
-            where: {
-                groupId: groupId,
-                status: {
-                    [Op.notLike]: "pending"
-                }
-            },
-            include: User
-        });
 
-        for (let member of allMembersNoPending) {
-            const result = {
-                id: member.userId,
-                firstName: member.User.firstName,
-                lastName: member.User.lastName,
-                Membership: {
-                    status: member.status
+        for (let member of allMembers) {
+
+            if (member.status !== "pending") {
+                const result = {
+                    id: member.userId,
+                    firstName: member.User.firstName,
+                    lastName: member.User.lastName,
+                    Membership: {
+                        status: member.status
+                    }
                 }
-            }
-            returnMembers.push(result);
-        }
+                returnMembers.push(result);
+            };
+        };
     };
 
     res.json({Members: returnMembers})
