@@ -398,23 +398,25 @@ router.post('/:groupId/events', requireAuth, noGroup, authOrganizerOrCoHost, noV
 // ===>>> Get all Members of a Group specified by its id <<<===
 router.get('/:groupId/members', noGroup, async (req, res, next) => {
 
-    const { user } = req;
+    const user = req.user;
     const  { groupId }  = req.params;
     let authorized = false;
 
-    const thisUser = await Group.findByPk(groupId, {
-        include: {
-          model: Membership,
-          where: {
-            userId: user.id,
-            status: {
-                [Op.or]: ["organizer", "co-host"]
+    if (user) {
+        const thisUser = await Group.findByPk(groupId, {
+            include: {
+              model: Membership,
+              where: {
+                userId: user.id,
+                status: {
+                    [Op.or]: ["organizer", "co-host"]
+                }
+              }
             }
-          }
-        }
-    });
+        });
 
-    if (thisUser) authorized = true;
+        if (thisUser) authorized = true;
+    };
 
     const returnMembers = [];
 
