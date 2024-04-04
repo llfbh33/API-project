@@ -400,22 +400,26 @@ router.get('/:groupId/members', noGroup, async (req, res, next) => {
 
     const { user } = req;
     const  { groupId }  = req.params;
+    let authorized = false;
 
-// finds out if the current user is an organizer or co-host
-    const authorized = await Membership.findOne({
-        where: {
+    const thisUser = await Group.findByPk(groupId, {
+        include: {
+          model: Membership,
+          where: {
             userId: user.id,
-            groupId: groupId,
             status: {
                 [Op.or]: ["organizer", "co-host"]
             }
+          }
         }
     });
+
+    if (thisUser) authorized = true;
 
     const returnMembers = [];
 
     if (authorized) {
-        const allMembers = await Membership.findAll({
+        const allMembers = await Membership.findAll({  // or test issue here (code block)
             where: {
                 groupId: groupId
             },
@@ -434,7 +438,9 @@ router.get('/:groupId/members', noGroup, async (req, res, next) => {
             returnMembers.push(result);
         };
 
-    } else {
+    };
+
+    if (!authorized) {
         const allMembersNoPending = await Membership.findAll({
             where: {
                 groupId: groupId,
