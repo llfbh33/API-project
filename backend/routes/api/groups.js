@@ -421,7 +421,7 @@ router.get('/:groupId/members', noGroup, async (req, res, next) => {
     const returnMembers = [];
 
 
-    const allMembers = await Membership.findAll({  // or test issue here (code block)
+    const allMembers = await Membership.findAll({ 
         where: {
             groupId: groupId
         },
@@ -429,7 +429,7 @@ router.get('/:groupId/members', noGroup, async (req, res, next) => {
     });
 
     if (authorized) {
-        
+
         for (let member of allMembers) {
 
             const result = {

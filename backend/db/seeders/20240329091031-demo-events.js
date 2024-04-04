@@ -56,6 +56,149 @@ const seedEvents = [
     startDate: "2024-05-04",
     endDate:  "2024-05-05"
   },
+  {
+    venueId: 4,
+    groupId: 1,
+    name: "Test Event 2",
+    description: "Make some good friends, eat some good food, and let your sweet little one join in the fun at the Lazy Dog resturant this weekend!",
+    type: "In person",
+    capacity: 4,
+    price: 50,
+    startDate: "2024-05-04",
+    endDate:  "2024-05-05"
+  },
+  {
+    venueId: 4,
+    groupId: 1,
+    name: "Test Event 3",
+    description: "Make some good friends, eat some good food, and let your sweet little one join in the fun at the Lazy Dog resturant this weekend!",
+    type: "In person",
+    capacity: 4,
+    price: 50,
+    startDate: "2024-05-04",
+    endDate:  "2024-05-05"
+  },
+  {
+    venueId: 4,
+    groupId: 1,
+    name: "Test Event 4",
+    description: "Make some good friends, eat some good food, and let your sweet little one join in the fun at the Lazy Dog resturant this weekend!",
+    type: "In person",
+    capacity: 4,
+    price: 50,
+    startDate: "2024-05-04",
+    endDate:  "2024-05-05"
+  },
+  {
+    venueId: 4,
+    groupId: 1,
+    name: "Test Event 5",
+    description: "Make some good friends, eat some good food, and let your sweet little one join in the fun at the Lazy Dog resturant this weekend!",
+    type: "In person",
+    capacity: 4,
+    price: 50,
+    startDate: "2024-05-04",
+    endDate:  "2024-05-05"
+  },
+  {
+    venueId: 4,
+    groupId: 1,
+    name: "Test Event 6",
+    description: "Make some good friends, eat some good food, and let your sweet little one join in the fun at the Lazy Dog resturant this weekend!",
+    type: "In person",
+    capacity: 4,
+    price: 50,
+    startDate: "2024-05-04",
+    endDate:  "2024-05-05"
+  },
+  {
+    venueId: 4,
+    groupId: 1,
+    name: "Test Event 7",
+    description: "Make some good friends, eat some good food, and let your sweet little one join in the fun at the Lazy Dog resturant this weekend!",
+    type: "In person",
+    capacity: 4,
+    price: 50,
+    startDate: "2024-05-04",
+    endDate:  "2024-05-05"
+  },
+  {
+    venueId: 4,
+    groupId: 1,
+    name: "Test Event 8",
+    description: "Make some good friends, eat some good food, and let your sweet little one join in the fun at the Lazy Dog resturant this weekend!",
+    type: "In person",
+    capacity: 4,
+    price: 50,
+    startDate: "2024-05-04",
+    endDate:  "2024-05-05"
+  },
+  {
+    venueId: 4,
+    groupId: 1,
+    name: "Test Event 9",
+    description: "Make some good friends, eat some good food, and let your sweet little one join in the fun at the Lazy Dog resturant this weekend!",
+    type: "In person",
+    capacity: 4,
+    price: 50,
+    startDate: "2024-05-04",
+    endDate:  "2024-05-05"
+  },
+  {
+    venueId: 4,
+    groupId: 1,
+    name: "Test Event 10",
+    description: "Make some good friends, eat some good food, and let your sweet little one join in the fun at the Lazy Dog resturant this weekend!",
+    type: "In person",
+    capacity: 4,
+    price: 50,
+    startDate: "2024-05-04",
+    endDate:  "2024-05-05"
+  },
+  {
+    venueId: 4,
+    groupId: 1,
+    name: "Test Event 11",
+    description: "Make some good friends, eat some good food, and let your sweet little one join in the fun at the Lazy Dog resturant this weekend!",
+    type: "In person",
+    capacity: 4,
+    price: 50,
+    startDate: "2024-05-04",
+    endDate:  "2024-05-05"
+  },
+  {
+    venueId: 4,
+    groupId: 1,
+    name: "Test Event 12",
+    description: "Make some good friends, eat some good food, and let your sweet little one join in the fun at the Lazy Dog resturant this weekend!",
+    type: "In person",
+    capacity: 4,
+    price: 50,
+    startDate: "2024-05-04",
+    endDate:  "2024-05-05"
+  },
+  {
+    venueId: 4,
+    groupId: 1,
+    name: "Test Event 13",
+    description: "Make some good friends, eat some good food, and let your sweet little one join in the fun at the Lazy Dog resturant this weekend!",
+    type: "In person",
+    capacity: 4,
+    price: 50,
+    startDate: "2024-05-04",
+    endDate:  "2024-05-05"
+  },
+  {
+    venueId: 4,
+    groupId: 1,
+    name: "Test Event 14",
+    description: "Make some good friends, eat some good food, and let your sweet little one join in the fun at the Lazy Dog resturant this weekend!",
+    type: "In person",
+    capacity: 4,
+    price: 50,
+    startDate: "2024-05-04",
+    endDate:  "2024-05-05"
+  },
 ]
 
 module.exports = {
