@@ -43,7 +43,7 @@ module.exports = {
       type: {
         type: Sequelize.ENUM,
         allowNull: false,
-        values: ["Online", "In Person"],
+        values: ["Online", "In person"],
       },
       capacity: {
         type: Sequelize.INTEGER,

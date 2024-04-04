@@ -86,6 +86,16 @@ const seedAttendances = [
     userId: 1,
     status: "pending",
   },
+  {
+    eventId: 4,
+    userId: 1,
+    status: "pending",
+  },
+  {
+    eventId: 3,
+    userId: 5,
+    status: "pending",
+  },
 
 
 

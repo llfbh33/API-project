@@ -28,10 +28,6 @@ const validateSignup = [
     check('lastName')
         .exists({ checkFalsy: true })
         .withMessage("last Name is required"),
-    check('password')
-        .exists({ checkFalsy: true })
-        .notEmpty()
-        .withMessage("password is required"),
     handleValidationErrors
   ];
 

@@ -7,110 +7,12 @@ const { check } = require('express-validator');
 const { handleValidationErrors, validGroupCreation, validVenueCreation, validEventCreation } = require('../../utils/validation');
 
 const { currMemberOrOrganizer, authOrganizerOrCoHost, authenticateOrganizer, requireAuth } = require('../../utils/auth');
-const { noGroup, noVenue, noUser } = require('../../utils/errors');
+const { noGroup, noVenue, noUser, noVenueBody, noUserBody } = require('../../utils/errors');
 
 const { GroupImage, Membership, Venue, Group, User, Event, EventImage, Attendance } = require('../../db/models');
 const group = require('../../db/models/group');
 
 const router = express.Router();
-
-
-
-// foregin key constraints - not working
-// ===>>> Delete a Group <<<===
-router.delete('/:groupId', requireAuth, noGroup, authenticateOrganizer, async (req, res, next) => {
-    const { groupId } = req.params
-
-    const foundGroup = await Group.findByPk(groupId);
-
-    await foundGroup.destroy();
-
-    res.json({ message: "Successfully deleted" })
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// look into something like this to refactor small searches
-const hello = async (groupId) => {
-    const thisGroup = await Group.findByPk(groupId)
-    return thisGroup;
-};
-//inside the endpoint:
-// const thisGroup = await hello(groupId)
-
-
-// ===>>> Request a Membership for a Group based on the Group's id <<<===
-router.post('/:groupId/membership', requireAuth, async (req, res, next) => {
-    // does not require authorization
-    const { user } = req;
-    const { groupId } = req.params;
-
-    const thisGroup = await Group.findByPk(groupId)
-
-    if (!thisGroup) {
-        const err = new Error("Group couldn't be found");
-        err.status = 404;
-        // err.title = "Group couldn't be found";
-        // err.errors = { message: "Group couldn't be found" };
-        return next(err);
-    };
-
-    const thisUser = await User.findByPk(user.id, {
-        include: {
-            model: Membership,
-            where: {
-                groupId: groupId
-            }
-        }
-    });
-
-    if (thisUser) {
-        if (thisUser.Memberships[0] && thisUser.Memberships[0].status === "pending") {
-            const err = new Error("Membership has already been requested");
-            err.status = 400;
-            // err.title = "Membership has already been requested";
-            // err.errors = { message: "Membership has already been requested" };
-            return next(err);
-        };
-        if (thisUser.Memberships[0]) {
-            const err = new Error("User is already a member of the group");
-            err.status = 400;
-            // err.title = "User is already a member of the group";
-            // err.errors = { message: "User is already a member of the group" };
-            return next(err);
-        };
-    };
-
-    const newMembership = await Membership.create({
-        userId: user.id,
-        groupId: groupId,
-        status: "pending"
-    });
-
-    const safeMembership = {
-        memberId: newMembership.userId,
-        status: newMembership.status
-    };
-
-    res.json(safeMembership);
-});
-
-
-
-//-------------------------------------------------------
-
 
 
 
@@ -286,7 +188,7 @@ router.post('/', requireAuth, validGroupCreation, async (req, res, next) => {
 
 
 // ===>>> Add an Image to a Group based on the Group's id <<<===
-router.post('/:groupId/images', requireAuth, authenticateOrganizer, noGroup, async (req, res, next) => {
+router.post('/:groupId/images', requireAuth, noGroup, authenticateOrganizer, async (req, res, next) => {
 
     const { groupId } = req.params;
     const { url, preview } = req.body;
@@ -306,6 +208,7 @@ router.post('/:groupId/images', requireAuth, authenticateOrganizer, noGroup, asy
     };
 
     res.json(safeImage)
+
 });
 
 
@@ -366,7 +269,7 @@ router.post('/:groupId/venues', requireAuth, noGroup, authOrganizerOrCoHost, val
     const { address, city, state, lat, lng } = req.body;
 
     const newVenue = await Venue.create({
-        groupId: groupId,
+        groupId: parseInt(groupId),
         address,
         city,
         state,
@@ -392,27 +295,29 @@ router.post('/:groupId/venues', requireAuth, noGroup, authOrganizerOrCoHost, val
 router.get('/:groupId/events', noGroup, async (req, res, next) => {
     const { groupId } = req.params;
 
-    const allEvents = await Event.findAll({
+    const allEvents = await Group.findByPk(groupId, {
         where: {
-            groupId: groupId
+            id: groupId,
         },
+        attributes: ["id", "name", "city", "state"],
         include: [{
-            model: Group,
-            attributes: ['id', 'name', 'city', 'state']
-        },
-        {
-            model: Venue,
-            attributes: ['id', 'city', 'state']
-        },
-        {
-            model: EventImage,
-            attributes: ['url', 'preview']
+            model: Event,
+            include: {
+                model: EventImage,
+                attributes: ['url', 'preview']
+            }
         }]
     });
 
+    const thisGroup = {};
+        thisGroup.id = allEvents.id;
+        thisGroup.name = allEvents.name;
+        thisGroup.city = allEvents.city;
+        thisGroup.state = allEvents.state;
+
     const responseEvent = [];
 
-    for (let oneEvent of allEvents) {
+    for (let oneEvent of allEvents.Events) {
 
         let sum = await Attendance.count({
             where: {
@@ -429,6 +334,10 @@ router.get('/:groupId/events', noGroup, async (req, res, next) => {
             }
         });
 
+        const thisVenue = await Venue.findByPk(oneEvent.venueId, {
+            attributes: ["id", "city", "state"]
+        });
+
         const previewImage = {}
         if (prevImage)  previewImage.previewImage = prevImage.url;
         if(!prevImage) previewImage.previewImage = prevImage;
@@ -443,8 +352,8 @@ router.get('/:groupId/events', noGroup, async (req, res, next) => {
             endDate: oneEvent.endDate,
             numAttending: sum,
             ...previewImage,
-            Group: oneEvent.Group,
-            Venue: oneEvent.Venue
+            Group: thisGroup,
+            Venue: thisVenue
         };
         responseEvent.push(singleEvent);
     };
@@ -453,7 +362,7 @@ router.get('/:groupId/events', noGroup, async (req, res, next) => {
 
 
 // ===> Create an Event for a Group specified by its id <<<===
-router.post('/:groupId/events', requireAuth, noGroup, authOrganizerOrCoHost, noVenue, validEventCreation, async (req, res, next) => {
+router.post('/:groupId/events', requireAuth, noGroup, authOrganizerOrCoHost, noVenueBody, validEventCreation, async (req, res, next) => {
 
     const { groupId }  = req.params;
     const { venueId, name, type, capacity, price, description, startDate, endDate } = req.body;
@@ -554,7 +463,7 @@ router.get('/:groupId/members', noGroup, async (req, res, next) => {
 
 
 // ===>>> Change the status of a membership for a group specified by id <<<===
-router.put('/:groupId/membership', requireAuth, noGroup, authOrganizerOrCoHost, noUser, async (req, res, next) => {
+router.put('/:groupId/membership', requireAuth, noGroup, authOrganizerOrCoHost, noUserBody, async (req, res, next) => {
     const { user } = req;
     const { groupId } = req.params;
     const { memberId, status } = req.body // member id is the member of the user not the membership id
@@ -644,35 +553,82 @@ router.delete('/:groupId/membership/:memberId', requireAuth, noGroup, noUser, cu
         err.status = 404;
         return next(err);
     };
-// these two code blocks need to be changed eventually
-    const attending = await User.findAll({
-        where: {
-            id: memberId
-        },
-        include: [{
-            model: Event,
-            through: Attendance,
-            where: {
-                groupId: groupId
-            }
-        }]
-    });
 
-    if (attending) {
-        for(let one of attending) {
-            let attendId = one.Events[0].Attendance.id
-            const attend = await Attendance.findByPk(attendId, {
-                where: {
-                    userId: memberId
-                }
-            })
-            await attend.destroy();
+    const groupEvents = await Event.findAll({
+        where: {
+            groupId: groupId
         }
+    })
+
+    for (let single of groupEvents) {
+        const attending = await Attendance.findOne({
+            where: {
+                userId: memberId,
+                eventId: single.id
+            }
+        });
+
+        if (attending) await attending.destroy();
     };
 
     await deleteMembership.destroy();
 
      res.json({ "message": "Successfully deleted membership from group" })
+});
+
+
+// ===>>> Delete a Group <<<===
+router.delete('/:groupId', requireAuth, noGroup, authenticateOrganizer, async (req, res, next) => {
+    const { groupId } = req.params
+
+    const foundGroup = await Group.findByPk(groupId);
+
+    await foundGroup.destroy();
+
+    res.json({ message: "Successfully deleted" })
+});
+
+
+// ===>>> Request a Membership for a Group based on the Group's id <<<===
+router.post('/:groupId/membership', requireAuth, noGroup, async (req, res, next) => {
+    // does not require authorization
+    const { user } = req;
+    const { groupId } = req.params;
+
+    const thisUser = await User.findByPk(user.id, {
+        include: {
+            model: Membership,
+            where: {
+                groupId: groupId
+            }
+        }
+    });
+
+    if (thisUser) {
+        if (thisUser.Memberships[0] && thisUser.Memberships[0].status === "pending") {
+            const err = new Error("Membership has already been requested");
+            err.status = 400;
+            return next(err);
+        };
+        if (thisUser.Memberships[0]) {
+            const err = new Error("User is already a member of the group");
+            err.status = 400;
+            return next(err);
+        };
+    };
+
+    const newMembership = await Membership.create({
+        userId: user.id,
+        groupId: groupId,
+        status: "pending"
+    });
+
+    const safeMembership = {
+        memberId: newMembership.userId,
+        status: newMembership.status
+    };
+
+    res.json(safeMembership);
 });
 
 module.exports = router;

@@ -2,10 +2,10 @@
 //or other files within the backend server
 
 // page contains user authentication middlewear
-
+const { Op } = require('sequelize');
 const jwt = require('jsonwebtoken');
 const { jwtConfig } = require('../config');
-const { User, Group, Membership } = require('../db/models');
+const { User, Group, Membership, Venue, Event } = require('../db/models');
 // const { noGroup, noVenue, noUser } = require('./errors');
 
 const { secret, expiresIn } = jwtConfig;
@@ -78,8 +78,8 @@ const requireAuth = function (req, _res, next) {
     if (req.user) return next();
 
     const err = new Error('Authentication required');
-    err.title = 'Authentication required';
-    err.errors = { message: 'Authentication required' };
+    // err.title = 'Authentication required';
+    // err.errors = { message: 'Authentication required' };
     err.status = 401;
     return next(err);
   }
@@ -96,8 +96,8 @@ const requireAuth = function (req, _res, next) {
 
     const err = new Error('Forbidden');
     err.status = 403;
-    err.title = 'Authentication Failed';
-    err.errors = { Organizer: `You are not the organizer of this group` };
+    // err.title = 'Authentication Failed';
+    // err.errors = { Organizer: `You are not the organizer of this group` };
     return next(err);
 };
 
@@ -125,9 +125,41 @@ const authOrganizerOrCoHost = async (req, res, next) => {
 
     const err = new Error('Forbidden');
     err.status = 403;
-    err.title = 'Authentication Failed';
-    err.errors = { Organizer: `You are not the organizer or co-host of this group` };
+    // err.title = 'Authentication Failed';
+    // err.errors = { Organizer: `You are not the organizer or co-host of this group` };
     return next(err);
+};
+
+// check to see if the current user is the organizer or co-host of the event
+const eventAuthOrganizerOrCoHost = async (req, res, next) => {
+  let authorized = false;
+  const { user } = req;
+  const { eventId } = req.params;
+
+  const thisEvent = await Event.findByPk(eventId)
+;
+  const thisUser = await Group.findByPk(thisEvent.groupId, {
+    include: {
+      model: Membership,
+      where: {
+        userId: user.id
+      }
+    }
+  });
+
+  if (thisUser) {
+    if (thisUser.organizerId === user.id) authorized = true;
+
+    if (thisUser.Memberships[0].status === 'co-host') authorized = true
+  };
+
+  if (authorized === true) return next();
+
+  const err = new Error('Forbidden');
+  err.status = 403;
+  // err.title = 'Authentication Failed';
+  // err.errors = { Organizer: `You are not the organizer or co-host of this group` };
+  return next(err);
 };
 
 const currMemberOrOrganizer = async (req, res, next) => {
@@ -147,10 +179,40 @@ const currMemberOrOrganizer = async (req, res, next) => {
 
     const err = new Error('Forbidden');
     err.status = 403;
-    err.title = 'Authentication Failed';
-    err.errors = { Organizer: `You are not the organizer or owner of this membership` };
+    // err.title = 'Authentication Failed';
+    // err.errors = { Organizer: `You are not the organizer or owner of this membership` };
     return next(err);
 };
 
 
-module.exports = { currMemberOrOrganizer, authOrganizerOrCoHost, authenticateOrganizer, setTokenCookie, restoreUser, requireAuth };
+ const venueOrganizerOrCoHost = async (req, res, next) => {
+
+      const { user } = req;
+      const { venueId } = req.params;
+
+      const thisVenue = await Venue.findByPk(venueId, {
+        include: Group
+      });
+
+      const thisUser = await Membership.findOne({
+        where: {
+            userId: user.id,
+            groupId: thisVenue.Group.id,
+            status: {
+              [Op.or]: ["organizer", "co-host"]
+            }
+          }
+      });
+
+      if (thisUser) return next()
+
+      const err = new Error('Forbidden');
+      err.status = 403;
+      err.title = 'Authentication Failed';
+      err.errors = { Organizer: `You are not the organizer or co-host of this group` };
+      return next(err);
+ }
+
+
+
+module.exports = { eventAuthOrganizerOrCoHost, venueOrganizerOrCoHost, currMemberOrOrganizer, authOrganizerOrCoHost, authenticateOrganizer, setTokenCookie, restoreUser, requireAuth };

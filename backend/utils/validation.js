@@ -29,19 +29,17 @@ const validGroupCreation = [
     check('name')
         .exists({ checkFalsy: true })
         .isLength({ max: 60 })
-        .notEmpty()
         .withMessage("Name must be 60 characters or less"),
     check('about')
         .exists({ checkFalsy: true })
         .isLength({ min: 50 })
-        .notEmpty()
         .withMessage("About must be 50 characters or more"),
     check('type')
       .exists({ checkFalsy: true })
       .isIn(["Online", "In person"])
       .withMessage("Type must be 'Online' or 'In person'"),
     check('private')
-      .exists({ checkFalsy: true })
+      .exists()
       .isBoolean()
       .withMessage("Private must be a boolean"),
     check('city')
@@ -120,7 +118,7 @@ const validGroupCreation = [
         .custom((value, {req}) => {
             const start = new Date(req.body.startDate).getTime();
             const end = new Date(value).getTime();
-            if (end < start) {
+            if (end <= start) {
                 return false
             }
             return true
@@ -129,5 +127,85 @@ const validGroupCreation = [
     handleValidationErrors
   ];
 
+  const validVenueEdits = [
+    check('address')
+        .exists({ checkFalsy: true })
+        .notEmpty()
+        .withMessage("Street address is required"),
+    check('city')
+        .exists({ checkFalsy: true })
+        .notEmpty()
+        .withMessage("City is required"),
+    check('state')
+        .exists({ checkFalsy: true })
+        .notEmpty()
+        .withMessage("State is required"),
+    check('lat')
+        .exists({ checkFalsy: true })
+        .isFloat({ min: -90, max: 90 })
+        .withMessage("Latitude must be within -90 and 90"),
+    check('lng')
+        .exists({ checkFalsy: true })
+        .isFloat({ min: -180, max: 180 })
+        .withMessage("Longitude must be within -180 and 180"),
+    handleValidationErrors
+  ];
 
-module.exports = { handleValidationErrors, validGroupCreation, validVenueCreation, validEventCreation };
+
+  const validEventUpdate = [
+    check('name')
+        .exists({ checkFalsy: true })
+        .isLength({ min: 5 })
+        .withMessage("Name must be at least 5 characters"),
+    check('type')
+      .exists({ checkFalsy: true })
+      .isIn(["Online", "In person"])
+      .withMessage("Type must be Online or In person"),
+    check('capacity')
+      .exists({ checkFalsy: true })
+      .isNumeric()
+      .withMessage("Capacity must be an integer"),
+    check('price')
+      .exists({ checkFalsy: true })
+      .notEmpty()
+      .isDecimal()
+      .withMessage("Price is invalid"),
+    check('description')
+      .exists({ checkFalsy: true })
+      .notEmpty()
+      .withMessage("Description is required"),
+    check('startDate')
+        .notEmpty()
+        .withMessage("Start date must be in the future")
+        .custom((value) => {
+            const curr = new Date().getTime();
+            const given = new Date(value).getTime();
+            if (given < curr) {
+                throw new Error("Start date must be in the future")
+            }
+            return true
+        }),
+
+    check('endDate')
+        .notEmpty()
+        .withMessage("End date is less than start date")
+        .custom((value, {req}) => {
+            const start = new Date(req.body.startDate).getTime();
+            const end = new Date(value).getTime();
+            if (end <= start) {
+                throw new Error("End date is less than start date")
+            }
+            return true
+        }),
+    handleValidationErrors
+]
+
+
+module.exports = {
+    handleValidationErrors,
+    validGroupCreation,
+    validVenueCreation,
+    validVenueEdits,
+    validEventCreation,
+    validEventUpdate
+};

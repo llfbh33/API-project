@@ -1,8 +1,10 @@
 const express = require('express');
+const { Op } = require('sequelize');
 
-const { requireAuth } = require('../../utils/auth');
+const { requireAuth, authOrganizerOrCoHost } = require('../../utils/auth');
 
 const { EventImage, Event, Group, Membership } = require('../../db/models');
+const { noGroup, noVenue, noUser, noVenueBody, noUserBody } = require('../../utils/errors');
 
 const router = express.Router();
 
@@ -19,26 +21,27 @@ router.delete('/:imageId', requireAuth, async (req, res, next) => {
         }
     });
 
-    if(!image) {
+    if (image) {
+        const athorized = await Membership.findOne({
+            where: {
+                userId: user.id,
+                groupId: image.Event.Group.id,
+                status: {
+                    [Op.or]: ["organizer", "co-host"]
+                }
+            }
+        });
+
+        if(!athorized) {
+            const err = new Error("Forbidden");
+            err.status = 403;
+            err.errors = { Organizer: `You are not the organizer or co-host of this group` };
+            return next(err);
+        };
+
+    } else if (!image) {
         const err = new Error("Image couldn't be found");
         err.status = 404;
-        err.title = 'Image Missing';
-        err.errors = { GroupImage: `The image at ID ${imageId} does not exist` };
-        return next(err);
-    };
-
-    const membershipAuth = await Membership.findOne({
-        where: {
-            userId: user.id,
-            groupId: image.Event.Group.id
-        }
-    });
-
-    if(!membershipAuth || image.Event.Group.organizerId !== user.id && membershipAuth.status !== 'co-host') {
-        const err = new Error("Forbidden");
-        err.status = 403;
-        err.title = 'Deletion failed';
-        err.errors = { Organizer: `You are not the organizer or co-host of the event that the image with an id of ${imageId} is associated with` };
         return next(err);
     };
 
