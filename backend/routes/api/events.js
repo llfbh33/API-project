@@ -397,6 +397,13 @@ router.delete('/:eventId/attendance/:userId', requireAuth, noEvent, async (req, 
     const { user } = req;
     const { eventId, userId } = req.params;
 
+    const thisUser = await User.findByPk(userId);
+    if (!thisUser) {
+        const err = new Error("User couldn't be found");
+        err.status = 404;
+        return next(err);
+    };
+
     let authorized =  parseInt(userId) === user.id
 
     const thisEvent = await Event.findOne({
@@ -413,14 +420,6 @@ router.delete('/:eventId/attendance/:userId', requireAuth, noEvent, async (req, 
         err.status = 403;
         return next(err);
     };
-
-    const thisUser = await User.findByPk(userId);
-
-    if (!thisUser) {
-        const err = new Error("User couldn't be found");
-        err.status = 404;
-        return next(err);
-    }
 
     const thisAttendance = await Attendance.findOne({
         where: {

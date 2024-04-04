@@ -39,7 +39,7 @@ const noVenue = async (req, res, next) => {
     err.status = 404;
     return next(err);
 };
-
+    // use of userId does not seem to work here?
 const noUserBody = async (req, res, next) => {
     const { memberId, userId } = req.body;
 
