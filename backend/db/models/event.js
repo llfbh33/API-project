@@ -11,9 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // put the proper associations for venueId and groupId in the venue and group models through this one
-      Event.belongsTo(models.Venue, {
-        foreignKey: "venueId"
-      });
+      // Event.belongsTo(models.Venue, {
+      //   foreignKey: "venueId"
+      // });
 
       Event.belongsTo(models.Group, {
         foreignKey: "groupId"
@@ -21,65 +21,62 @@ module.exports = (sequelize, DataTypes) => {
 
       Event.hasMany(models.EventImage, {
         foreignKey: "eventId",
-        // onDelete: "CASCADE",
-        // hooks: true
+        onDelete: "CASCADE",
+        hooks: true
       });
 
-      Event.belongsToMany(models.User, {
-        through: models.Attendance,
+      Event.hasMany(models.Attendance, {
         foreignKey: "eventId",
-        otherKey: "userId",
-        // onDelete: "CASCADE",
-        // hooks: true
+        onDelete: "CASCADE",
+        hooks: true
       });
     }
   }
   Event.init({
     venueId: {
       type: DataTypes.INTEGER,
-      // onDelete: 'CASCADE'
     },
     groupId: {
       type: DataTypes.INTEGER,
-      // allowNull: false,
-      // onDelete: 'CASCADE'
+      allowNull: false,
+      onDelete: 'CASCADE'
     },
     name: {
       type: DataTypes.STRING,
-      // allowNull: false,
+      allowNull: false,
       validate: {
         min: 5
       }
     },
     description: {
       type: DataTypes.TEXT,
-      // allowNull: false,
+      allowNull: false,
       validate: {
         len: [10, 500]
       }
     },
     type: {
       type: DataTypes.ENUM,
-      // allowNull: false,
+      allowNull: false,
       values: ["Online", "In Person"],
     },
     capacity: {
       type: DataTypes.INTEGER,
-      // allowNull: false,
+      allowNull: false,
     },
     price: {
       type: DataTypes.DECIMAL(2, 2),
     },
     startDate: {
       type: DataTypes.DATE,
-      // allowNull: false,
+      allowNull: false,
       validate: {
         isDate: true,
       }
     },
     endDate: {
       type: DataTypes.DATE,
-      // allowNull: false,
+      allowNull: false,
       validate: {
         isDate: true,
       }

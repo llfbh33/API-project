@@ -14,24 +14,21 @@ module.exports = (sequelize, DataTypes) => {
       // define connection between group and user
       User.hasMany(models.Group, {
         foreignKey: 'organizerId',
+        onDelete: "CASCADE",
+        hooks: true
       })
 
       User.hasMany(models.Membership, {
         foreignKey: "userId",
+        onDelete: "CASCADE",
+        hooks: true
       });
-
-      User.belongsToMany(models.Event, {
-        through: models.Attendance,
-        foreignKey: "userId",
-        otherKey: "eventId",
-      });
-
     }
   }
   User.init({
     username: {
       type: DataTypes.STRING,
-      // allowNull: false,
+      allowNull: false,
       unique: true,
       validate: {
 // stating isEmail: false does work to keep from allowing an email for the username
@@ -47,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     email: {
       type: DataTypes.STRING,
-      // allowNull: false,
+      allowNull: false,
       validate: {
         isEmail: true,
         len: [3, 256]
@@ -55,21 +52,21 @@ module.exports = (sequelize, DataTypes) => {
     },
     hashedPassword: {
       type: DataTypes.STRING.BINARY,
-      // allowNull: false,
+      allowNull: false,
       validate: {
         len: [60, 60]
       }
     },
     firstName: {
       type: DataTypes.STRING,
-      // allowNull: false,
+      allowNull: false,
       validate: {
         len: [2, 50]
       }
     },
     lastName: {
       type: DataTypes.STRING,
-      // allowNull: false,
+      allowNull: false,
       validate: {
         len: [2, 50]
       }

@@ -10,36 +10,36 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Groups', {
       id: {
-        // allowNull: false,
+        allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
       organizerId: {
         type: Sequelize.INTEGER,
-      // removed alloNull false for now so that we do not need to delete on cascade the coresponding group
+        allowNull: false,
         references: {
           model: 'Users',
           key: 'id'
         },
-        // onDelete: "CASCADE"
+        onDelete: "CASCADE"
       },
       name: {
         type: Sequelize.STRING(100),
-        // allowNull: false
+        allowNull: false
       },
       about: {
         type: Sequelize.TEXT,
-        // allowNull: false
+        allowNull: false
       },
       type: {
         type: Sequelize.ENUM,
         values: ["In person", "Online"],
-        // allowNull: false
+        allowNull: false
       },
       private: {
         type: Sequelize.BOOLEAN,
-        // allowNull: false
+        allowNull: false
       },
       city: {
         type: Sequelize.STRING(50),

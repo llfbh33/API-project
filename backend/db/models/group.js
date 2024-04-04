@@ -18,26 +18,26 @@ module.exports = (sequelize, DataTypes) => {
 
       Group.hasMany(models.GroupImage, {
         foreignKey: 'groupId',
-        // onDelete: "CASCADE",
-        // hooks: true
+        onDelete: "CASCADE",
+        hooks: true
       });
 
       Group.hasMany(models.Venue, {
         foreignKey: "groupId",
-        // onDelete: "CASCADE",
-        // hooks: true
+        onDelete: "CASCADE",
+        hooks: true
       });
 
       Group.hasMany(models.Membership, {
         foreignKey: "groupId",
-        // onDelete: "CASCADE",
-        // hooks: true
+        onDelete: "CASCADE",
+        hooks: true
       });
 
       Group.hasMany(models.Event, {
         foreignKey: "groupId",
-        // onDelete: "CASCADE",
-        // hooks: true
+        onDelete: "CASCADE",
+        hooks: true
       });
 
     }
@@ -45,18 +45,18 @@ module.exports = (sequelize, DataTypes) => {
   Group.init({
     organizerId: {
       type: DataTypes.INTEGER,
-      // onDelete: "CASCADE"
+      onDelete: "CASCADE"
     },
     name: {
       type: DataTypes.STRING,
-      // allowNull: false,
+      allowNull: false,
       validate: {
         len: [0, 60]
       }
     },
     about: {
       type: DataTypes.TEXT,
-      // allowNull: false,
+      allowNull: false,
       validate: {
         min: 50
       }
@@ -64,15 +64,15 @@ module.exports = (sequelize, DataTypes) => {
     type: {
       type: DataTypes.ENUM,
       values: ["In person", "Online"],
-      // allowNull: false
+      allowNull: false
     },
     private: {
       type: DataTypes.BOOLEAN,
-      // allowNull: false
+      allowNull: false
     },
     city: {
       type: DataTypes.STRING,
-      // allowNull: false
+      allowNull: false
     },
     state: {
       type: DataTypes.STRING,

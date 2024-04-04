@@ -19,16 +19,16 @@ module.exports = (sequelize, DataTypes) => {
   GroupImage.init({
     groupId: {
       type: DataTypes.INTEGER,
-      // allowNull: false,
-      // onDelete: 'CASCADE'
+      allowNull: false,
+      onDelete: 'CASCADE'
     },
     url: {
       type: DataTypes.STRING,
-      // allowNull: false,
+      allowNull: false,
     },
     preview: {
       type: DataTypes.BOOLEAN,
-      // allowNull: false
+      allowNull: false
     },
   }, {
     sequelize,

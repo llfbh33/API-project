@@ -10,31 +10,31 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Venues', {
       id: {
-        // allowNull: false,
+        allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
       groupId: {
         type: Sequelize.INTEGER,
-        // allowNull: false,
+        allowNull: false,
         references: {
           model: 'Groups',
           key: 'id'
         },
-        // onDelete: 'CASCADE'
+        onDelete: 'CASCADE'
       },
       address: {
         type: Sequelize.STRING,
-        // allowNull: false
+        allowNull: false
       },
       city: {
         type: Sequelize.STRING,
-        // allowNull: false
+        allowNull: false
       },
       state: {
         type: Sequelize.STRING,
-        // allowNull: false
+        allowNull: false
       },
       lat: {
         type: Sequelize.DECIMAL

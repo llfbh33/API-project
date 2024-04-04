@@ -12,25 +12,27 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Attendance.belongsTo(models.Event, {
+        foreignKey: "eventId"
+      });
 
     }
   }
   Attendance.init({
     id: {
       type: DataTypes.INTEGER,
-      // allowNull: false,
+      allowNull: false,
       primaryKey: true,
       autoIncrement: true
     },
     eventId: {
       type: DataTypes.INTEGER,
-      // allowNull: false,
-      // onDelete: "CASCADE"
+      allowNull: false,
+      onDelete: "CASCADE"
     },
     userId: {
       type: DataTypes.INTEGER,
-      // allowNull: false,
-      // onDelete: "CASCADE"
+      allowNull: false
     },
     status: {
       type: DataTypes.ENUM,

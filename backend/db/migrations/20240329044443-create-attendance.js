@@ -10,28 +10,28 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Attendances', {
       id: {
-        // allowNull: false,
+        allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
       eventId: {
         type: Sequelize.INTEGER,
-        // allowNull: false,
+        allowNull: false,
         references: {
           model: "Events",
           key: "id"
         },
-        // onDelete: "CASCADE"
+        onDelete: "CASCADE"
       },
       userId: {
         type: Sequelize.INTEGER,
-        // allowNull: false,
-        references: {
-          model: "Users",
-          key: "id"
-        },
-        // onDelete: "CASCADE"
+        // // allowNull: false,
+        // references: {
+        //   model: "Users",
+        //   key: "id"
+        // },
+        // // onDelete: "CASCADE"
       },
       status: {
         type: Sequelize.ENUM,

@@ -18,12 +18,12 @@ module.exports = {
 
     await queryInterface.addColumn(options, 'firstName', {
       type: Sequelize.STRING(50),
-      // allowNull: false
+      allowNull: false
     });
 
     await queryInterface.addColumn(options, 'lastName', {
       type: Sequelize.STRING(50),
-      // allowNull: false
+      allowNull: false
     });
   },
 
