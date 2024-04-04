@@ -10,33 +10,33 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Memberships', {
       id: {
-        allowNull: false,
+        // allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
       userId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        // allowNull: false,
         references: {
           model: "Users",
           key: 'id'
         },
-        onDelete: 'CASCADE'
+        // onDelete: 'CASCADE'
       },
       groupId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        // allowNull: false,
         references: {
           model: "Groups",
           key: 'id'
         },
-        onDelete: 'CASCADE'
+        // onDelete: 'CASCADE'
       },
       status: {
         type: Sequelize.ENUM,
         values: ["organizer", "co-host", "member", "pending"],
-        allowNull: false
+        // allowNull: false
       },
       createdAt: {
         allowNull: false,

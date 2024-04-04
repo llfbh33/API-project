@@ -20,62 +20,66 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       Event.hasMany(models.EventImage, {
-        foreignKey: "eventId"
+        foreignKey: "eventId",
+        // onDelete: "CASCADE",
+        // hooks: true
       });
 
       Event.belongsToMany(models.User, {
         through: models.Attendance,
         foreignKey: "eventId",
-        otherKey: "userId"
+        otherKey: "userId",
+        // onDelete: "CASCADE",
+        // hooks: true
       });
     }
   }
   Event.init({
     venueId: {
       type: DataTypes.INTEGER,
-      onDelete: 'CASCADE'
+      // onDelete: 'CASCADE'
     },
     groupId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      onDelete: 'CASCADE'
+      // allowNull: false,
+      // onDelete: 'CASCADE'
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      // allowNull: false,
       validate: {
         min: 5
       }
     },
     description: {
       type: DataTypes.TEXT,
-      allowNull: false,
+      // allowNull: false,
       validate: {
         len: [10, 500]
       }
     },
     type: {
       type: DataTypes.ENUM,
-      allowNull: false,
+      // allowNull: false,
       values: ["Online", "In Person"],
     },
     capacity: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      // allowNull: false,
     },
     price: {
       type: DataTypes.DECIMAL(2, 2),
     },
     startDate: {
       type: DataTypes.DATE,
-      allowNull: false,
+      // allowNull: false,
       validate: {
         isDate: true,
       }
     },
     endDate: {
       type: DataTypes.DATE,
-      allowNull: false,
+      // allowNull: false,
       validate: {
         isDate: true,
       }

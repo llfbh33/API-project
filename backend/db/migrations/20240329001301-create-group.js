@@ -10,7 +10,7 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Groups', {
       id: {
-        allowNull: false,
+        // allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
@@ -22,27 +22,28 @@ module.exports = {
           model: 'Users',
           key: 'id'
         },
+        // onDelete: "CASCADE"
       },
       name: {
         type: Sequelize.STRING(100),
-        allowNull: false
+        // allowNull: false
       },
       about: {
         type: Sequelize.TEXT,
-        allowNull: false
+        // allowNull: false
       },
       type: {
         type: Sequelize.ENUM,
         values: ["In person", "Online"],
-        allowNull: false
+        // allowNull: false
       },
       private: {
         type: Sequelize.BOOLEAN,
-        allowNull: false
+        // allowNull: false
       },
       city: {
         type: Sequelize.STRING(50),
-        allowNull: false
+        // allowNull: false
       },
       state: {
         type: Sequelize.STRING(50)

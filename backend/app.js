@@ -83,10 +83,10 @@ app.use((err, _req, res, _next) => {
     res.status(err.status || 500);
     console.error(err);
     res.json({
-        // title: err.title || 'Server Error',   // do not currently want to provide an error title
+        title: err.title || 'Server Error',   // do not currently want to provide an error title
         message: err.message,
         errors: err.errors,
-        // stack: isProduction ? null : err.stack  // do not want to be producing the stack in our output currently
+        stack: isProduction ? null : err.stack  // do not want to be producing the stack in our output currently
     });
 });
 

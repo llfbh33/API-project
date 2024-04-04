@@ -10,27 +10,27 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('GroupImages', {
       id: {
-        allowNull: false,
+        // allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
       groupId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        // allowNull: false,
         references: {
           model: "Groups",
           key: 'id'
         },
-        onDelete: 'CASCADE'
+        // onDelete: 'CASCADE'
       },
       url: {
         type: Sequelize.STRING,
-        allowNull: false
+        // allowNull: false
       },
       preview: {
         type: Sequelize.BOOLEAN,
-        allowNull: false
+        // allowNull: false
       },
       createdAt: {
         allowNull: false,

@@ -10,19 +10,19 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('EventImages', {
       id: {
-        allowNull: false,
+        // allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
       eventId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        // allowNull: false,
         references: {
           model: "Events",
           key: "id"
         },
-        onDelete: 'CASCADE'
+        // onDelete: 'CASCADE'
       },
       url: {
         type: Sequelize.STRING,

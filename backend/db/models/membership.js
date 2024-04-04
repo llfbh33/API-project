@@ -19,23 +19,24 @@ module.exports = (sequelize, DataTypes) => {
       Membership.belongsTo(models.Group, {
         foreignKey: "groupId"
       });
+
     }
   }
   Membership.init({
     userId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      onDelete: 'CASCADE'
+      // allowNull: false,
+      // onDelete: 'CASCADE'
     },
     groupId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      onDelete: 'CASCADE'
+      // allowNull: false,
+      // onDelete: 'CASCADE'
     },
     status: {
       type: DataTypes.ENUM,
       values: ["organizer", "co-host", "member", "pending"],
-      allowNull: false
+      // allowNull: false
     },
   }, {
     sequelize,

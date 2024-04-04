@@ -5,9 +5,13 @@
 
 const jwt = require('jsonwebtoken');
 const { jwtConfig } = require('../config');
-const { User } = require('../db/models');
+const { User, Group, Membership } = require('../db/models');
+// const { noGroup, noVenue, noUser } = require('./errors');
 
 const { secret, expiresIn } = jwtConfig;
+
+
+
 
 //sends a JWT cookie
 // used for login and signup routes
@@ -81,5 +85,72 @@ const requireAuth = function (req, _res, next) {
   }
 
 
+  // check to see if the current user is the organizer of group
+  const authenticateOrganizer = async (req, res, next) => {
+    const { user } = req;
+    const { groupId } = req.params
 
-module.exports = { setTokenCookie, restoreUser, requireAuth };
+    const thisGroup = await Group.findByPk(groupId);
+
+    if (thisGroup.organizerId === user.id) return next();
+
+    const err = new Error('Forbidden');
+    err.status = 403;
+    err.title = 'Authentication Failed';
+    err.errors = { Organizer: `You are not the organizer of this group` };
+    return next(err);
+};
+
+// check to see if the current user is the organizer or co-host of the group
+const authOrganizerOrCoHost = async (req, res, next) => {
+    let authorized = false;
+    const { user } = req;
+    const { groupId } = req.params;
+
+    const thisUser = await Membership.findOne({
+      where: {
+          userId: user.id,
+          groupId: groupId
+        }
+    });
+
+    const thisGroup = await Group.findByPk(groupId);
+
+    if (thisGroup.organizerId === user.id) authorized = true;
+    if (thisUser) {
+        if (thisUser.status === 'co-host') authorized = true
+    };
+
+    if (authorized === true) return next();
+
+    const err = new Error('Forbidden');
+    err.status = 403;
+    err.title = 'Authentication Failed';
+    err.errors = { Organizer: `You are not the organizer or co-host of this group` };
+    return next(err);
+};
+
+const currMemberOrOrganizer = async (req, res, next) => {
+    const { user } = req;
+    const { groupId, memberId } = req.params;
+
+    const currMember = parseInt(memberId) === user.id
+    const organizer = await Membership.findOne({
+      where: {
+        groupId: groupId,
+        userId: user.id,
+        status: "organizer"
+      }
+    });
+
+    if (currMember || organizer) return next();
+
+    const err = new Error('Forbidden');
+    err.status = 403;
+    err.title = 'Authentication Failed';
+    err.errors = { Organizer: `You are not the organizer or owner of this membership` };
+    return next(err);
+};
+
+
+module.exports = { currMemberOrOrganizer, authOrganizerOrCoHost, authenticateOrganizer, setTokenCookie, restoreUser, requireAuth };

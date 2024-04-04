@@ -1,6 +1,7 @@
 'use strict';
 const {
-  Model
+  Model,
+  Association
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Attendance extends Model {
@@ -17,17 +18,19 @@ module.exports = (sequelize, DataTypes) => {
   Attendance.init({
     id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      // allowNull: false,
       primaryKey: true,
       autoIncrement: true
     },
     eventId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      // allowNull: false,
+      // onDelete: "CASCADE"
     },
     userId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      // allowNull: false,
+      // onDelete: "CASCADE"
     },
     status: {
       type: DataTypes.ENUM,

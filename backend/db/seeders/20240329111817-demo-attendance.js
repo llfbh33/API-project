@@ -15,72 +15,76 @@ const seedAttendances = [
   {
     eventId: 1,
     userId: 1,
-    status: "attending"
+    status: "attending",
   },
   {
     eventId: 1,
     userId: 2,
-    status: "attending"
+    status: "attending",
+
   },
   {
     eventId: 1,
     userId: 3,
-    status: "waitlist"
-  },
-  {
-    eventId: 1,
-    userId: 6,//
-    status: "pending"
+    status: "waitlist",
+
   },
   {
     eventId: 1,
     userId: 7,
-    status: "pending"
+    status: "pending",
+
   },
   {
     eventId: 1,
     userId: 8,
-    status: "attending"
+    status: "attending",
+
   },
   {
     eventId: 2,
     userId: 1,
-    status: "attending"
+    status: "attending",
   },
   {
     eventId: 2,
     userId: 2,
-    status: "attending"
+    status: "attending",
+
   },
   {
-    eventId: 2,
+    eventId: 3,
     userId: 4,
-    status: "attending"
+    status: "attending",
+
   },
   {
     eventId: 2,
     userId: 6,
-    status: "pending"
+    status: "pending",
+
   },
   {
     eventId: 3,
     userId: 3,
-    status: "attending"
+    status: "attending",
   },
   {
     eventId: 3,
     userId: 4,
-    status: "attending"
+    status: "attending",
+
   },
   {
     eventId: 3,
     userId: 5,
-    status: "attending"
+    status: "attending",
+
   },
   {
     eventId: 3,
     userId: 1,
-    status: "pending"
+    status: "pending",
   },
 
 

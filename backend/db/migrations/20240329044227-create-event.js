@@ -10,55 +10,56 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Events', {
       id: {
-        allowNull: false,
+        // allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
       venueId: {
         type: Sequelize.INTEGER,
+        // allowNull: false,
         references: {
           model: "Venues",
           key: "id"
         },
-        onDelete: 'CASCADE'
+        // onDelete: 'CASCADE'
       },
       groupId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        // allowNull: false,
         references: {
           model: "Groups",
           key: "id"
         },
-        onDelete: 'CASCADE'
+        // onDelete: 'CASCADE'
       },
       name: {
         type: Sequelize.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       description: {
         type: Sequelize.TEXT,
-        allowNull: false
+        // allowNull: false
       },
       type: {
         type: Sequelize.ENUM,
-        allowNull: false,
+        // allowNull: false,
         values: ["Online", "In Person"],
       },
       capacity: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        // allowNull: false
       },
       price: {
         type: Sequelize.DECIMAL,
       },
       startDate: {
         type: Sequelize.DATE,
-        allowNull: false,
+        // allowNull: false,
       },
       endDate: {
         type: Sequelize.DATE,
-        allowNull: false,
+        // allowNull: false,
       },
       createdAt: {
         allowNull: false,

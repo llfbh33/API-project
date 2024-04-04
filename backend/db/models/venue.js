@@ -12,11 +12,13 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
 
       Venue.belongsTo(models.Group, {
-        foreignKey: "groupId"
+        foreignKey: "groupId",
       });
 
       Venue.hasMany(models.Event, {
-        foreignKey: "venueId",
+        // foreignKey: "venueId",
+        // onDelete: "CASCADE",
+        // hooks: true
       });
 
     }
@@ -24,20 +26,20 @@ module.exports = (sequelize, DataTypes) => {
   Venue.init({
     groupId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      onDelete: 'CASCADE'
+      // allowNull: false,
+      // onDelete: 'CASCADE'
     },
     address: {
       type: DataTypes.STRING,
-      allowNull: false,
+      // allowNull: false,
     },
     city: {
       type: DataTypes.STRING,
-      allowNull: false,
+      // allowNull: false,
     },
     state: {
       type: DataTypes.STRING,
-      allowNull: false,
+      // allowNull: false,
     },
     lat: DataTypes.DECIMAL,
     lng: DataTypes.DECIMAL
