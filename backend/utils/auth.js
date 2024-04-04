@@ -5,7 +5,7 @@
 const { Op } = require('sequelize');
 const jwt = require('jsonwebtoken');
 const { jwtConfig } = require('../config');
-const { User, Group, Membership, Venue, Event } = require('../db/models');
+const { User, Group, Membership, Venue, Event, Attendance } = require('../db/models');
 // const { noGroup, noVenue, noUser } = require('./errors');
 
 const { secret, expiresIn } = jwtConfig;
@@ -125,8 +125,6 @@ const authOrganizerOrCoHost = async (req, res, next) => {
 
     const err = new Error('Forbidden');
     err.status = 403;
-    // err.title = 'Authentication Failed';
-    // err.errors = { Organizer: `You are not the organizer or co-host of this group` };
     return next(err);
 };
 
@@ -157,8 +155,6 @@ const eventAuthOrganizerOrCoHost = async (req, res, next) => {
 
   const err = new Error('Forbidden');
   err.status = 403;
-  // err.title = 'Authentication Failed';
-  // err.errors = { Organizer: `You are not the organizer or co-host of this group` };
   return next(err);
 };
 
@@ -166,7 +162,7 @@ const currMemberOrOrganizer = async (req, res, next) => {
     const { user } = req;
     const { groupId, memberId } = req.params;
 
-    const currMember = parseInt(memberId) === user.id
+    let currMember = parseInt(memberId) === user.id
     const organizer = await Membership.findOne({
       where: {
         groupId: groupId,
@@ -179,11 +175,8 @@ const currMemberOrOrganizer = async (req, res, next) => {
 
     const err = new Error('Forbidden');
     err.status = 403;
-    // err.title = 'Authentication Failed';
-    // err.errors = { Organizer: `You are not the organizer or owner of this membership` };
     return next(err);
 };
-
 
  const venueOrganizerOrCoHost = async (req, res, next) => {
 
@@ -208,8 +201,7 @@ const currMemberOrOrganizer = async (req, res, next) => {
 
       const err = new Error('Forbidden');
       err.status = 403;
-      err.title = 'Authentication Failed';
-      err.errors = { Organizer: `You are not the organizer or co-host of this group` };
+      // err.title = 'Authentication Failed';
       return next(err);
  }
 

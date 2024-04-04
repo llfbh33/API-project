@@ -30,9 +30,9 @@ router.delete('/:imageId', requireAuth, async (req, res, next) => {
 
     if(!membershipAuth || image.Group.organizerId !== user.id && membershipAuth.status !== 'co-host') {
         const err = new Error('Forbidden');
-        err.status = 401;
-        err.title = 'Authentication Failed';
-        err.errors = { Organizer: `You are not the organizer or co-host of this group` };
+        err.status = 403;
+        // err.title = 'Authentication Failed';
+        // err.errors = { Organizer: `You are not the organizer or co-host of this group` };
         return next(err);
     };
 

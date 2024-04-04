@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const { check } = require('express-validator');
 const { handleValidationErrors, validEventUpdate } = require('../../utils/validation');
 
-const { requireAuth, eventAuthOrganizerOrCoHost } = require('../../utils/auth');
+const { requireAuth, eventAuthOrganizerOrCoHost, currMemberOrOrganizer } = require('../../utils/auth');
 const { noEvent, noVenueBody, noUserBody } = require('../../utils/errors')
 
 const { Event, Group, EventImage, Venue, Attendance, Membership, User } = require('../../db/models');
@@ -208,10 +208,44 @@ router.get('/:eventId', async (req, res, next) => {
 
 
 // ===>>> Add an Image to an Event based on the Event's id <<<===
-router.post('/:eventId/images', requireAuth, noEvent, eventAuthOrganizerOrCoHost, async (req, res, next) => {
+router.post('/:eventId/images', requireAuth, noEvent, async (req, res, next) => {
 
+    let authorized = false;
+    const { user } = req;
     const { eventId } = req.params;
     const { url, preview } = req.body;
+
+    const thisEvent = await Event.findByPk(eventId)
+  ;
+    const thisUser = await Group.findByPk(thisEvent.groupId, {
+      include: {
+        model: Membership,
+        where: {
+          userId: user.id
+        }
+      }
+    });
+
+    if (thisUser) {
+      if (thisUser.organizerId === user.id) authorized = true;
+
+      if (thisUser.Memberships[0].status === 'co-host') authorized = true
+    };
+
+    const attendance = await Attendance.findOne({
+        where: {
+            userId: user.id,
+            eventId: eventId,
+            status: "attending"
+        }
+    });
+    if (attendance) authorized = true;
+
+    if (!authorized ) {
+        const err = new Error('Forbidden');
+        err.status = 403;
+        return next(err);
+    };
 
     const newImage = await EventImage.create({
         eventId: eventId,
@@ -298,16 +332,15 @@ router.get('/:eventId/attendees', noEvent, async (req, res, next) => {
         include: {
           model: Membership,
           where: {
-            userId: user.id
+            userId: user.id,
+            status: {
+                [Op.or]: ["organizer", "co-host"]
+            }
           }
         }
     });
 
-    if (thisUser) {
-        if (thisUser.organizerId === user.id) authorized = true;
-
-        if (thisUser.Memberships[0].status === 'co-host') authorized = true
-    };
+    if (thisUser) authorized = true;
 
     const allAttendees = await Attendance.findAll( {
         where: {
@@ -359,17 +392,35 @@ router.get('/:eventId/attendees', noEvent, async (req, res, next) => {
 
 
 // ===>>> Delete attendance to an event specified by id <<<===
-router.delete('/:eventId/attendance/:userId', requireAuth, noEvent, eventAuthOrganizerOrCoHost, async (req, res, next) => {
-
+router.delete('/:eventId/attendance/:userId', requireAuth, noEvent, async (req, res, next) => {
+// current user must be host or member wwhos attendence isbeing deleted
+    const { user } = req;
     const { eventId, userId } = req.params;
+
+    let authorized =  parseInt(userId) === user.id
+
+    const thisEvent = await Event.findOne({
+        include: {
+            model: Group,
+            where: {
+                organizerId: user.id
+            }
+        }
+    });
+
+    if (!thisEvent && !authorized) {
+        const err = new Error('Forbidden');
+        err.status = 403;
+        return next(err);
+    };
 
     const thisUser = await User.findByPk(userId);
 
-    if(!thisUser) {
+    if (!thisUser) {
         const err = new Error("User couldn't be found");
         err.status = 404;
         return next(err);
-    };
+    }
 
     const thisAttendance = await Attendance.findOne({
         where: {
@@ -392,36 +443,29 @@ router.delete('/:eventId/attendance/:userId', requireAuth, noEvent, eventAuthOrg
 
 
 // ===>>> Request to Attend an Event based on the Event's id <<<===
-router.post('/:eventId/attendance', requireAuth, async (req, res, next) => {
+router.post('/:eventId/attendance', requireAuth, noEvent, async (req, res, next) => {
     // Require Authorization: Current User must be a member of the group
     const { user } = req;
     const { eventId } = req.params;
 
     const thisEvent = await Event.findByPk(eventId);
 
-    if (thisEvent) {
-        const thisMembership = await Membership.findOne({
-            where: {
-                groupId: thisEvent.groupId,
-                userId: user.id
-            }
-        });
+    const thisMembership = await Membership.findOne({
+        where: {
+            groupId: thisEvent.groupId,
+            userId: user.id
+        }
+    });
 
-        if (!thisMembership) {
-            const err = new Error("Forbidden");
-            err.status = 403;
-            return next(err);
-        };
-    };
-
-    if (!thisEvent) {
-        const err = new Error("Event couldn't be found");
-        err.status = 404;
+    if (!thisMembership || thisMembership.status === "pending") {
+        const err = new Error("Forbidden");
+        err.status = 403;
         return next(err);
     };
 
     const thisUser = await Attendance.findOne({
         where: {
+            userId: user.id,
             eventId: eventId
         }
     });

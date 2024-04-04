@@ -513,7 +513,6 @@ router.put('/:groupId/membership', requireAuth, noGroup, authOrganizerOrCoHost, 
     if (authorized.status === "co-host" && status === "co-host") {
         const err = new Error("Forbidden");
         err.status = 403;
-        err.errors = { message: "You are not the organizer of this group" };
         return next(err);
     };
 
