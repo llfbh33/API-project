@@ -1,10 +1,6 @@
 const express = require('express');
-const bcrypt = require('bcryptjs');  // necessary for hashing and comparing passwords
 
-const { check } = require('express-validator');
-const { handleValidationErrors } = require('../../utils/validation');
-
-const { setTokenCookie, requireAuth } = require('../../utils/auth');
+const { requireAuth } = require('../../utils/auth');
 const { GroupImage, Group, Membership } = require('../../db/models');
 
 const router = express.Router();
@@ -22,8 +18,6 @@ router.delete('/:imageId', requireAuth, async (req, res, next) => {
     if(!image) {
         const err = new Error("Image couldn't be found");
         err.status = 404;
-        // err.title = 'Image Missing';
-        // err.errors = { GroupImage: `The image at ID ${imageId} does not exist` };
         return next(err);
     };
 

@@ -283,9 +283,23 @@ router.post('/:groupId/images', requireAuth, async (req, res, next) => {
     res.json(safeImage)
 });
 
+const authenticate = async (req, res, next) => {
+    const { user } = req;
+    const { groupId } = req.params
+
+    const thisGroup = await Group.findByPk(groupId);
+    if (thisGroup.organizerId === user.id) return next();
+
+    const err = new Error('Forbidden');
+    err.status = 403;
+    err.title = 'Authentication Failed';
+    err.errors = { Organizer: `You are not the organizer of this group` };
+    return next(err);
+};
+
 
 // ===>>> Delete a Group <<<===
-router.delete('/:groupId', requireAuth, async (req, res, next) => {
+router.delete('/:groupId', requireAuth, authenticate, async (req, res, next) => {
     const { user } = req;
     const { groupId } = req.params
 
@@ -294,19 +308,9 @@ router.delete('/:groupId', requireAuth, async (req, res, next) => {
     if(!foundGroup) {
         const err = new Error("Group couldn't be found");
         err.status = 404;
-        // err.title = 'Group Missing';
-        // err.errors = { Group: `The group at ID ${groupId} does not exist` };
         return next(err);
     };
-
-    if(foundGroup.organizerId !== user.id) {
-        const err = new Error('Forbidden');
-        err.status = 403;
-        err.title = 'Authentication Failed';
-        err.errors = { Organizer: `You are not the organizer of this group` };
-        return next(err);
-    };
-
+    console.log(foundGroup)
     await foundGroup.destroy();
 
     res.json({ message: "Successfully deleted" })

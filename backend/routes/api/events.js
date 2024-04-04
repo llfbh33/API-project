@@ -11,10 +11,36 @@ const { Event, Group, EventImage, Venue, Attendance, Membership, User } = requir
 
 const router = express.Router();
 
-// router.use('/:eventId/attendees', require('./attendance.js'));  // this may have to go lower depending on how it activates
-// router.use('/:eventId/attendees', require('./attendees.js'));
-
-
+// const validPagination = [
+//     check('page')
+//         .exists({ checkFalsy: false })
+//         .isFloat({ min: 1 })
+//         .withMessage("Page must be greater than or equal to 1"),
+//     check('size')
+//         .exists({ checkFalsy: true })
+//         .isFloat({ min: 1 })
+//         .withMessage("Size must be greater than or equal to 1"),
+//     check('name')
+//         .exists({ checkFalsy: true })
+//         .isString()
+//         .withMessage("Name must be a string"),
+//     check('type')
+//         .custom(value => {
+//             if (value) {
+//                 check('type')
+//                 .isIn(["Online", "In Person"])
+//                 .withMessage("Type must be 'Online' or 'In Person'")
+//             } else return true
+//         }),
+//     check('startDate')
+//         .custom(value => {
+//             if (!value) return true;
+//             if (value) return false
+//         })
+//         .isDate()
+//         .withMessage("Start date must be a valid datetime"),
+//     handleValidationErrors
+//   ];
 
 
 // need to add either my own errors or figure outhowto properly use
@@ -25,22 +51,21 @@ const router = express.Router();
 // ===>>> Get all Events <<<===
 router.get('/', async (req, res, next) => {
 
+    let { page, size, name, type, startDate } = req.query;
 
-    // let { page, size, name, type, startDate } = req.query;
+    let pagination = {};
 
-    // let pagination = {};
+    page = parseInt(page);
+    size = parseInt(size);
 
-    // page = parseInt(page);
-    // size = parseInt(size);
+    if(!page || isNaN(page) || size <= 0) page = 1;
+    if(!size || isNaN(size) || size <= 0) size = 20;
 
-    // if(!page || isNaN(page) || size <= 0) page = 1;
-    // if(!size || isNaN(size) || size <= 0) size = 20;
+    if (page > 10) page = 10;
+    if (size > 20) size = 20;
 
-    // if (page > 10) page = 10;
-    // if (size > 20) size = 20;
-
-    // pagination.limit = size;
-    // pagination.offset = size * (page - 1);
+    pagination.limit = size;
+    pagination.offset = size * (page - 1);
 
     // where = {};
 
@@ -77,7 +102,7 @@ router.get('/', async (req, res, next) => {
                 attributes: ['url', 'preview'],
             }
         ],
-        // ...pagination
+        ...pagination
     });
 
     let eventsArray = []
@@ -117,7 +142,7 @@ router.get('/', async (req, res, next) => {
         };
         eventsArray.push(result)
     };
-    res.json(eventsArray);
+    res.json({eventsArray, page, size});
 });
 
 
@@ -526,7 +551,6 @@ router.delete('/:eventId/attendance/:userId', requireAuth, async (req, res, next
             model: Event,
             attributes: ['id'],
             through: {
-                // attributes: ['status', 'eventId', 'userId', 'id'],
                 where: {
                     eventId: eventId
                 }
