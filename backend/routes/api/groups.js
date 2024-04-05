@@ -492,7 +492,7 @@ router.get('/:groupId/members', noGroup, async (req, res, next) => {
             }
         };
     };
-
+//
     if (!authorized) {
 
         for (let member of allMembers) {
