@@ -497,7 +497,8 @@ router.get('/:groupId/members', noGroup, async (req, res, next) => {
 
         for (let member of allMembers) {
 
-            if (member.status !== "pending" || member.status !== "organizer") {
+            if (member.status !== "pending" && member.status !== "organizer") {
+                console.log(member.status)
                 const result = {
                     id: member.userId,
                     firstName: member.User.firstName,
