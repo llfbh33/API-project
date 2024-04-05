@@ -6,7 +6,7 @@ const { check } = require('express-validator');
 const { handleValidationErrors, validEventUpdate } = require('../../utils/validation');
 
 const { requireAuth, eventAuthOrganizerOrCoHost, currMemberOrOrganizer } = require('../../utils/auth');
-const { noEvent, noVenueBody, noUserBody } = require('../../utils/errors')
+const { dateAdjust, noEvent, noVenueBody, noUserBody } = require('../../utils/errors')
 
 const { Event, Group, EventImage, Venue, Attendance, Membership, User } = require('../../db/models');
 
@@ -14,13 +14,19 @@ const router = express.Router();
 
 const validPagination = [
     check('page')
-        .exists({ checkFalsy: false })
-        .isFloat({ min: 1 })
-        .withMessage("Page must be greater than or equal to 1"),
+        .custom(value => {
+            if (!value) return true;
+            if(value < 1) {
+                throw new Error("Page must be greater than or equal to 1")
+            } else return true
+        }),
     check('size')
-        .exists({ checkFalsy: true })
-        .isFloat({ min: 1 })
-        .withMessage("Size must be greater than or equal to 1"),
+        .custom(value => {
+            if (!value) return true;
+            if(value < 1) {
+                throw new Error("Size must be greater than or equal to 1")
+            } else return true
+        }),
     check('name')
         .custom(value => {
             value = parseInt(value)
@@ -31,31 +37,25 @@ const validPagination = [
         .withMessage("Name must be a string"),
     check('type')
         .custom(value => {
-            if (value) {
-                check('type')
-                .isIn(["Online", "In Person"])
+            if (!value)  return true;
+            console.log(value === "In person")
+            if(value !== "Online" && value !== "In person") {
+                throw new Error("Type must be 'Online' or 'In person'")
             } else return true
-        })
-        .withMessage("Type must be 'Online' or 'In Person'"),
+        }),
     check('startDate')
-        .custom(value => {
-            const given = new Date(value).toDateString();
-            console.log(given)
-            if (value) {
-                check('given')
-                .isDate()
+        .custom((value) => {
+            if (!value) return true // works to test the date outside of the custom function
+            let cat = new Date(value)
+            // console.log(cat)
+            if(isNaN(cat)) {
+                throw new Error("Start date must be a valid datetime")
             } else return true
-        })
-        .withMessage("Start date must be a valid datetime"),
+        }),
     handleValidationErrors
   ];
 
 
-// need to add either my own errors or figure outhowto properly use
-  // the express validators
-// add querry options with pagination : validation errors to specify on the bottom of the readMe
-    // Query Parameters:
-            // startDate: string, optional
 // ===>>> Get all Events <<<===
 router.get('/', validPagination, async (req, res, next) => {
 
@@ -86,9 +86,9 @@ router.get('/', validPagination, async (req, res, next) => {
         where.type = type;
     };
     if (startDate){
-        where.startDate = {
-            [Op.gte]: startDate.subtract(7, 'days').toDate()
-        }
+        where.startDate = startDate
+        //     [Op.gte]: startDate  // can use this to show any startdate events greater than the given date
+        // }
     };
 
 
@@ -127,14 +127,17 @@ router.get('/', validPagination, async (req, res, next) => {
         if (prevImage)  previewImage.previewImage = prevImage.url;
         if(!prevImage) previewImage.previewImage = prevImage;
 
+        const thisStartDate = dateAdjust(event.startDate);
+        const thisEndDate = dateAdjust(event.endDate)
+
         const result = {
             id: event.id,
             groupId: event.Group.id,
             venueId: event.venueId,
             name: event.name,
             type: event.type,
-            startDate: event.startDate,
-            endDate: event.endDate,
+            startDate: thisStartDate,
+            endDate: thisEndDate,
             numAttending: sum,
             ...previewImage,
             Group: event.Group,
@@ -142,7 +145,7 @@ router.get('/', validPagination, async (req, res, next) => {
         };
         eventsArray.push(result)
     };
-    res.json({Events: eventsArray, page, size});
+    res.json({Events: eventsArray});
 });
 
 
@@ -173,7 +176,10 @@ router.get('/:eventId', async (req, res, next) => {
 
     const thisVenue = await Venue.findByPk(thisEvent.venueId, {
         attributes: ["id", "address", "city", "state", "lat", "lng"]
-    })
+    });
+
+    const thisStartDate = dateAdjust(thisEvent.startDate);
+    const thisEndDate = dateAdjust(thisEvent.endDate)
 
     const eventDetails = {
         id: thisEvent.id,
@@ -184,8 +190,8 @@ router.get('/:eventId', async (req, res, next) => {
         type: thisEvent.type,
         capacity: thisEvent.capacity,
         price: thisEvent.price,
-        startDate: thisEvent.startDate,
-        endDate: thisEvent.endDate,
+        startDate: thisStartDate,
+        endDate: thisEndDate,
         numAttending: totalAttending || 0,
         Group: thisEvent.Group,
         Venue: thisVenue,

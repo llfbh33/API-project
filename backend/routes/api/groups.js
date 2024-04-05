@@ -7,7 +7,7 @@ const { check } = require('express-validator');
 const { handleValidationErrors, validGroupCreation, validVenueCreation, validEventCreation } = require('../../utils/validation');
 
 const { currMemberOrOrganizer, authOrganizerOrCoHost, authenticateOrganizer, requireAuth } = require('../../utils/auth');
-const { noGroup, noVenue, noUser, noVenueBody, noUserBody } = require('../../utils/errors');
+const { dateAdjust, noGroup, noVenue, noUser, noVenueBody, noUserBody } = require('../../utils/errors');
 
 const { GroupImage, Membership, Venue, Group, User, Event, EventImage, Attendance } = require('../../db/models');
 const group = require('../../db/models/group');
@@ -39,6 +39,9 @@ router.get('/', async (req, res, next) => {
 
         if (image) prev = image.url;
 
+        const thisCreatedAt = dateAdjust(group.createdAt);
+        const thisUpdatedAt = dateAdjust(group.updatedAt);
+
         const result = {
             id: group.id,
             organizerId: group.organizerId,
@@ -48,8 +51,8 @@ router.get('/', async (req, res, next) => {
             private: group.private,
             city: group.city,
             state: group.state,
-            createdAt: group.createdAt,
-            updatedAt: group.updatedAt,
+            createdAt: thisCreatedAt,
+            updatedAt: thisUpdatedAt,
             numMembers: sum,
             previewImage: prev || null
         };
@@ -93,6 +96,9 @@ router.get('/current', requireAuth, async (req, res, next) => {
 
         if (image) prev = image.url;
 
+        const thisCreatedAt = dateAdjust(group.createdAt);
+        const thisUpdatedAt = dateAdjust(group.updatedAt);
+
         const result = {
             id: group.id,
             organizerId: group.organizerId,
@@ -102,8 +108,8 @@ router.get('/current', requireAuth, async (req, res, next) => {
             private: group.private,
             city: group.city,
             state: group.state,
-            createdAt: group.createdAt,
-            updatedAt: group.updatedAt,
+            createdAt: thisCreatedAt,
+            updatedAt: thisUpdatedAt,
             numMembers: sum,
             previewImage: prev || null
         };
@@ -141,6 +147,9 @@ router.get('/:groupId', noGroup, async (req, res, next) => {
         }
     });
 
+    const thisCreatedAt = dateAdjust(thisGroup.createdAt);
+    const thisUpdatedAt = dateAdjust(thisGroup.updatedAt);
+
     const completeGroup = {
         id: thisGroup.id,
         organizerId: thisGroup.organizerId,
@@ -150,8 +159,8 @@ router.get('/:groupId', noGroup, async (req, res, next) => {
         private: thisGroup.private,
         city: thisGroup.city,
         state: thisGroup.state,
-        createdAt: thisGroup.createdAt,
-        updatedAt: thisGroup.updatedAt,
+        createdAt: thisCreatedAt,
+        updatedAt: thisUpdatedAt,
         numMembers: totalMembers || 0,
         GroupImages: thisGroup.GroupImages,
         Organizer: thisGroup.User,
@@ -183,7 +192,23 @@ router.post('/', requireAuth, validGroupCreation, async (req, res, next) => {
         status: "organizer"
     });
 
-    res.json(newGroup);
+    const thisCreatedAt = dateAdjust(newGroup.createdAt);
+    const thisUpdatedAt = dateAdjust(newGroup.updatedAt);
+
+    const completeGroup = {
+        id: newGroup.id,
+        organizerId: newGroup.organizerId,
+        name: newGroup.name,
+        about: newGroup.about,
+        type: newGroup.type,
+        private: newGroup.private,
+        city: newGroup.city,
+        state: newGroup.state,
+        createdAt: thisCreatedAt,
+        updatedAt: thisUpdatedAt,
+    };
+
+    res.json(completeGroup);
 });
 
 
@@ -233,7 +258,23 @@ router.put('/:groupId', requireAuth, noGroup, authenticateOrganizer, validGroupC
      await foundGroup.validate();
      await foundGroup.save();
 
-    res.json(foundGroup);
+     const thisCreatedAt = dateAdjust(foundGroup.createdAt);
+     const thisUpdatedAt = dateAdjust(foundGroup.updatedAt);
+
+     const completeGroup = {
+         id: foundGroup.id,
+         organizerId: foundGroup.organizerId,
+         name: foundGroup.name,
+         about: foundGroup.about,
+         type: foundGroup.type,
+         private: foundGroup.private,
+         city: foundGroup.city,
+         state: foundGroup.state,
+         createdAt: thisCreatedAt,
+         updatedAt: thisUpdatedAt,
+     };
+
+    res.json(completeGroup);
 });
 
 
@@ -342,14 +383,17 @@ router.get('/:groupId/events', noGroup, async (req, res, next) => {
         if (prevImage)  previewImage.previewImage = prevImage.url;
         if(!prevImage) previewImage.previewImage = prevImage;
 
+        const thisStartDate = dateAdjust(oneEvent.startDate);
+        const thisEndDate = dateAdjust(oneEvent.endDate)
+
         const singleEvent = {
             id: oneEvent.id,
             groupId: oneEvent.groupId,
             venueId: oneEvent.venueId,
             name: oneEvent.name,
             type: oneEvent.type,
-            startDate: oneEvent.startDate,
-            endDate: oneEvent.endDate,
+            startDate: thisStartDate,
+            endDate: thisEndDate,
             numAttending: sum,
             ...previewImage,
             Group: thisGroup,
@@ -379,6 +423,9 @@ router.post('/:groupId/events', requireAuth, noGroup, authOrganizerOrCoHost, noV
         endDate: endDate,
     });
 
+    const thisStartDate = dateAdjust(newEvent.startDate);
+    const thisEndDate = dateAdjust(newEvent.endDate)
+
     const safeEvent = {
         id: newEvent.id,
         groupId: newEvent.groupId,
@@ -388,8 +435,8 @@ router.post('/:groupId/events', requireAuth, noGroup, authOrganizerOrCoHost, noV
         capacity: newEvent.capacity,
         price: newEvent.price,
         description: newEvent.description,
-        startDate: newEvent.startDate,
-        endDate: newEvent.endDate,
+        startDate: thisStartDate,
+        endDate: thisEndDate,
     };
     res.json(safeEvent);
 });
@@ -421,7 +468,7 @@ router.get('/:groupId/members', noGroup, async (req, res, next) => {
     const returnMembers = [];
 
 
-    const allMembers = await Membership.findAll({ 
+    const allMembers = await Membership.findAll({
         where: {
             groupId: groupId
         },

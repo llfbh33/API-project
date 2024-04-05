@@ -77,4 +77,12 @@ const noEvent = async (req, res, next) => {
 }
 
 
-module.exports = { noGroup, noUser, noVenue, noVenueBody, noUserBody, noEvent };
+const dateAdjust = (date) => {
+    let thisDate = date.toISOString()
+    let array = thisDate.split('T');
+    let remove = array[1].slice(0,8);
+    let result = array[0] + " " + remove;
+    return result;
+}
+
+module.exports = { dateAdjust, noGroup, noUser, noVenue, noVenueBody, noUserBody, noEvent };
