@@ -53,7 +53,7 @@ router.get('/', async (req, res, next) => {
             state: group.state,
             createdAt: thisCreatedAt,
             updatedAt: thisUpdatedAt,
-            numMembers: sum,
+            numMembers: sum - 1,
             previewImage: prev || null
         };
         groupsArray.push(result)
@@ -110,7 +110,7 @@ router.get('/current', requireAuth, async (req, res, next) => {
             state: group.state,
             createdAt: thisCreatedAt,
             updatedAt: thisUpdatedAt,
-            numMembers: sum,
+            numMembers: sum - 1,
             previewImage: prev || null
         };
         groupsArray.push(result)
@@ -161,7 +161,7 @@ router.get('/:groupId', noGroup, async (req, res, next) => {
         state: thisGroup.state,
         createdAt: thisCreatedAt,
         updatedAt: thisUpdatedAt,
-        numMembers: totalMembers || 0,
+        numMembers: totalMembers - 1 || 0,
         GroupImages: thisGroup.GroupImages,
         Organizer: thisGroup.User,
         Venues: thisGroup.Venues
@@ -250,7 +250,7 @@ router.put('/:groupId', requireAuth, noGroup, authenticateOrganizer, validGroupC
         name: name || foundGroup.name,
         about: about || foundGroup.about,
         type: type || foundGroup.type,
-        private: private || foundGroup.private,
+        private: private,               // can not say and or because false will come out to true
         city: city || foundGroup.city,
         state: state || foundGroup.state
      });
@@ -479,15 +479,17 @@ router.get('/:groupId/members', noGroup, async (req, res, next) => {
 
         for (let member of allMembers) {
 
-            const result = {
-                id: member.userId,
-                firstName: member.User.firstName,
-                lastName: member.User.lastName,
-                Membership: {
-                    status: member.status
+            if (member.status !== "organizer") {
+                const result = {
+                    id: member.userId,
+                    firstName: member.User.firstName,
+                    lastName: member.User.lastName,
+                    Membership: {
+                        status: member.status
+                    }
                 }
+                returnMembers.push(result);
             }
-            returnMembers.push(result);
         };
     };
 
@@ -495,7 +497,7 @@ router.get('/:groupId/members', noGroup, async (req, res, next) => {
 
         for (let member of allMembers) {
 
-            if (member.status !== "pending") {
+            if (member.status !== "pending" || member.status !== "organizer") {
                 const result = {
                     id: member.userId,
                     firstName: member.User.firstName,

@@ -145,7 +145,7 @@ router.get('/', validPagination, async (req, res, next) => {
         };
         eventsArray.push(result)
     };
-    res.json({Events: eventsArray});
+    res.json({Events: eventsArray, page, size});
 });
 
 
