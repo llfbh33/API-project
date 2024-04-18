@@ -6,13 +6,16 @@ import { Outlet, createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Navigation from './components/Navigation/Navigation-bonus';
 import * as sessionActions from './store/session';
 import { Modal } from './context/Modal';
+import groupsReducer from './store/groups';
 
 function Layout() {
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    dispatch(sessionActions.restoreUser()).then(() => {
+    dispatch(sessionActions.restoreUser())
+    .then(dispatch(groupsReducer()))
+    .then(() => {
       setIsLoaded(true)
     });
   }, [dispatch]);
@@ -47,7 +50,13 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+
+
+  return (
+  <>
+    <RouterProvider router={router} />
+  </>
+  )
 }
 
 export default App;
