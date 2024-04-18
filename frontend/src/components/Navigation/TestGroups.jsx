@@ -17,7 +17,15 @@ function TestGroups() {
 
     return (
         <>
-            <h1>{`${groupList[1]}`}</h1>
+            <h1>All Groups</h1>
+            {groupList.map(group => {
+                <dev className='group-card'>
+                    <h3>{`${group.name}`}</h3>
+                    <p>{`${group.city}, ${group.state}`}</p>
+                    {/* <img src={group.previewImage ? `${group.previewImage}` : ''} /> */}
+                    <p>{`${group.about}`}</p>
+                </dev>
+            })}
         </>
     )
 }
