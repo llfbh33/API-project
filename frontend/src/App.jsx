@@ -8,6 +8,7 @@ import Navigation from './components/Navigation/Navigation-bonus';
 import * as sessionActions from './store/session';
 import { Modal } from './context/Modal';
 import { TbDog } from "react-icons/tb";
+import TestGroups from './components/Navigation/TestGroups'
 
 
 function Layout() {
@@ -36,6 +37,7 @@ const router = createBrowserRouter([
     element:
       <>
         <Layout />
+        <TestGroups />
         {/* <Outlet />     // doubles all elements in the */}
       </>,
     children: [
