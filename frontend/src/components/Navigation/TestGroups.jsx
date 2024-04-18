@@ -1,14 +1,25 @@
-// import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getGroups } from "../../store/group";
 
 
 function TestGroups() {
-    // const GroupList = useSelector(state => state)
+    const dispatch = useDispatch();
+    const groupList = useSelector(state => state.groups)
 
-    // console.log(GroupList)
+
+
+    useEffect(() => {
+        dispatch(getGroups())
+
+    })
+
+    console.log('grouplist ', groupList)  // empty group list
+
 
     return (
         <>
-            <h1>does this display?</h1>
+            <h1>{`${groupList}`}</h1>
         </>
     )
 }
