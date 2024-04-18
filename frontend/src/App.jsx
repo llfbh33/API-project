@@ -7,8 +7,8 @@ import { Outlet, createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Navigation from './components/Navigation/Navigation-bonus';
 import * as sessionActions from './store/session';
 import { Modal } from './context/Modal';
-import { TbDog } from "react-icons/tb";
-import TestGroups from './components/Navigation/TestGroups'
+// import { TbDog } from "react-icons/tb";   <TbDog />
+// import TestGroups from './components/Navigation/TestGroups'
 
 
 function Layout() {
@@ -24,7 +24,7 @@ function Layout() {
 
   return (
     <>
-      <button onClick={() => navigation('/')}>Meet Dogs <TbDog /></button>
+      <button onClick={() => navigation('/')}>Meet Dogs</button>
       <Modal/>
       <Navigation isLoaded={isLoaded} />
       {isLoaded && <Outlet />}
@@ -37,7 +37,7 @@ const router = createBrowserRouter([
     element:
       <>
         <Layout />
-        <TestGroups />
+        {/* <TestGroups /> */}
         {/* <Outlet />     // doubles all elements in the */}
       </>,
     children: [

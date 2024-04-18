@@ -1,11 +1,11 @@
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 import sessionReducer from './session';
-import groupsReducer from './group';
+// import groupsReducer from './group';
 
 const rootReducer = combineReducers({
   session: sessionReducer,
-  groups: groupsReducer
+  // groups: groupsReducer
 });
 
 let enhancer;
