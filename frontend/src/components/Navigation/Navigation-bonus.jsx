@@ -11,6 +11,9 @@ function Navigation({ isLoaded }) {
       <li>
         <NavLink to="/">Home</NavLink>
       </li>
+      <li>
+        <NavLink to="/groups">All Groups</NavLink>
+      </li>
       {isLoaded && (
         <li>
           <ProfileButton user={sessionUser} />

@@ -20,7 +20,7 @@ function Navigation({ isLoaded }) {
       <>
         <li>
           <OpenModalButton
-            buttonText="Log In"
+            buttonText="Log In and beyond"
             modalComponent={<LoginFormModal />}
           />
           {/* <NavLink to="/login">Log In</NavLink> */}

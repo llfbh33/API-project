@@ -52,3 +52,17 @@ const groupsReducer = (state = [], action) => {
 }
 
 export default groupsReducer;
+
+
+// this works with a statw of an empty array, but i am unable to pull the
+// information out of the received array
+
+/*
+        {
+            const allGroups = [];
+            action.list.forEach(group => {
+                allGroups.push(group)
+            })
+            return allGroups;
+        }
+        */

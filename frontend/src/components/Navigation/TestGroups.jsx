@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getGroups } from "../../store/group";
+// import { getGroups } from "../../store/group";
 
 
 function TestGroups() {
@@ -8,9 +8,9 @@ function TestGroups() {
     const groupList = useSelector(state => state.groups)
 
 
-    useEffect(() => {
-        dispatch(getGroups())
-    }, [dispatch])
+    // useEffect(() => {
+    //     dispatch(getGroups())
+    // }, [dispatch])
 
 
     // list comes through but does not want to display at all

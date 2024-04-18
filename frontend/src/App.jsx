@@ -9,17 +9,23 @@ import * as sessionActions from './store/session';
 import { Modal } from './context/Modal';
 // import { TbDog } from "react-icons/tb";   <TbDog />
 import TestGroups from './components/Navigation/TestGroups'
+import * as groupActions from './store/group';
 
 
 function Layout() {
   const navigation = useNavigate();
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
+  const [groupsLoaded, setGroupsLoaded] = useState(false);
 
   useEffect(() => {
     dispatch(sessionActions.restoreUser())
     .then(() => {
       setIsLoaded(true)
+    });
+    dispatch(groupActions.getGroups())
+    .then(() => {
+      setGroupsLoaded(true)
     });
   }, [dispatch]);
 
@@ -28,7 +34,7 @@ function Layout() {
       <button onClick={() => navigation('/')}>Meet Dogs</button>
       <Modal/>
       <Navigation isLoaded={isLoaded} />
-      {isLoaded && <Outlet />}
+      {isLoaded && groupsLoaded && <Outlet />}
     </>
   );
 }
@@ -38,7 +44,7 @@ const router = createBrowserRouter([
     element:
       <>
         <Layout />
-        <TestGroups />
+        {/* <TestGroups /> */}
         {/* <Outlet />     // doubles all elements in the */}
       </>,
     children: [
@@ -46,6 +52,10 @@ const router = createBrowserRouter([
         path: '/',
         element: <h1>Get All Groups.  Home Page.</h1>
       },
+      {
+        path: '/groups',
+        element: <TestGroups groupsLoaded={groupsLoaded}/>
+      }
       // {
       //   path: 'login',
       //   element: <LoginFormPage />
