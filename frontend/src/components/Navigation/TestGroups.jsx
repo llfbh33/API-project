@@ -12,7 +12,9 @@ function TestGroups() {
         dispatch(getGroups())
     }, [dispatch])
 
-    console.log('grouplist ', groupList)  // empty group list
+
+    // list comes through but does not want to display at all
+    console.log('grouplist ', groupList)
 
 
     return (

@@ -11,14 +11,26 @@ const load = list => ({
 })
 
 
-//create a thunk to grab all groups
+//thunk to grab all groups
 export const getGroups = () => async dispatch => {
     const response = await csrfFetch("/api/groups");
 
     if (response.ok) {
         const list = await response.json();
         dispatch(load(list.Groups))
-        return list
+        return list;
+    }
+}
+
+// thunk to grab all groups joinged or organized by current user
+// should only be able to access this thunk from the users page
+export const getCurrUserGroups = () => async dispatch => {
+    const response = await csrfFetch("api/groups/current");
+
+    if (response.ok) {
+        const theirGroups = await response.json();
+        dispatch(load(theirGroups.Groups))
+        return theirGroups;
     }
 }
 
