@@ -38,14 +38,14 @@ function ProfileButton({ user }) {
       <button onClick={toggleMenu}>
         <i className="fas fa-user-circle" />
       </button>
-      <nav className={ulClassName} ref={ulRef}>
-        <dev>{user.username}</dev>
-        <dev>{user.firstName} {user.lastName}</dev>
-        <dev>{user.email}</dev>
-        <dev>
+      <ul className={ulClassName} ref={ulRef}>
+        <li>User Name: {user.username}</li>
+        <li>First Name: {user.firstName} {user.lastName}</li>
+        <li>Email: {user.email}</li>
+        <li>
           <button onClick={logout}>Log Out</button>
-        </dev>
-      </nav>
+        </li>
+      </ul>
     </>
   );
 }
