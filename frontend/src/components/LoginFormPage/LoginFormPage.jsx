@@ -29,7 +29,7 @@ function LoginFormPage() {
       <h1>Log In</h1>
       <form onSubmit={handleSubmit}>
         <label>
-          Username or Email or other
+          Username or Email
           <input
             type="text"
             value={credential}

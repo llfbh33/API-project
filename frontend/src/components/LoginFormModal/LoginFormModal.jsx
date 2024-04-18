@@ -29,7 +29,7 @@ function LoginFormModal() {
       <h1>Log In</h1>
       <form onSubmit={handleSubmit}>
         <label>
-          Username or Email
+          Username or Email or other
           <input
             type="text"
             value={credential}
