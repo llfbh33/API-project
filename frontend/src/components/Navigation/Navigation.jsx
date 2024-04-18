@@ -36,10 +36,16 @@ function Navigation({ isLoaded }) {
   return (
     <nav>
       <div>
-        <NavLink to="/">Home</NavLink>
+        <NavLink to="/">Home or So</NavLink>
       </div>
       <div>
         <NavLink to="/current">all by curr user</NavLink>
+      </div>
+      <div>
+        <NavLink to="/">Home or So</NavLink>
+      </div>
+      <div>
+        <NavLink to="/">Home or So</NavLink>
       </div>
       {isLoaded && sessionLinks}
     </nav>
