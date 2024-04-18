@@ -34,12 +34,15 @@ function Navigation({ isLoaded }) {
     );
 
   return (
-    <ul>
-      <li>
+    <nav>
+      <div>
         <NavLink to="/">Home</NavLink>
-      </li>
+      </div>
+      <div>
+        <NavLink to="/current">all by curr user</NavLink>
+      </div>
       {isLoaded && sessionLinks}
-    </ul>
+    </nav>
   );
 }
 
