@@ -38,7 +38,6 @@ const validPagination = [
     check('type')
         .custom(value => {
             if (!value)  return true;
-            console.log(value === "In person")
             if(value !== "Online" && value !== "In person") {
                 throw new Error("Type must be 'Online' or 'In person'")
             } else return true
@@ -47,7 +46,6 @@ const validPagination = [
         .custom((value) => {
             if (!value) return true // works to test the date outside of the custom function
             let cat = new Date(value)
-            // console.log(cat)
             if(isNaN(cat)) {
                 throw new Error("Start date must be a valid datetime")
             } else return true
