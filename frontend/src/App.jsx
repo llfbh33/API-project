@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Outlet, createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -6,8 +7,11 @@ import { Outlet, createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Navigation from './components/Navigation/Navigation-bonus';
 import * as sessionActions from './store/session';
 import { Modal } from './context/Modal';
+import { TbDog } from "react-icons/tb";
+
 
 function Layout() {
+  const navigation = useNavigate();
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -19,6 +23,7 @@ function Layout() {
 
   return (
     <>
+      <button onClick={() => navigation('/')}>Meet Dogs <TbDog /></button>
       <Modal/>
       <Navigation isLoaded={isLoaded} />
       {isLoaded && <Outlet />}
@@ -28,11 +33,15 @@ function Layout() {
 
 const router = createBrowserRouter([
   {
-    element: <Layout />,
+    element:
+      <>
+        <Layout />
+        <Outlet />
+      </>,
     children: [
       {
         path: '/',
-        element: <h1>Welcome!</h1>
+        element: <h1>Get All Groups.  Home Page.</h1>
       },
       // {
       //   path: 'login',
@@ -42,12 +51,30 @@ const router = createBrowserRouter([
       //   path: 'signup',
       //   element: <SignupFormPage />
       // }
+      {
+        path: '/current',
+        element:
+        <>
+          <h1>Get all Groups joined or organized by the Current User</h1>
+          {/* <Outlet /> */}
+        </>,
+        // children: [
+        //   {
+        //     path: '/:groupId/events',
+        //     element: <h1>Get all Events of a Group specified by its id</h1>
+        //   }
+        // ]
+      }
     ]
   }
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+  <>
+    <RouterProvider router={router} />
+  </>
+  )
 }
 
 export default App;
