@@ -13,11 +13,12 @@ const load = list => ({
 
 //create a thunk to grab all groups
 export const getGroups = () => async dispatch => {
-    const response = await csrfFetch("/api");
+    const response = await csrfFetch("/api/groups");
 
     if (response.ok) {
         const list = await response.json();
-        dispatch(load(list))
+        dispatch(load(list.Groups))
+        return list
     }
 }
 
@@ -26,13 +27,7 @@ export const getGroups = () => async dispatch => {
 const groupsReducer = (state = [], action) => {
     switch (action.type) {
         case LOAD:
-        {
-            const allGroups = [];
-            action.list.Groups.forEach(group => {
-                allGroups.push(group)
-            })
-            return allGroups;
-        }
+            return [...action.list]
         default:
             return state;
     }
