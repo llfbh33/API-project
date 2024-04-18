@@ -17,7 +17,7 @@ function TestGroups() {
 
     return (
         <>
-            <h1>{`${groupList[1].name}`}</h1>
+            <h1>{`${groupList[1]}`}</h1>
         </>
     )
 }
