@@ -11,15 +11,14 @@ function TestGroups() {
 
     useEffect(() => {
         dispatch(getGroups())
-
-    })
+    }, [dispatch])
 
     console.log('grouplist ', groupList)  // empty group list
 
 
     return (
         <>
-            <h1>{` array: ${groupList[1]}`}</h1>
+            <h1>{` array: ${groupList[1].name}`}</h1>
         </>
     )
 }

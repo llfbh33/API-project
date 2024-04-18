@@ -42,7 +42,7 @@ const router = createBrowserRouter([
       </>,
     children: [
       {
-        path: '/',
+        path: '/groups',
         element: <h1>Get All Groups.  Home Page.</h1>
       },
       // {
@@ -54,7 +54,7 @@ const router = createBrowserRouter([
       //   element: <SignupFormPage />
       // }
       {
-        path: '/current',
+        path: '/groups/current',
         element:
         <>
           <h1>Get all Groups joined or organized by the Current User</h1>
