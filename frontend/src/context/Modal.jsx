@@ -48,6 +48,7 @@ export function Modal() {
   return ReactDOM.createPortal(
     <div id="modal" style={{color: 'green'}}>
       <div id="modal-background" style={{color: 'red'}} onClick={closeModal} />
+  {/* can add a class here to include css styling on the login and signup */}
       <div id="modal-content" style={{color: 'blue'}}>
         {modalContent}
       </div>

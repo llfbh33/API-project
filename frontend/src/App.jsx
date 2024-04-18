@@ -36,7 +36,7 @@ const router = createBrowserRouter([
     element:
       <>
         <Layout />
-        {/* <Outlet />     // doubles all elements in the*/}
+        {/* <Outlet />     // doubles all elements in the */}
       </>,
     children: [
       {
