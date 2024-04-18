@@ -8,7 +8,6 @@ function TestGroups() {
     const groupList = useSelector(state => state.groups)
 
 
-
     useEffect(() => {
         dispatch(getGroups())
     }, [dispatch])
@@ -18,7 +17,7 @@ function TestGroups() {
 
     return (
         <>
-            <h1>{` array: ${groupList[1].name}`}</h1>
+            <h1>{`${groupList[1].name}`}</h1>
         </>
     )
 }
