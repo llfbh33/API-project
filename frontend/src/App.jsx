@@ -32,6 +32,8 @@ function Layout() {
   return (
     <>
       <button onClick={() => navigation('/')}>Meet Dogs</button>
+      <button onClick={() => navigation('/groups')}>get all groups</button>
+      <button onClick={() => navigation('/current')}>Groups by the current useer</button>
       <Modal/>
       <Navigation isLoaded={isLoaded} />
       {isLoaded && groupsLoaded && <Outlet />}
@@ -54,8 +56,8 @@ const router = createBrowserRouter([
       },
       {
         path: '/groups',
-        element: <TestGroups groupsLoaded={groupsLoaded}/>
-      }
+        element: <TestGroups />
+      },
       // {
       //   path: 'login',
       //   element: <LoginFormPage />

@@ -1,10 +1,10 @@
 // import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 // import { getGroups } from "../../store/group";
 
 
 function TestGroups() {
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const groupList = useSelector(state => state.groups)
 
 
