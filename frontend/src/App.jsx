@@ -7,7 +7,6 @@ import { Outlet, createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Navigation from './components/Navigation/Navigation-bonus';
 import * as sessionActions from './store/session';
 import { Modal } from './context/Modal';
-import { getGroups } from './store/group';
 // import { TbDog } from "react-icons/tb";   <TbDog />
 // import TestGroups from './components/Navigation/TestGroups'
 
@@ -19,7 +18,6 @@ function Layout() {
 
   useEffect(() => {
     dispatch(sessionActions.restoreUser())
-    .then(() => dispatch(getGroups()))
     .then(() => {
       setIsLoaded(true)
     });
