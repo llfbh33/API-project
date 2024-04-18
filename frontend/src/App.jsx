@@ -36,7 +36,7 @@ const router = createBrowserRouter([
     element:
       <>
         <Layout />
-        <Outlet />
+        {/* <Outlet /> */}
       </>,
     children: [
       {
