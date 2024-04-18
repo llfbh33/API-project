@@ -7,19 +7,28 @@ function Navigation({ isLoaded }) {
   const sessionUser = useSelector(state => state.session.user);
 
   return (
-    <ul>
-      <li>
+    <nav>
+      <dev>
         <NavLink to="/">Home</NavLink>
-      </li>
-      <li>
+      </dev>
+      <dev>
         <NavLink to="/groups">All Groups</NavLink>
-      </li>
+      </dev>
+      <dev>
+        <NavLink to="/groups">All Groups</NavLink>
+      </dev>
+      <dev>
+        <NavLink to="/groups">All Groups</NavLink>
+      </dev>
+      <dev>
+        <NavLink to="/groups">All Groups</NavLink>
+      </dev>
       {isLoaded && (
-        <li>
+        <dev>
           <ProfileButton user={sessionUser} />
-        </li>
+        </dev>
       )}
-    </ul>
+    </nav>
   );
 }
 

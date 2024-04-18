@@ -52,7 +52,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <h1>Get All Groups.  Home Page.</h1>
+        element: <h1>Home Page.</h1>
       },
       {
         path: '/groups',

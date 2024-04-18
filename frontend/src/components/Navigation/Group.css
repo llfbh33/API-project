@@ -1,0 +1,15 @@
+.group-location {
+    display: flex;
+    flex-wrap: wrap;
+    width: 80%;
+    margin: auto;
+    /* border: 2px solid black; */
+}
+
+.group-card {
+    color: magenta;
+    margin: 6px;
+    background-color: rgb(190, 212, 190);
+    width: 24%;
+    height: 300px
+}

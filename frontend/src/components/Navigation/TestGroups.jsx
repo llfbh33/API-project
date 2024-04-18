@@ -1,6 +1,7 @@
 // import { useEffect } from "react";
 import { useSelector } from "react-redux";
 // import { getGroups } from "../../store/group";
+import './Group.css'
 
 
 function TestGroups() {
@@ -14,20 +15,27 @@ function TestGroups() {
 
 
     // list comes through but does not want to display at all
-    console.log('grouplist ', groupList)
+    console.log('grouplist ', groupList[1].name)
 
 
     return (
         <>
             <h1>All Groups</h1>
+            <h2>{`${groupList[1].name}`}</h2>
+            <dev className='group-location'>
             {groupList.map(group => {
-                <dev className='group-card'>
-                    <h3>{`${group.name}`}</h3>
-                    <p>{`${group.city}, ${group.state}`}</p>
-                    {/* <img src={group.previewImage ? `${group.previewImage}` : ''} /> */}
-                    <p>{`${group.about}`}</p>
+            return (
+                <dev key={group.id} className='group-card'>
+                    <dev >
+                        <p>{`${group.name}`}</p>
+                        <p>{`${group.about}`}</p>
+                        <p>{`${group.type}`}</p>
+                        <p>{`${group.city}, ${group.state}`}</p>
+                    </dev>
                 </dev>
+                )
             })}
+            </dev>
         </>
     )
 }
