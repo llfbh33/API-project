@@ -26,13 +26,8 @@ export const getGroups = () => async dispatch => {
 
 const groupsReducer = (state = {}, action) => {
     switch (action.type) {
-        case LOAD: {
-            const allGroups = {};
-            action.list.forEach(group => {
-                allGroups[group.id] = group;
-            });
-            return allGroups;
-        }
+        case LOAD:
+            return {...action.list}
         default:
             return state;
     }
