@@ -41,7 +41,7 @@ router.post('/', validateSignup, async (req, res, next) => {
     const hashedPassword = bcrypt.hashSync(password, 12);
 
     const allUsers = await User.findAll();
-
+    
     for (let thisUser of allUsers) {
       if (thisUser.email === email) {
         const err = new Error("User already exists");
