@@ -1,34 +1,41 @@
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import ProfileButton from './ProfileButton-bonus';
+
 import './Navigation.css';
+import ProfileButton from './ProfileButton-bonus';
+
+import { TbDog } from "react-icons/tb";
 
 function Navigation({ isLoaded }) {
   const sessionUser = useSelector(state => state.session.user);
 
   return (
-    <nav>
-      <dev>
-        <NavLink to="/">Home</NavLink>
-      </dev>
-      <dev>
-        <NavLink to="/groups">All Groups</NavLink>
-      </dev>
-      <dev>
-        <NavLink to="/groups">All Groups</NavLink>
-      </dev>
-      <dev>
-        <NavLink to="/groups">All Groups</NavLink>
-      </dev>
-      <dev>
-        <NavLink to="/groups">All Groups</NavLink>
-      </dev>
-      {isLoaded && (
-        <dev>
-          <ProfileButton user={sessionUser} />
-        </dev>
-      )}
-    </nav>
+    <div className='header'>
+      <nav>
+        <div>
+          <div>
+            <NavLink to="/">Meet Dogs <TbDog /></NavLink>
+          </div>
+          <div>
+            {/* <NavLink to="/groups">All Groups</NavLink> */}
+          </div>
+          <div>
+            {/* <NavLink to="/groups">All Groups</NavLink> */}
+          </div>
+          <div>
+            {/* <NavLink to="/groups">All Groups</NavLink> */}
+          </div>
+          <div>
+            {/* <NavLink to="/groups">All Groups</NavLink> */}
+          </div>
+        </div>
+        {isLoaded && (
+          <div>
+            <ProfileButton user={sessionUser} />
+          </div>
+        )}
+      </nav>
+    </div>
   );
 }
 

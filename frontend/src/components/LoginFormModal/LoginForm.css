@@ -1,0 +1,37 @@
+
+
+.modal{
+    background-color: rgb(1, 7, 41);
+    border-radius: 20px;
+    border: 2px solid rgb(52, 114, 194);
+    color: white;
+    padding: 25px;
+
+}
+
+.modal > form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: center;
+
+}
+
+input {
+    margin-left: 10px;
+}
+
+.modal > form >button {
+    margin: 1px;
+    width: auto;
+    min-width: 100px;
+    height: 25px;
+}
+
+.modal > ul {
+    color: white;
+    /* margin-right: 500px; */
+    position: relative;
+    left: 80px;
+    line-height: 1.5;
+}

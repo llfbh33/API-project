@@ -1,9 +1,9 @@
 /* TODO: Add sitewide styles */
-
-h1 {
-    margin-top: 150px;
+body {
+    background-image: url('https://images.pexels.com/photos/358904/pexels-photo-358904.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+    background-size: 100vw 100vh;
+    background-attachment: fixed;
 }
-
 
 li {
     display: flex;
@@ -13,4 +13,9 @@ li {
 .flex {
     display: flex;
     flex-direction: column;
+}
+
+
+button:hover {
+    cursor: pointer;
 }

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Outlet, createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -7,13 +7,13 @@ import { Outlet, createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Navigation from './components/Navigation/Navigation-bonus';
 import * as sessionActions from './store/session';
 import { Modal } from './context/Modal';
-// import { TbDog } from "react-icons/tb";   <TbDog />
 import TestGroups from './components/Navigation/TestGroups'
 import * as groupActions from './store/group';
+import LandingPage from './components/LandingPage/LandingPage';
 
 
 function Layout() {
-  const navigation = useNavigate();
+  // const navigation = useNavigate();
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
   const [groupsLoaded, setGroupsLoaded] = useState(false);
@@ -31,9 +31,6 @@ function Layout() {
 
   return (
     <>
-      <button onClick={() => navigation('/')}>Meet Dogs</button>
-      <button onClick={() => navigation('/groups')}>get all groups</button>
-      <button onClick={() => navigation('/current')}>Groups by the current useer</button>
       <Modal/>
       <Navigation isLoaded={isLoaded} />
       {isLoaded && groupsLoaded && <Outlet />}
@@ -52,11 +49,15 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <h1>Home Page.</h1>
+        element: <LandingPage />
       },
       {
         path: '/groups',
         element: <TestGroups />
+      },
+      {
+        path: '/groups/:groupId',
+        element: <h1>Info on a specific group based on Id goes here</h1>
       },
       // {
       //   path: 'login',

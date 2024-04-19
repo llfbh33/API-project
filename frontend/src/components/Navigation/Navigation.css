@@ -8,10 +8,94 @@
 
 nav {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  align-items: center;
+  margin: 30px;
+  padding-bottom: 20px;
+  height: 50px;
+  border-bottom: 1px solid rgb(102, 163, 173);
+}
+
+nav a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: rgb(51, 51, 51);
+  background: rgb(252, 252, 219);
+  height: 50px;
+  width: 120px;
+  border: 2px inset greenyellow;
+  border-radius: 5px;
+  font-size: 1.1em;
+  margin: 10px;
+  text-decoration: none;
+
+}
+
+nav a:hover {
+  cursor: pointer;
+}
+
+.active {
+  color: greenyellow;
+  border: 2px inset greenyellow;
+  font-weight: bold;
+  font-size: 1.2em;
+  background: rgb(13, 87, 56);
+  padding: 1px;
+}
+
+li {
+  color: rgb(77, 74, 74);
+}
+
+.fas {
+  width: 80px;
+  height: 50px;
+  font-size: 26px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 
-.group-card {
-  background-color: green;
+/* affects the login and signup clicks add a demo user to this list?
+.login {
+  font-size: 20px;
+  line-height: 1.5;
+  width: 100px;
+  position: relative;
+  right: 50px;
+  color: black;
+  /* background-color: rgb(233, 198, 198); */
+
+
+.login:hover {
+  cursor: pointer;
+}
+
+
+.drop-down {
+  color: white;
+  position: relative;
+  right: 100px;
+  line-height: 1.8;
+  background-color: rgba(10, 20, 75, 0.363);
+  border: 2px solid rgb(52, 114, 194);
+  padding: 15px;
+  width: 150px;
+}
+
+.drop-down > li {
+  color: white;
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.drop-down > li > button {
+  border: none;
+  background-color: rgba(0, 0, 0, 0);
+  color: white;
+  font-size: 16px;
 }

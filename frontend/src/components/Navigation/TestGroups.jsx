@@ -2,30 +2,23 @@
 import { useSelector } from "react-redux";
 // import { getGroups } from "../../store/group";
 import './Group.css'
-
+import { useNavigate } from "react-router-dom";
 
 function TestGroups() {
-    // const dispatch = useDispatch();
+    const navigate = useNavigate();
     const groupList = useSelector(state => state.groups)
 
 
-    // useEffect(() => {
-    //     dispatch(getGroups())
-    // }, [dispatch])
-
-
-    // list comes through but does not want to display at all
     console.log('grouplist ', groupList[1].name)
 
 
     return (
-        <>
-            <h1>All Groups</h1>
-            <h2>{`${groupList[1].name}`}</h2>
-            <dev className='group-location'>
-            {groupList.map(group => {
-            return (
-                <dev key={group.id} className='group-card'>
+        <div className='container'>
+            <h1 className="main-page">All Groups</h1>
+            <dev className='group-container'>
+            {groupList.map(group => (
+
+                <dev key={group.id} className='group-card' onClick={() => navigate(`/groups/${group.id}`)}>
                     <dev >
                         <p>{`${group.name}`}</p>
                         <p>{`${group.about}`}</p>
@@ -33,10 +26,10 @@ function TestGroups() {
                         <p>{`${group.city}, ${group.state}`}</p>
                     </dev>
                 </dev>
-                )
-            })}
+
+            ))}
             </dev>
-        </>
+        </div>
     )
 }
 
