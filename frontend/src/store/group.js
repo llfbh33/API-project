@@ -11,6 +11,7 @@ const load = list => ({
 })
 
 
+
 //thunk to grab all groups
 export const getGroups = () => async dispatch => {
     const response = await csrfFetch("/api/groups");
@@ -21,6 +22,7 @@ export const getGroups = () => async dispatch => {
         return list;
     }
 }
+
 
 // thunk to grab all groups joinged or organized by current user
 // should only be able to access this thunk from the users page
@@ -36,15 +38,15 @@ export const getCurrUserGroups = () => async dispatch => {
 
 
 
-const groupsReducer = (state = [], action) => {
+const groupsReducer = (state = {}, action) => {
     switch (action.type) {
         case LOAD:
         {
-            const allGroups = [...state];
+            const theseGroups = {};
             action.list.forEach(group => {
-                allGroups.push(group)
-            })
-            return allGroups;
+                theseGroups[group.id] = group;
+            });
+            return {...state, ...theseGroups}
         }
         default:
             return state;

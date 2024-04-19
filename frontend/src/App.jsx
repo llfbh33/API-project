@@ -9,6 +9,7 @@ import * as sessionActions from './store/session';
 import { Modal } from './context/Modal';
 import TestGroups from './components/Groups/TestGroups'
 import * as groupActions from './store/group';
+import * as eventActions from './store/events';
 import LandingPage from './components/LandingPage/LandingPage';
 import IndividualGroup from './components/IndividualGroup/IndividualGroup';
 
@@ -25,6 +26,10 @@ function Layout() {
       setIsLoaded(true)
     });
     dispatch(groupActions.getGroups())
+    .then(() => {
+      setGroupsLoaded(true)
+    });
+    dispatch(eventActions.getEvents())
     .then(() => {
       setGroupsLoaded(true)
     });
