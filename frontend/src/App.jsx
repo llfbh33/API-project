@@ -13,6 +13,8 @@ import * as eventActions from './store/events';
 import LandingPage from './components/LandingPage/LandingPage';
 import IndividualGroup from './components/IndividualGroup/IndividualGroup';
 import IndividualEvent from './components/IndividualEvent/IndividualEvent';
+import Events from './components/Events/Events';
+import CreateGroup from './components/CreateGroup/CreateGroup';
 
 function Layout() {
   // const navigation = useNavigate();
@@ -65,6 +67,14 @@ const router = createBrowserRouter([
       {
         path: '/events/:eventId',
         element: <IndividualEvent />
+      },
+      {
+        path: '/events',
+        element: <Events />
+      },
+      {
+        path: '/createGroup',
+        element: <CreateGroup />
       },
       // {
       //   path: 'login',

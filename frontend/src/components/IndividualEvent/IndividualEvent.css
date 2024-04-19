@@ -2,11 +2,13 @@
 
 .individual {
     background-color: rgba(158, 158, 201, 0.596);
-
+    width: 90%;
+    margin: auto;
+    padding: 20px 50px;
 }
 
 .headliner {
-    margin-left: 20%
+    margin-left: 10%
 }
 
 .img-info {
@@ -15,10 +17,37 @@
     gap: 10%;
 }
 
-.event-info {
-
+.clock {
+    display: flex;
+    gap: 20px;
+    align-items: center;
 }
 
+.event-info {
+    border: 1px solid grey;
+    padding: 10px 50px;
+    border-radius: 20px;;
+}
+
+.group-section > img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.group-section {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    border: 1px solid grey;
+    padding: 10px 50px;
+    border-radius: 20px;
+}
+
+.group-section:hover {
+    cursor: pointer;
+    border: 2px solid grey;
+}
 
 /* need to fix the layout so that the title and pic are in one div
 the dates are in another, and they are all in one together*/

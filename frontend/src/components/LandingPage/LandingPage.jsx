@@ -47,7 +47,7 @@ const LandingPage = () => {
                     <h3>disable this link if the user is not logged in</h3>
                     <button
                         disabled={signedIn}
-                        onClick={() => navigate('/groups')}>Start a Group</button>
+                        onClick={() => navigate('/createGroup')}>Start a Group</button>
                 </div>
             </div>
 

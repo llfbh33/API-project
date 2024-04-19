@@ -33,11 +33,25 @@ nav a {
 
 }
 
+.nav-btn {
+  color: rgb(51, 51, 51);
+  background: rgb(252, 252, 219);
+  height: 50px;
+  width: 120px;
+  border: 2px inset greenyellow;
+  border-radius: 5px;
+  font-size: 1.1em;
+  margin: 10px;
+  text-decoration: none;
+}
+
 nav a:hover {
   cursor: pointer;
 }
 
-.active {
+.active,
+.nav-btn:active,
+.nav-btn:focus {
   color: greenyellow;
   border: 2px inset greenyellow;
   font-weight: bold;

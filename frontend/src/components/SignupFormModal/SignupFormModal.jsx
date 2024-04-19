@@ -46,6 +46,7 @@ function SignupFormModal() {
           password
         })
       )
+
         .then(closeModal)
         .catch(async (res) => {
           const data = await res.json();

@@ -8,6 +8,8 @@ import { restoreCSRF, csrfFetch } from './store/csrf';
 import * as sessionActions from './store/session';
 import { ModalProvider} from './context/Modal';
 
+import GroupProvider from './context/GroupContext';
+
 
 const store = configureStore();
 
@@ -31,11 +33,13 @@ if (import.meta.env.MODE !== "production") {
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ModalProvider>
-      <Provider store={store}>
-        <App />
-        {/* <Carrot /> */}
-        {/* <Modal /> */}
-      </Provider>
+      <GroupProvider>
+        <Provider store={store}>
+          <App />
+          {/* <Carrot /> */}
+          {/* <Modal /> */}
+        </Provider>
+      </GroupProvider>
     </ModalProvider>
   </React.StrictMode>
 );
