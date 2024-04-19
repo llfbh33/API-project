@@ -15,20 +15,20 @@ function TestGroups() {
     return (
         <div className='container'>
             <h1 className="main-page">All Groups</h1>
-            <dev className='group-container'>
+            <div className='group-container'>
             {groupList.map(group => (
 
-                <dev key={group.id} className='group-card' onClick={() => navigate(`/groups/${group.id}`)}>
-                    <dev >
+                <div key={group.id} className='group-card' onClick={() => navigate(`/groups/${group.id}`)}>
+                    <div >
                         <p>{`${group.name}`}</p>
                         <p>{`${group.about}`}</p>
                         <p>{`${group.type}`}</p>
                         <p>{`${group.city}, ${group.state}`}</p>
-                    </dev>
-                </dev>
+                    </div>
+                </div>
 
             ))}
-            </dev>
+            </div>
         </div>
     )
 }
