@@ -3,9 +3,10 @@ import { useSelector} from "react-redux";
 // import { getGroups } from "../../store/group";
 import './Group.css'
 import { useNavigate } from "react-router-dom";
+
 // import { useState } from "react";
 // import { useEffect } from "react";
-// import { useDispatch } from "react-redux";
+
 // import * as eventActions from './store/events';
 
 // in order to pull in event we will need to make an event reducer
@@ -13,16 +14,13 @@ import { useNavigate } from "react-router-dom";
 
 function TestGroups() {
     const navigate = useNavigate();
-    // const dispatch = useDispatch();
+
     const groupList = useSelector(state => state.groups);
     const list = Object.values(groupList)
     const eventsList = useSelector(state => state.events)
-    const events = Object.values(eventsList)
+    // const events = Object.values(eventsList)
 
-
-
-    console.log('grouplist ', groupList)
-    console.log('eventlist ', events)
+// onclck create a function which transfer the page and will dispatch the members of the group before navigating
 
     return (
         <div className='container'>

@@ -12,7 +12,7 @@ import * as groupActions from './store/group';
 import * as eventActions from './store/events';
 import LandingPage from './components/LandingPage/LandingPage';
 import IndividualGroup from './components/IndividualGroup/IndividualGroup';
-
+import IndividualEvent from './components/IndividualEvent/IndividualEvent';
 
 function Layout() {
   // const navigation = useNavigate();
@@ -30,9 +30,6 @@ function Layout() {
       setGroupsLoaded(true)
     });
     dispatch(eventActions.getEvents())
-    .then(() => {
-      setGroupsLoaded(true)
-    });
   }, [dispatch]);
 
   return (
@@ -65,6 +62,10 @@ const router = createBrowserRouter([
         path: '/groups/:groupId',
         element: <IndividualGroup />
       },
+      {
+        path: '/events/:eventId',
+        element: <IndividualEvent />
+      },
       // {
       //   path: 'login',
       //   element: <LoginFormPage />
@@ -86,6 +87,10 @@ const router = createBrowserRouter([
         //     element: <h1>Get all Events of a Group specified by its id</h1>
         //   }
         // ]
+      },
+      {
+        path: '*',
+        element: <h1>Page Not Found</h1>
       }
     ]
   }

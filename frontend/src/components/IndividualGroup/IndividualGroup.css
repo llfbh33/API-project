@@ -1,10 +1,10 @@
 .individual {
-    background-color: rgba(158, 158, 201, 0.466);;
+    background-color: rgba(158, 158, 201, 0.596);;
 }
 
 img {
-    width: 400px;
-    height: 400px;
+    width: 600px;
+    height: 500px;
     object-fit: cover;
 }
 
@@ -12,5 +12,63 @@ img {
     background-color: darkgray;
 }
 
+.top-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10%
+}
 
+.img-groups {
+    display: flex;
+    flex-direction: column;
+}
+
+.groups-link {
+    font-size: 20px;
+    color: black;
+    text-decoration: none;
+    margin: 8px;
+}
+
+.groups-link:hover {
+    color: rgb(73, 73, 223)
+}
 /* set the buttons on the group page to work*/
+
+
+
+.join-btn {
+    margin-top: 100px;
+    background-color: rgba(255, 0, 0, 0.514);
+    width: 180px;
+    height: 50px;
+    border-radius: 20px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.join-btn:hover {
+    background-color: red;
+}
+
+.about-section {
+    margin: 80px 300px;
+
+}
+
+.event-top-sec {
+    display: flex;
+    align-items: center;
+    gap: 12%
+}
+
+.event-top-sec:hover {
+    cursor: pointer;
+}
+
+.event-details {
+    display: flex;
+    flex-direction: column;
+    gap: 40px
+}

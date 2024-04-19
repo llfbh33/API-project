@@ -1,0 +1,24 @@
+
+
+.individual {
+    background-color: rgba(158, 158, 201, 0.596);
+
+}
+
+.headliner {
+    margin-left: 20%
+}
+
+.img-info {
+    display: flex;
+    justify-content: center;
+    gap: 10%;
+}
+
+.event-info {
+
+}
+
+
+/* need to fix the layout so that the title and pic are in one div
+the dates are in another, and they are all in one together*/
