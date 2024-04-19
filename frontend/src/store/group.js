@@ -40,7 +40,7 @@ const groupsReducer = (state = [], action) => {
     switch (action.type) {
         case LOAD:
         {
-            const allGroups = [...state];
+            const allGroups = [];
             action.list.forEach(group => {
                 allGroups.push(group)
             })

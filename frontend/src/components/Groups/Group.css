@@ -7,24 +7,43 @@
     margin-top: 60px;
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: 15%;
+    grid-auto-columns: 30%;
     overflow-x: auto;
 }
 
 .group-card {
     color: rgb(133, 16, 133);
     background-color: rgb(218, 243, 218);
-    width: 200px;
-    height: 220px;
+    width: 85%;
+    height: auto;
     padding: 10px;
     margin: 20px 20px;
     border-radius: 10px;
     border: 1px solid rgb(206, 160, 168);
-
 }
 
 h1.main-page {
     margin-left: 35%;
     color: rgb(55, 4, 59);
     margin-top: 100px;
+}
+
+.groups-title {
+    display: flex;
+    gap: 20px;
+}
+
+.group-card > div > img {
+    width: 60%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.activate:hover {
+    cursor: pointer;
+}
+
+.activate > p,
+.activate > img {
+    border-bottom: 1px solid grey;
 }

@@ -1,0 +1,61 @@
+.landing {
+    background-color: rgba(158, 158, 201, 0.466);
+    margin: auto;
+    width: 100%;
+    text-align: center;
+}
+
+.intro {
+    margin-left: 120px;
+    width: 500px
+
+}
+
+.one {
+    padding: 40px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.one > div> img {
+    width: 500px
+
+}
+
+.three {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 80px;
+    height: 200px
+}
+
+.three > div {
+    width: 300px;
+}
+
+.three >div>button {
+    border: none;
+    background-color: rgba(250, 235, 215, 0);
+    font-size: 16px;
+    font-weight: 600;
+    width: 200px;
+    height: 50px;
+}
+
+.three >div>button:hover {
+    text-decoration: underline;
+    border: solid 1px rgba(128, 128, 128, 0.603);
+    border-radius: 15px;
+    background-color: rgba(46, 200, 211, 0.082);
+}
+
+.three >div>button:disabled {
+    color: rgba(0, 0, 0, 0.438);
+    cursor: default;
+    border: none;
+    background-color: rgba(250, 235, 215, 0);
+    text-decoration: none;
+}

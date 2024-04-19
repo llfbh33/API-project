@@ -99,3 +99,9 @@ li {
   color: white;
   font-size: 16px;
 }
+
+.all-groups {
+  display: flex;
+  align-items: center;
+  gap: 60px
+}

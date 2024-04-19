@@ -30,7 +30,8 @@ function Navigation({ isLoaded }) {
           </div>
         </div>
         {isLoaded && (
-          <div>
+          <div className='all-groups'>
+            <NavLink to="/groups">View Groups</NavLink>
             <ProfileButton user={sessionUser} />
           </div>
         )}

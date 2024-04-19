@@ -7,9 +7,10 @@ import { Outlet, createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Navigation from './components/Navigation/Navigation-bonus';
 import * as sessionActions from './store/session';
 import { Modal } from './context/Modal';
-import TestGroups from './components/Navigation/TestGroups'
+import TestGroups from './components/Groups/TestGroups'
 import * as groupActions from './store/group';
 import LandingPage from './components/LandingPage/LandingPage';
+import IndividualGroup from './components/IndividualGroup/IndividualGroup';
 
 
 function Layout() {
@@ -57,7 +58,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/groups/:groupId',
-        element: <h1>Info on a specific group based on Id goes here</h1>
+        element: <IndividualGroup />
       },
       // {
       //   path: 'login',
