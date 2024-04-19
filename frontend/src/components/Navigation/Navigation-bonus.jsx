@@ -11,7 +11,7 @@ function Navigation({ isLoaded }) {
   const sessionUser = useSelector(state => state.session.user);
   const navigate = useNavigate();
 
-  console.log(sessionUser)
+  // console.log(sessionUser)
   return (
     <div className='header'>
       <nav>
