@@ -35,10 +35,14 @@ function IndividualGroup() {
     }, [dispatch])
 
 
-    // make sure to put any if statements within a useEffect
+    // there is an issue on the live with id, it may be they do not like that I am
+    // declaring the object within the navigate? as it can not find id from the events page either
+    // it has something to do with the id of the user. Authorization?  look into it
     useEffect(() => {
-        if (user && user.id === group.organizerId) setOrganizer(true);
-        else setOrganizer(false)
+        if (user) {
+            if (user.id === group.organizerId) setOrganizer(true);
+            else setOrganizer(false)
+        }
 
         if (group.id === parseInt(groupId)) {
             setLoaded(true);

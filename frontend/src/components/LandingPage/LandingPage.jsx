@@ -41,7 +41,7 @@ const LandingPage = () => {
                 </div>
                 <div>
                     <h3>add a pic or info?</h3>
-                    <button onClick={() => navigate('/groups')}>Find an Event</button>
+                    <button onClick={() => navigate('/events')}>Find an Event</button>
                 </div>
                 <div>
                     <h3>disable this link if the user is not logged in</h3>
