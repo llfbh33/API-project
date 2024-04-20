@@ -1,8 +1,10 @@
 // import { useEffect } from "react";
-import { useSelector }  from "react-redux";
+import { useDispatch, useSelector }  from "react-redux";
 // import { getGroups } from "../../store/group";
 import './Group.css'
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import * as groupActions from '../../store/group';
 
 // import { useGroupContext } from "../../context/GroupContext";
 
@@ -16,11 +18,15 @@ import { useNavigate } from "react-router-dom";
 
 function TestGroups() {
     const navigate = useNavigate();
-
+    const dispatch = useDispatch();
     const groupList = useSelector(state => state.groups);
     const list = Object.values(groupList)
     const eventsList = useSelector(state => state.events)
     const events = Object.values(eventsList)
+
+    useEffect(() => {
+        dispatch(groupActions.getGroups())
+    }, [dispatch])
 
     const eventCount = (id) => {
         let eventArr = [];
@@ -31,6 +37,7 @@ function TestGroups() {
         eventArr = [];
         return count;
     }
+    // console.log(list)
 
     return (
         <div className='container'>
@@ -43,13 +50,13 @@ function TestGroups() {
             </div>
             <div className='group-container'>
             {list.map(group =>  (
-                <div key={group.id} className='group-card' onClick={() => navigate(`/groups/${group.id}`)}>
+                <div key={group?.id} className='group-card' onClick={() => navigate(`/groups/${group?.id}`)}>
                     <div className="activate">
-                        <p>{`${group.name}`}</p>
-                        <p>{`${group.city}, ${group.state}`}</p>
-                        <img src={`${group.previewImage}`} />
-                        <p>{`${group.about}`}</p>
-                        <p>{eventCount(group.id)} Events · {group.private ? 'Private' : 'Public' }</p>
+                        <p>{`${group?.name}`}</p>
+                        <p>{`${group?.city}, ${group?.state}`}</p>
+                        <img src={`${group?.previewImage}`} />
+                        <p>{`${group?.about}`}</p>
+                        <p>{eventCount(group?.id)} Events · {group?.private ? 'Private' : 'Public' }</p>
                     </div>
                 </div>
 

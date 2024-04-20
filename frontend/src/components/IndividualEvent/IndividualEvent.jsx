@@ -26,13 +26,13 @@ function IndividualEvent() {
 
 
     useEffect(() => {
-        if (user.id === parseInt(location.state.id)) setOrganizer(true);
+        if (user && user.id === parseInt(location.state.id)) setOrganizer(true);
         else setOrganizer(false);
 
         if (event.id === parseInt(eventId)) setLoaded(true);
         else setLoaded(false)
 
-    }, [organizer, user.id, loaded, eventId, event, location.state])
+    }, [organizer, user, loaded, eventId, event, location.state])
 
     return (
         <div className='individual'
@@ -78,6 +78,7 @@ function IndividualEvent() {
                             <div>
                                     <button className='org-btn'
                                         hidden={!organizer}
+                                        onClick={() => alert('Function coming soon')}
                                         >Update
                                     </button>
                                     <button className='org-btn'

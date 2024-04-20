@@ -1,16 +1,71 @@
 import { useState } from "react";
-
-
+import { useDispatch, useSelector } from "react-redux";
+import * as groupActions from '../../store/group';
+import * as groupImageActions from '../../store/imageByGroupId';
+import { useNavigate } from "react-router-dom";
 
 function CreateGroup() {
-
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [location, setLocation] = useState('');
     const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
+    const [about, setAbout] = useState('');
+    const [url, setUrl] = useState('');
+    const [type, setType] = useState('');
+    const [isPrivate, setIsPrivate] = useState('');
+    const [errors, setErrors] = useState('');
+    const groups = useSelector(state => state.groups);
+
+    const [groupId] = useState(Object.values(groups).length + 1);
+    let validationErrors = {};
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        const cityStateArr = location.split(',')
+
+        dispatch(
+            groupActions.createGroup(groupId, {
+                name,
+                about,
+                type,
+                isPrivate: isPrivate === 'private' ? true : false,
+                city: cityStateArr[0],
+                state: cityStateArr[1]
+            })
+        )
+        .then(() => {
+            setErrors('');
+            dispatch(
+                groupImageActions.postGroupImages(groupId,
+                    {url, preview: true}))
+
+        })
+        .catch(async (res) => {
+            const data = await res.json()
+            console.log('data', data)
+            if(data.errors) {
+                validationErrors = data.errors;
+                setErrors(validationErrors)
+            }
+        })
+        .then(() => {
+
+                if(!Object.values(validationErrors).length) {
+                    setLocation('');
+                    setName('');
+                    setAbout('');
+                    setUrl('');
+                    setType('');
+                    setIsPrivate('');
+                    navigate(`/groups/${groupId}`);
+                }
+        })
+    }
 
     return (
         <div>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <h1>Start a new Group</h1>
                 <div>
                     <h2>{`Set your group's location`}</h2>
@@ -23,6 +78,8 @@ function CreateGroup() {
                             onChange={(e) => setLocation(e.target.value)}
                             required
                         />
+                        <p style={{color: 'red'}}>{errors.city ? `${errors.city}` : ''}</p>
+                        <p style={{color: 'red'}}>{errors.state ? `${errors.state}` : ''}</p>
                     </div>
                 </div>
                 <div>
@@ -36,6 +93,7 @@ function CreateGroup() {
                             onChange={(e) => setName(e.target.value)}
                             required
                         />
+                        <p style={{color: 'red'}}>{errors.name ? `${errors.name}` : ''}</p>
                     </div>
                 </div>
                 <div>
@@ -43,12 +101,47 @@ function CreateGroup() {
                     <div>
                         <label>{`People will see this when we promote your group, but you'll be able to add to it later, too. 1. What's the purpose of the group? 2. Who should join? 3. What will you do at your events?`}</label>
                         <textarea
-                            value={description}
+                            value={about}
                             placeholder="Please write at least 30 characters"
-                            onChange={(e) => setDescription(e.target.value)}
+                            onChange={(e) => setAbout(e.target.value)}
                             required
+                            rows='8'
                         />
+                        <p style={{color: 'red'}}>{errors.about ? `${errors.about}` : ''}</p>
                     </div>
+                </div>
+                <div>
+                    <label>Is this an in-person or online group?</label>
+                    <select
+                        value={type}
+                        onChange={(e) => setType(e.target.value)}
+                        >
+                        <option>In person</option>
+                        <option>Online</option>
+                    </select>
+                    <p style={{color: 'red'}}>{errors.type ? `${errors.type}` : ''}</p>
+                </div>
+                <div>
+                    <label>Is this group private or public?</label>
+                    <select
+                        value={isPrivate}
+                        onChange={(e) => setIsPrivate(e.target.value)}
+                        >
+                        <option disabled={true}>Chose One</option>
+                        <option>Private</option>
+                        <option>Public</option>
+                    </select>
+                    <p style={{color: 'red'}}>{errors.private ? `${errors.private}` : ''}</p>
+                </div>
+                <div>
+                    <label>Please add an image URL for your group below:</label>
+                    <input
+                        type='text'
+                        value={url}
+                        placeholder="Image Url"
+                        onChange={(e) => setUrl(e.target.value)}
+                        required
+                    />
                 </div>
                 <button type='submit' >Create Group</button>
             </form>
@@ -58,6 +151,3 @@ function CreateGroup() {
 }
 
 export default CreateGroup;
-
-
-// I may want to set this up more like the login and signup forms  it will make it easier to clear when navigating away
