@@ -7,6 +7,7 @@ import membersReducer from './members';
 import groupByIdReducer from './groupById';
 import eventByIdReducer from './eventById';
 import imagesByGroupIdReducer from './imageByGroupId';
+import imagesByEventIdReducer from './imagesByEventId';
 
 const rootReducer = combineReducers({
   session: sessionReducer,
@@ -15,7 +16,8 @@ const rootReducer = combineReducers({
   members: membersReducer,
   groupById: groupByIdReducer,
   eventById: eventByIdReducer,
-  groupPrevImage: imagesByGroupIdReducer
+  groupPrevImage: imagesByGroupIdReducer,
+  eventPrevImage: imagesByEventIdReducer
 });
 
 let enhancer;

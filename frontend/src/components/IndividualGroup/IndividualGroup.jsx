@@ -1,15 +1,14 @@
-import { useSelector } from 'react-redux';
-import './IndividualGroup.css';
-import { Link, useParams } from 'react-router-dom';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
 import * as groupActions from '../../store/groupById';
-import { useDispatch } from "react-redux";
-import { useNavigate } from 'react-router-dom';
+
+import './IndividualGroup.css';
+import { ApplicationContext } from '../../context/GroupContext';
+
 
 function IndividualGroup() {
     const {groupId} = useParams();
-
     const dispatch = useDispatch();
     const navigate = useNavigate();
     let group = useSelector(state => state.groupById)
@@ -22,38 +21,40 @@ function IndividualGroup() {
     const [loaded, setLoaded] = useState(false);
     const [picture, setPicture] = useState('');
 
+    const {currGroupPrev, setCurrEventPrev} = useContext(ApplicationContext);
+
     useEffect(() => {
         dispatch(groupActions.getGroupDetails(groupId))
     }, [dispatch])
 
     useEffect(() => {
-        if(group.GroupImages) setPicture(group.GroupImages[0].url)
-        else setPicture('');
+        if(currGroupPrev) setPicture(currGroupPrev)
+        else setPicture('https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg');
     }, [group])
-
 
     useEffect(() => {
         if (user) {
             if (user.id === group.organizerId) setOrganizer(true);
             else setOrganizer(false)
         }
-
-        if (group.id === parseInt(groupId)) {
-            setLoaded(true);
-        }else setLoaded(false)
+        if (group.id === parseInt(groupId)) setLoaded(true);
+        else setLoaded(false)
     }, [loaded, group, groupId, user])
 
-    const seeEvent = (id) => {
+    const seeEvent = (id, image) => {
         setLoaded(false);
         setOrganizer(false);
         setPicture('');
-        navigate(`/events/${id}`, {state: {id: group.organizerId,
-                                            firstName: group.Organizer.firstName,
-                                            lastName: group.Organizer.lastName,
-                                            name: group.name,
-                                            image: group?.GroupImages[0].url || '',
-                                            city: group.city,
-                                            state: group.state}})
+        setCurrEventPrev(image)
+        navigate(`/events/${id}`,
+            {state: {
+                id: group.organizerId,
+                firstName: group.Organizer.firstName,
+                lastName: group.Organizer.lastName,
+                name: group.name,
+                image: group?.GroupImages[0].url || '',
+                city: group.city,
+                state: group.state}})
     }
 
     return (
@@ -88,6 +89,16 @@ function IndividualGroup() {
                 <p>{`${group.about}`}</p>
                 <button className='org-btn'
                 hidden={!organizer}
+                onClick={() => navigate('/createEvent', {state: {gId: group.id,
+                                                                groupName: group.name,
+                                                                id: group.organizerId,
+                                                                firstName: group.Organizer.firstName,
+                                                                lastName: group.Organizer.lastName,
+                                                                name: group.name,
+                                                                image: group?.GroupImages[0].url || '',
+                                                                city: group.city,
+                                                                state: group.state
+                                                                }})}
                 >Create Event
                 </button>
             </div>
@@ -95,7 +106,7 @@ function IndividualGroup() {
             <h2>{`Events (${currEvents.length})`}</h2>
                 {currEvents.map(event => (
                     <div key={`${event.id}`}>
-                        <div className='event-top-sec' onClick={() => seeEvent(event.id)}>
+                        <div className='event-top-sec' onClick={() => seeEvent(event.id, event.previewImage)}>
                             <div>
                                 <img src={`${event.previewImage}`} />
                             </div>

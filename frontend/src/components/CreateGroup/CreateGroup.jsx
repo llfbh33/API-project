@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as groupActions from '../../store/group';
 import * as groupImageActions from '../../store/imageByGroupId';
 import { useNavigate } from "react-router-dom";
+import { ApplicationContext } from "../../context/GroupContext";
 
 function CreateGroup() {
     const dispatch = useDispatch();
@@ -15,8 +16,10 @@ function CreateGroup() {
     const [isPrivate, setIsPrivate] = useState('');
     const [errors, setErrors] = useState('');
     const groups = useSelector(state => state.groups);
-
     const [groupId] = useState(Object.values(groups).length + 1);
+
+    const {setCurrGroupId, setCurrGroupPrev} = useContext(ApplicationContext);
+
     let validationErrors = {};
 
     const handleSubmit = (e) => {
@@ -52,6 +55,8 @@ function CreateGroup() {
         .then(() => {
 
                 if(!Object.values(validationErrors).length) {
+                    setCurrGroupId(groupId);
+                    setCurrGroupPrev(url);
                     setLocation('');
                     setName('');
                     setAbout('');

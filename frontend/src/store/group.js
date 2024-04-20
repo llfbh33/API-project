@@ -19,8 +19,6 @@ const create = (group, id) => ({
     id
 })
 
-
-
 //thunk to grab all groups
 export const getGroups = () => async dispatch => {
     const response = await csrfFetch("/api/groups");

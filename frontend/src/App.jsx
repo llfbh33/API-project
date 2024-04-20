@@ -1,23 +1,23 @@
-// import { useNavigate } from 'react-router-dom';
+import { Modal } from './context/Modal';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Outlet, createBrowserRouter, RouterProvider } from 'react-router-dom';
-// import LoginFormPage from './components/LoginFormPage';
-// import SignupFormPage from './components/SignupFormPage';
 import Navigation from './components/Navigation/Navigation-bonus';
+
 import * as sessionActions from './store/session';
-import { Modal } from './context/Modal';
-import TestGroups from './components/Groups/TestGroups'
 import * as groupActions from './store/group';
 import * as eventActions from './store/events';
+
+import Groups from './components/Groups/Groups'
 import LandingPage from './components/LandingPage/LandingPage';
 import IndividualGroup from './components/IndividualGroup/IndividualGroup';
 import IndividualEvent from './components/IndividualEvent/IndividualEvent';
 import Events from './components/Events/Events';
 import CreateGroup from './components/CreateGroup/CreateGroup';
+import CreateEvent from './components/CreateEvent/CreateEvent';
+
 
 function Layout() {
-  // const navigation = useNavigate();
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
   const [groupsLoaded, setGroupsLoaded] = useState(false);
@@ -48,8 +48,6 @@ const router = createBrowserRouter([
     element:
       <>
         <Layout />
-        {/* <TestGroups /> */}
-        {/* <Outlet />     // doubles all elements in the */}
       </>,
     children: [
       {
@@ -58,7 +56,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/groups',
-        element: <TestGroups />
+        element: <Groups />
       },
       {
         path: '/groups/:groupId',
@@ -76,27 +74,9 @@ const router = createBrowserRouter([
         path: '/createGroup',
         element: <CreateGroup />
       },
-      // {
-      //   path: 'login',
-      //   element: <LoginFormPage />
-      // },
-      // {
-      //   path: 'signup',
-      //   element: <SignupFormPage />
-      // }
       {
-        path: '/current',
-        element:
-        <>
-          <h1>Get all Groups joined or organized by the Current User</h1>
-          {/* <Outlet /> */}
-        </>,
-        // children: [
-        //   {
-        //     path: '/:groupId/events',
-        //     element: <h1>Get all Events of a Group specified by its id</h1>
-        //   }
-        // ]
+        path: '/createEvent',
+        element: <CreateEvent />
       },
       {
         path: '*',

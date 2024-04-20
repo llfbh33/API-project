@@ -4,6 +4,8 @@ import './Events.css';
 import { useNavigate } from "react-router-dom";
 // import { useEffect } from "react";
 import * as groupActions from '../../store/groupById';
+import { useContext } from "react";
+import { ApplicationContext } from "../../context/GroupContext";
 
 function Events() {
 
@@ -16,23 +18,24 @@ function Events() {
     const groups = Object.values(groupList);
 
     const groupDetails = useSelector(state => state.groupById);
+    const {setCurrEventPrev} = useContext(ApplicationContext);
 
 
 
     const eventPage = (event) => {
         const thisGroup = groups.find(group => group.id === event.groupId)
 
-
-            dispatch(groupActions.getGroupDetails(thisGroup.id))
-            .then(() => {
-                navigate(`/events/${event.id}`, {state: {id: thisGroup.organizerId,
-                    firstName: groupDetails.Organizer.firstName,
-                    lastName: groupDetails.Organizer.lastName,
-                    name: thisGroup.name,
-                    image: thisGroup.previewImage,
-                    city: thisGroup.city,
-                    state: thisGroup.state}})
-            })
+        dispatch(groupActions.getGroupDetails(thisGroup.id))
+        .then(() => {
+            setCurrEventPrev(event.previewImage)
+            navigate(`/events/${event.id}`, {state: {id: thisGroup.organizerId,
+                firstName: groupDetails.Organizer.firstName,
+                lastName: groupDetails.Organizer.lastName,
+                name: thisGroup.name,
+                image: thisGroup.previewImage,
+                city: thisGroup.city,
+                state: thisGroup.state}})
+        })
     }
 
     return (
@@ -49,7 +52,7 @@ function Events() {
                     <div key={`${event.id}`} className='event-list' onClick={() => eventPage(event)}>
                     <div className='event-top-sec' >
                         <div>
-                            <img src={`${event.previewImage}`} />
+                            <img src={event?.previewImage ? `${event.previewImage}` : 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg'} />
                         </div>
                         <div className='event-details'>
                             <div>

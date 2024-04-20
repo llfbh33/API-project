@@ -1,29 +1,38 @@
-import './IndividualEvent.css'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
-import * as eventByIdActions from '../../store/eventById';
-import { Link } from 'react-router-dom';
+import { useNavigate, useParams, useLocation, Link } from 'react-router-dom';
+
 import { TbClockHour4 } from "react-icons/tb";
 import { AiOutlineDollar } from "react-icons/ai";
 import { TfiLocationPin } from "react-icons/tfi";
-// import { getGroupDetails } from '../../store/groupById';
-import { useLocation } from 'react-router-dom';
+
+import * as eventByIdActions from '../../store/eventById';
+
+import './IndividualEvent.css'
+import { ApplicationContext } from '../../context/GroupContext';
+
 
 function IndividualEvent() {
-    const {eventId} = useParams();
+
+    const location = useLocation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const location = useLocation();
-    const [loaded, setLoaded] = useState(false);
+    const {eventId} = useParams();
+
     let event = useSelector(state => state.eventById);
     let user = useSelector(state => state.session.user);
+
+    const [loaded, setLoaded] = useState(false);
     const [organizer, setOrganizer] = useState(false);
+    const [picture, setPicture] = useState('');
+    const {currGroupId, setCurrGroupId, setCurrGroupPrev, currEventPrev} = useContext(ApplicationContext);
 
     useEffect(() => {
         dispatch(eventByIdActions.getEventDetails(eventId))
-    }, [dispatch, eventId])
-
+        .then(() => {
+            setCurrGroupId(event.groupId)
+        })
+    }, [dispatch, event])
 
     useEffect(() => {
         if (user && user.id === parseInt(location.state.id)) setOrganizer(true);
@@ -32,7 +41,11 @@ function IndividualEvent() {
         if (event.id === parseInt(eventId)) setLoaded(true);
         else setLoaded(false)
 
-    }, [organizer, user, loaded, eventId, event, location.state])
+        if(currEventPrev) setPicture(currEventPrev)
+        else setPicture('https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg');
+
+        setCurrGroupPrev(location.state.image)
+    }, [organizer, user, loaded, eventId, event, location])
 
     return (
         <div className='individual'
@@ -44,10 +57,10 @@ function IndividualEvent() {
             </div>
             <div className='img-info'>
                 <div>
-                    <img src={event.EventImages ? `${event.EventImages[0].url}` : '' } />
+                    {picture && picture === '' ? (<h1>Loading...</h1>) : ( <img src={picture} />)}
                 </div>
                 <div>
-                    <div className='group-section' onClick={() => navigate(`/groups/${event.groupId}`)}>
+                    <div className='group-section' onClick={() => navigate(`/groups/${currGroupId}`)}>
                         <img src={`${location.state.image}`} />
                         <div>
                             <h2>{`${location.state.name}`}</h2>
@@ -76,19 +89,18 @@ function IndividualEvent() {
                             <h3>Description:</h3>
                             <p>{`${event.description}`}</p>
                             <div>
-                                    <button className='org-btn'
-                                        hidden={!organizer}
-                                        onClick={() => alert('Function coming soon')}
-                                        >Update
-                                    </button>
-                                    <button className='org-btn'
-                                        hidden={!organizer}
-                                        >Delete
-                                    </button>
-                                </div>
+                                <button className='org-btn'
+                                    hidden={!organizer}
+                                    onClick={() => alert('Function coming soon')}
+                                    >Update
+                                </button>
+                                <button className='org-btn'
+                                    hidden={!organizer}
+                                    >Delete
+                                </button>
+                            </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

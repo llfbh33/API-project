@@ -1,15 +1,25 @@
 import { createContext, useContext, useState } from "react";
 
-export const GroupContext = createContext();
+export const ApplicationContext = createContext();
 
-export const useGroupContext = () => useContext(GroupContext);
+export const useApplicationContext = () => useContext(ApplicationContext);
 
 export default function GroupProvider(props) {
-    const [group, setGroup] = useState({});
+    const [currGroupId, setCurrGroupId] = useState('');
+    const [currGroupPrev, setCurrGroupPrev] = useState('');
+    const [currEventPrev, setCurrEventPrev] = useState('');
 
     return (
-        <GroupContext.Provider value={(group, setGroup)}>
+        <ApplicationContext.Provider value={{
+                currGroupId,
+                setCurrGroupId,
+                currGroupPrev,
+                setCurrGroupPrev,
+                currEventPrev,
+                setCurrEventPrev
+                }}
+            >
             {props.children}
-        </GroupContext.Provider>
+        </ApplicationContext.Provider>
     )
 }

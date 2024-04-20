@@ -1,24 +1,24 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
 import './LandingPage.css'
-import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { FaBullseye } from "react-icons/fa";
+
 
 const LandingPage = () => {
     const navigate = useNavigate();
     const user = useSelector(state => state.session.user)
 
-    const [signedIn, setSignedIn] = useState(true);
+    const [signedIn, setSignedIn] = useState(FaBullseye);
 
     useEffect(() => {
-        if (user) setSignedIn(false);
-        if (!user) setSignedIn(true);
+        if (user) setSignedIn(true);
+        else setSignedIn(false);
     }, [user, signedIn])
 
     return (
         <div className="landing">
-            {/* <h1>landing page</h1> */}
             <div className="one">
                 <div className="intro">
                     <h1>Happy Dogs are Social Dogs</h1>
@@ -26,7 +26,7 @@ const LandingPage = () => {
                     </h3>
                 </div>
                 <div>
-                    <img src='https://img.freepik.com/free-vector/adorable-cartoon-puppy-friends-gathering_1308-165959.jpg?t=st=1713724229~exp=1713727829~hmac=12f3012ff57befb026f6e10e5ad1757c4d68edb9f7e516e418018fbc38967d54&w=1480' alt='goofy group of dogs' />
+                    <img src='https://cdn.pixabay.com/photo/2024/01/20/17/33/dog-8521550_1280.png' alt='goofy group of dogs' />
                 </div>
 
             </div>
@@ -46,7 +46,7 @@ const LandingPage = () => {
                 <div>
                     <h3>disable this link if the user is not logged in</h3>
                     <button
-                        disabled={signedIn}
+                        disabled={!signedIn}
                         onClick={() => navigate('/createGroup')}>Start a Group</button>
                 </div>
             </div>
