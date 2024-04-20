@@ -1,3 +1,8 @@
 .event-list:hover {
     cursor: pointer;
 }
+
+.event-list {
+    border-bottom: 1px solid grey;
+    margin: 20px;
+}

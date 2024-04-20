@@ -4,6 +4,7 @@ import './Events.css';
 import { useNavigate } from "react-router-dom";
 // import { useEffect } from "react";
 import * as groupActions from '../../store/groupById';
+import * as eventByIdActions from '../../store/eventById';
 import { useContext } from "react";
 import { ApplicationContext } from "../../context/GroupContext";
 
@@ -25,17 +26,42 @@ function Events() {
     const eventPage = (event) => {
         const thisGroup = groups.find(group => group.id === event.groupId)
 
-        dispatch(groupActions.getGroupDetails(thisGroup.id))
+            dispatch(groupActions.getGroupDetails(thisGroup.id))
+        .then(() => {
+            dispatch(eventByIdActions.getEventDetails(event.id))
+        })
         .then(() => {
             setCurrEventPrev(event.previewImage)
             navigate(`/events/${event.id}`, {state: {id: thisGroup.organizerId,
                 firstName: groupDetails.Organizer.firstName,
                 lastName: groupDetails.Organizer.lastName,
                 name: thisGroup.name,
+                eventName: event.name,
                 image: thisGroup.previewImage,
                 city: thisGroup.city,
                 state: thisGroup.state}})
         })
+    }
+
+    const organizeEvents = () => {
+        let dates = []
+        let sorted = [];
+        let expired = [];
+        let curr = [...events]
+        if(curr) {
+            curr.forEach(event => dates.push(event.startDate))
+            dates.sort()
+            dates.forEach(date => {
+                let currEvent = curr.find(event => event.startDate === date)
+                if(new Date(currEvent.startDate).getTime() < new Date().getTime()) expired.push(currEvent)
+                else sorted.push(currEvent)
+                curr.splice(curr.indexOf(currEvent), 1)
+            })
+        }
+        if (expired) {
+            expired.forEach(event => sorted.push(event));
+        }
+        return sorted;
     }
 
     return (
@@ -48,7 +74,7 @@ function Events() {
                 <h3>Events in Meet Dogs</h3>
             </div>
             <div>
-                {events.map(event => (
+                {organizeEvents().map(event => (
                     <div key={`${event?.id}`} className='event-list' onClick={() => eventPage(event)}>
                     <div className='event-top-sec' >
                         <div>
@@ -57,12 +83,12 @@ function Events() {
                         <div className='event-details'>
                             <div>
 `                               <p>{`${event?.name}`}</p>
-                                <p>{event?.startDate ? `Start Date: ${event.startDate.slice(0, 10)} · ${event.startDate.slice(11)}` : ''}</p>
+                                <p>{event?.startDate ? `Start Date: ${new Date(event.startDate).toDateString()} · ${event.startDate.slice(11, 16)}` : ''}</p>
                                 <p>{`${event?.Venue.city}, ${event?.Venue.state}`}</p>
                             </div>
                         </div>
-                        <h4>Enjoy a good time at this event</h4>
                     </div>
+                    <p>{event.description ? `${event.description}` : ''}</p>
                 </div>
                 ))}
             </div>

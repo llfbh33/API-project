@@ -59,9 +59,9 @@ const eventsReducer = (state = {}, action) => {
             return {...state, ...theseEvents}
         }
         case CREATE: {
-            const thisEvent = {};
+            const thisEvent = {...state};
             thisEvent[action.id] = action.event;
-            return {...state, ...thisEvent};
+            return thisEvent;
         }
         default:
             return state;

@@ -52,6 +52,13 @@ const seedEventImages = [
     url: "https://cdn.pixabay.com/photo/2019/10/05/17/58/pet-4528469_1280.jpg",
     preview: true
   },
+  {
+    eventId: 6,
+    url: "https://images.stockcake.com/public/7/1/6/716ba935-fe45-494a-8cc1-a909874bdd62_large/joyful-snowy-romp-stockcake.jpg",
+    preview: true
+  },
+
+
 ]
 
 module.exports = {

@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import * as groupActions from '../../store/groupById';
+import * as eventActions from '../../store/events';
 import DestroyGroup from '../Destroy/DestroyGroup';
 
 import './IndividualGroup.css';
@@ -66,18 +67,44 @@ function IndividualGroup() {
 
     const createEvent = () => {
 
-        setCurrGroupId(group.id)
+        dispatch(eventActions.getEvents())
+        .then(() =>{
+            setCurrGroupId(group.id)
+        })
+        .then(() => {
+            navigate(`/groups/${groupId}/events`, {state: {gId: group.id,
+                groupName: group.name,
+                id: group.organizerId,
+                firstName: group.Organizer.firstName,
+                lastName: group.Organizer.lastName,
+                name: group.name,
+                image: group?.GroupImages[0].url || '',
+                city: group?.city,
+                state: group.state
+                }})
+        })
 
-        navigate(`/groups/${groupId}/events`, {state: {gId: group.id,
-            groupName: group.name,
-            id: group.organizerId,
-            firstName: group.Organizer.firstName,
-            lastName: group.Organizer.lastName,
-            name: group.name,
-            image: group?.GroupImages[0].url || '',
-            city: group?.city,
-            state: group.state
-            }})
+    }
+
+    const organizeEvents = () => {
+        let dates = []
+        let sorted = [];
+        let expired = [];
+        let events = [...currEvents]
+        if(events) {
+            events.forEach(event => dates.push(event.startDate))
+            dates.sort()
+            dates.forEach(date => {
+                let currEvent = events.find(event => event.startDate === date)
+                if(new Date(currEvent.startDate).getTime() < new Date().getTime()) expired.push(currEvent)
+                else sorted.push(currEvent)
+                events.splice(events.indexOf(currEvent), 1)
+            })
+        }
+        if (expired) {
+            expired.forEach(event => sorted.push(event));
+        }
+        return sorted;
     }
 
     return (
@@ -120,8 +147,6 @@ function IndividualGroup() {
                 </div>
             </div>
             <div className='about-section'>
-                <h2>Organizer</h2>
-                <h4>{group.Organizer ? `${group.Organizer.firstName} ${group.Organizer.lastName}` : ''}</h4>
                 <h2>{`What We're About`}</h2>
                 <p>{`${group.about}`}</p>
                 <button className='org-btn'
@@ -132,7 +157,7 @@ function IndividualGroup() {
             </div>
             <div className='about-section'>
             <h2>{`Events (${currEvents.length})`}</h2>
-                {currEvents.map(event => (
+                {organizeEvents().map(event => (
                     <div key={`${event.id}`}>
                         <div className='event-top-sec' >
                             <div>
@@ -140,8 +165,8 @@ function IndividualGroup() {
                             </div>
                             <div className='event-details'>
                                 <div onClick={() => seeEvent(event.id, event.previewImage)}>
-    `                               <p>{`${event.name}`}</p>
-                                    <p>{event.startDate ? `Start Date: ${event.startDate.slice(0, 10)} · ${event.startDate.slice(11)}` : ''}</p>
+                                    <p>{`${event.name}`}</p>
+                                    <p>{event.startDate ? `Start Date: ${new Date(event.startDate).toDateString()} · ${event.startDate.slice(11, 16)}` : ''}</p>
                                     <p>{event.Venue ? `${event?.Venue.city}, ${event.Venue.state}` : ''}</p>
                                 </div>
                                 <div>
@@ -157,9 +182,12 @@ function IndividualGroup() {
                                     </button>
                                 </div>
                             </div>
+                            <div>
+
+                            </div>
 
                         </div>
-                        <h4>Enjoy a good time at this event</h4>
+                        <p>{event.description ? `${event.description}` : ''}</p>
                     </div>
                 ))}
             </div>

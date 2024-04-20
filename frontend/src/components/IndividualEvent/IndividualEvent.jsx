@@ -6,7 +6,7 @@ import { TbClockHour4 } from "react-icons/tb";
 import { AiOutlineDollar } from "react-icons/ai";
 import { TfiLocationPin } from "react-icons/tfi";
 
-import * as eventByIdActions from '../../store/eventById';
+
 
 import './IndividualEvent.css'
 import { ApplicationContext } from '../../context/GroupContext';
@@ -29,11 +29,9 @@ function IndividualEvent() {
     const {currGroupId, setCurrGroupId, setCurrGroupPrev, currEventPrev} = useContext(ApplicationContext);
 
     useEffect(() => {
-        dispatch(eventByIdActions.getEventDetails(eventId))
-        .then(() => {
             setCurrGroupId(event.groupId)
-        })
-    }, [dispatch])
+
+    }, [])
 
     useEffect(() => {
         if (user && user.id === parseInt(location.state.id)) setOrganizer(true);
@@ -62,8 +60,8 @@ function IndividualEvent() {
             hidden={!loaded}>
             <div className='headliner'>
                 <Link to='/events'>{`<-- Events`}</Link>
-                <h1>{`${event.name}`}</h1>
-                <h4>Hosted by: {`${group.Organizer.firstName} ${group.Organizer.lastName}`}</h4>
+                <h1>{`${location.state.eventName}`}</h1>
+                <h4>Hosted by: {`${group?.Organizer.firstName} ${group?.Organizer.lastName}`}</h4>
             </div>
             <div className='img-info'>
                 <div>
@@ -73,16 +71,16 @@ function IndividualEvent() {
                     <div className='group-section' onClick={() => groupDetails()}>
                         <img src={`${location.state.image}`} />
                         <div>
-                            <h2>{`${group.name}`}</h2>
-                            <h3>{`${group.city}, ${group.state}`}</h3>
+                            <h2>{`${group?.name}`}</h2>
+                            <h3>{`${group?.city}, ${group?.state}`}</h3>
                         </div>
                     </div>
                     <div className='event-info'>
                         <div className='clock'>
                             <TbClockHour4 style={{fontSize: '40px'}}/>
                             <div>
-                                <h3>{event.startDate ? `Start Date: ${event.startDate.slice(0, 10)} · ${event.startDate.slice(11)}` : ''}</h3>
-                                <h3>{event.endDate ? `End Date: ${event.endDate.slice(0, 10)} · ${event.endDate.slice(11)}` : ''}</h3>
+                                <h3>{event.startDate ? `Start: ${new Date(event.startDate).toDateString()} · ${event.startDate.slice(11, 16)}` : ''}</h3>
+                                <h3>{event.endDate ? `End: ${new Date(event.endDate).toDateString()} · ${event.endDate.slice(11, 16)}` : ''}</h3>
                             </div>
                         </div>
                         <div className='clock' >

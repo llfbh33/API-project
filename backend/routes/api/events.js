@@ -134,12 +134,14 @@ router.get('/', validPagination, async (req, res, next) => {
             venueId: event.venueId,
             name: event.name,
             type: event.type,
+            description:event.description,
             startDate: thisStartDate,
             endDate: thisEndDate,
             numAttending: sum,
             ...previewImage,
             Group: event.Group,
             Venue: thisVenue,
+
         };
         eventsArray.push(result)
     };

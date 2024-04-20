@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as eventActions from '../../store/events';
 import * as eventImageActions from '../../store/imagesByEventId';
 import * as groupActions from '../../store/groupById';
+import * as groupsActions from '../../store/group';
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ApplicationContext } from "../../context/GroupContext";
 
@@ -21,57 +22,76 @@ function CreateEvent() {
     const [about, setAbout] = useState('');
     const [url, setUrl] = useState('');
     const {currGroupId, setCurrGroupId, setCurrEventPrev} = useContext(ApplicationContext);
-    // const [groupId] = useState(location.state.gId)
+
     let group = useSelector(state => state.groupById);
 
     const [errors, setErrors] = useState('');
     const events = useSelector(state => state.events);
 
-    const [eventId] = useState(Object.values(events).length + 1); // this will need to change before we set up delete
-
     let validationErrors = {};
+    const [eventId, setEventId] = useState('');
+
+    useEffect(() => {
+        let lastEvent = Object.values(events)
+        console.log('lastEvent:', lastEvent)
+        let again = lastEvent.length - 1
+        console.log('again:', again)
+        let lastEventEle = Object.values(events)[again]
+        console.log('lastEventEle:', lastEventEle)
+        let identity = lastEventEle.id + 1;
+        console.log('identity', identity)
+        setEventId(identity)
+    }, [])
 
     useEffect(() => {
         dispatch(groupActions.getGroupDetails(groupId))
         .then(() => {
-            console.log('currGroup', currGroupId)
             setCurrGroupId(group.id)
-            console.log('currGroup after', currGroupId)
         })
     }, [dispatch])
 
-    const adjustStartTime = () => {
-        let start = startDate.split(', ');
-        let amPm = start[1].slice(6)
-        let minutes = start[1].slice(3, 5)
-        let hour = parseInt(start[1].slice(0, 2))
-        if (amPm.toUpperCase() === 'PM') hour += 12;
-        let adjustedTime = `${hour}:${minutes}`
-        let startReturn = `${start[0]} ${adjustedTime}:00`
-        console.log(startReturn)
-        setStartDate(startReturn)
-        return
-    }
+    // const adjustStartTime = () => {
+    //     let thisDate = startDate;
 
-    const adjustEndTime = () => {
-        let start = endDate.split(', ');
-        let amPm = start[1].slice(6)
-        let minutes = start[1].slice(3, 5)
-        let hour = parseInt(start[1].slice(0, 2))
-        if (amPm.toUpperCase() === 'PM') hour += 12;
-        let adjustedTime = `${hour}:${minutes}`
-        let startReturn = `${start[0]} ${adjustedTime}:00`
-        console.log(startReturn)
-        setEndDate(startReturn)
-        return
-    }
+    //     setEventId(identity);
+
+    //     let start = thisDate.split(', ');
+    //     let dateArr = start[0].split('/')
+    //     let date = `${dateArr[2]}-${dateArr[0]}-${dateArr[1]}`;
+    //     let amPm = start[1].slice(6)
+    //     let minutes = start[1].slice(3, 5)
+    //     let hour = parseInt(start[1].slice(0, 2))
+    //     if (hour.length < 2) hour = `0${hour}`
+    //     if (amPm.toUpperCase() === 'PM') hour += 12;
+    //     let adjustedTime = `${hour}:${minutes}`
+    //     let startReturn = `${date} ${adjustedTime}:00`
+    //     console.log('start', startReturn)
+    //     setStartDate(startReturn)
+    //     return adjustEndTime()
+    // }
+
+    // const adjustEndTime = () => {
+    //     let thisDate = endDate;
+
+    //     let start = thisDate.split(', ');
+    //     let dateArr = start[0].split('/')
+    //     let date = `${dateArr[2]}-${dateArr[0]}-${dateArr[1]}`;
+    //     let amPm = start[1].slice(6)
+    //     let minutes = start[1].slice(3, 5)
+    //     let hour = parseInt(start[1].slice(0, 2))
+    //     if (amPm.toUpperCase() === 'PM') hour += 12;
+    //     let adjustedTime = `${hour}:${minutes}`
+    //     let startReturn = `${date} ${adjustedTime}:00`
+    //     console.log('end', startReturn)
+    //     setEndDate(startReturn)
+    //     console.log(endDate)
+    //     return handleSubmit()
+
+    // }
 
     const handleSubmit = (e) => {
         e.preventDefault();
         setErrors('');
-
-        adjustStartTime()
-        adjustEndTime()
 
         dispatch(
 
@@ -102,6 +122,9 @@ function CreateEvent() {
         })
         .then(() => {
             dispatch(eventActions.getEvents())
+        })
+        .then(() => {
+            dispatch(groupsActions.getGroups())
         })
         .then(() => {
             console.log(location.state.id)

@@ -21,7 +21,8 @@ function CreateGroup() {
     const [errors, setErrors] = useState('');
     const groups = useSelector(state => state.groups);
     const [lastGroup] = useState(Object.values(groups).length);
-    let last = Object.values(groups)[lastGroup - 1].id + 1
+    let lastGroupEle = Object.values(groups)[lastGroup - 1]
+    let last = lastGroupEle.id + 1
     // console.log('lastGroup', last)
 
 
@@ -61,6 +62,9 @@ function CreateGroup() {
             }
         })
         .then(() => {
+            dispatch(groupActions.getGroups())
+        })
+        .then(() => {
 
                 if(!Object.values(validationErrors).length) {
                     setCurrGroupPrev(url);
@@ -79,9 +83,9 @@ function CreateGroup() {
         <div className="create-group">
             <form onSubmit={handleSubmit} >
                 <h1>Start a new Group</h1>
-                <div>
+                <div className="sec-one">
                     <h2>{`Set your group's location`}</h2>
-                    <div>
+                    {/* <div  > */}
                         <label>Meet Dogs groups meet locally, in person, and online. Well connect you with people in your area</label>
                         <input
                             type='text'
@@ -90,13 +94,13 @@ function CreateGroup() {
                             onChange={(e) => setLocation(e.target.value)}
                             required
                         />
-                        <p style={{color: 'red'}}>{errors.city ? `${errors.city}` : ''}</p>
+                        {/* <p style={{color: 'red'}}>{errors.city ? `${errors.city}` : ''}</p> */}
                         <p style={{color: 'red'}}>{errors.state ? `${errors.state}` : ''}</p>
-                    </div>
+                    {/* </div> */}
                 </div>
                 <div>
                     <h2>{`What will your group's name be?`}</h2>
-                    <div>
+                    <div className="sec-one">
                         <label>Choose a name that will give people a clear idea of what the group is about. Feel free to get creative! You can edit this later if you change your mind.</label>
                         <input
                             type='text'
@@ -111,14 +115,13 @@ function CreateGroup() {
                 <div>
                     <h2>{`"Describe the purpose of your group."`}</h2>
                     <div>
-                        <label>{` 3. What will you do at your events?`}</label>
                         <div>
                             <p>{`People will see this when we promote your group, but you'll be able to add to it later, too.`}</p>
-                            <ol>
-                                <li>{`1. What's the purpose of the group?`}</li>
-                                <li>2. Who should join?</li>
-                                <li>3. What will you do at your events?</li>
-                            </ol>
+                            <dev>
+                                <p>{`1. What's the purpose of the group?`}</p>
+                                <p>2. Who should join?</p>
+                                <p>3. What will you do at your events?</p>
+                            </dev>
                         </div>
                         <textarea
                             value={about}
@@ -130,7 +133,7 @@ function CreateGroup() {
                         <p style={{color: 'red'}}>{errors.about ? `${errors.about}` : ''}</p>
                     </div>
                 </div>
-                <div>
+                <div className="sec-one">
                     <label>Is this an in-person or online group?</label>
                     <select
                         value={type}
@@ -142,7 +145,7 @@ function CreateGroup() {
                     </select>
                     <p style={{color: 'red'}}>{errors.type ? `${errors.type}` : ''}</p>
                 </div>
-                <div>
+                <div className="sec-one">
                     <label>Is this group private or public?</label>
                     <select
                         value={isPrivate}
@@ -154,7 +157,7 @@ function CreateGroup() {
                     </select>
                     <p style={{color: 'red'}}>{errors.private ? `${errors.private}` : ''}</p>
                 </div>
-                <div>
+                <div className="sec-one">
                     <label>Please add an image URL for your group below:</label>
                     <input
                         type='text'
@@ -164,7 +167,7 @@ function CreateGroup() {
                         required
                     />
                 </div>
-                <button type='submit' >Create Group</button>
+                <button type='submit' className="sub-btn">Create Group</button>
             </form>
 
         </div>
