@@ -72,3 +72,37 @@ img {
     flex-direction: column;
     gap: 40px
 }
+
+.btn-container {
+    display: flex;
+}
+
+.org-btn {
+    width: 200px;
+    height: 40px;
+    border-radius: 5px;
+    border-color: rgba(128, 128, 128, 0.541);
+    margin: 8px;
+}
+
+.org-btn:hover,
+.delete-group:hover {
+    background-color: rgba(150, 152, 177, 0.753);
+}
+
+.delete-group {
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    border-radius: 5px;
+    border: 2px outset grey;
+    border-color: rgba(128, 128, 128, 0.637);
+    background-color: rgb(168, 168, 168);
+    margin: 8px;
+}
+
+.delete-group:hover {
+    cursor: pointer;
+}

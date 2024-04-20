@@ -49,16 +49,16 @@ function Events() {
             </div>
             <div>
                 {events.map(event => (
-                    <div key={`${event.id}`} className='event-list' onClick={() => eventPage(event)}>
+                    <div key={`${event?.id}`} className='event-list' onClick={() => eventPage(event)}>
                     <div className='event-top-sec' >
                         <div>
                             <img src={event?.previewImage ? `${event.previewImage}` : 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg'} />
                         </div>
                         <div className='event-details'>
                             <div>
-`                               <p>{`${event.name}`}</p>
-                                <p>{event.startDate ? `Start Date: ${event.startDate.slice(0, 10)} · ${event.startDate.slice(11)}` : ''}</p>
-                                <p>{`${event.Venue.city}, ${event.Venue.state}`}</p>
+`                               <p>{`${event?.name}`}</p>
+                                <p>{event?.startDate ? `Start Date: ${event.startDate.slice(0, 10)} · ${event.startDate.slice(11)}` : ''}</p>
+                                <p>{`${event?.Venue.city}, ${event?.Venue.state}`}</p>
                             </div>
                         </div>
                         <h4>Enjoy a good time at this event</h4>

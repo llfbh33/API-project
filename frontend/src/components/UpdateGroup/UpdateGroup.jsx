@@ -1,33 +1,37 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as groupActions from '../../store/group';
-import * as groupImageActions from '../../store/imageByGroupId';
 import { useNavigate } from "react-router-dom";
 import { ApplicationContext } from "../../context/GroupContext";
 
-import './CreateGroup.css';
+// import './CreateGroup.css';
 
 
 
-function CreateGroup() {
+function UpdateGroup() {
+    let thisGroup = useSelector(state => state.groupById)
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [location, setLocation] = useState('');
-    const [name, setName] = useState('');
-    const [about, setAbout] = useState('');
-    const [url, setUrl] = useState('');
-    const [type, setType] = useState('');
-    const [isPrivate, setIsPrivate] = useState('');
+    const [location, setLocation] = useState(`${thisGroup.city}, ${thisGroup.state}`);
+    const [name, setName] = useState(thisGroup.name);
+    const [about, setAbout] = useState(thisGroup.about);
+    const [url] = useState(thisGroup.GroupImages[0].url);
+    const [type, setType] = useState(thisGroup.type);
+    const [isPrivate, setIsPrivate] = useState(thisGroup.private);
     const [errors, setErrors] = useState('');
-    const groups = useSelector(state => state.groups);
-    const [lastGroup] = useState(Object.values(groups).length);
-    let last = Object.values(groups)[lastGroup - 1].id + 1
-    // console.log('lastGroup', last)
+    const user = useSelector(state => state.session.user)
 
 
     const {setCurrGroupId, setCurrGroupPrev} = useContext(ApplicationContext);
 
     let validationErrors = {};
+
+
+    useEffect(() => {
+        if (!user || user.id !== thisGroup.organizerId) {
+            navigate('/')
+        }
+    }, [user])
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -35,7 +39,7 @@ function CreateGroup() {
         const cityStateArr = location.split(',')
 
         dispatch(
-            groupActions.createGroup(last, {
+            groupActions.editGroup(thisGroup.id, {
                 name,
                 about,
                 type,
@@ -44,14 +48,6 @@ function CreateGroup() {
                 state: cityStateArr[1]
             })
         )
-        .then(() => {
-            setErrors('');
-            setCurrGroupId(last);
-            dispatch(
-                groupImageActions.postGroupImages(last,
-                    {url, preview: true}))
-
-        })
         .catch(async (res) => {
             const data = await res.json()
             console.log('data', data)
@@ -61,16 +57,14 @@ function CreateGroup() {
             }
         })
         .then(() => {
+            dispatch(groupActions.getGroups())
+        })
+        .then(() => {
 
                 if(!Object.values(validationErrors).length) {
+                    setCurrGroupId(thisGroup.id);
                     setCurrGroupPrev(url);
-                    setLocation('');
-                    setName('');
-                    setAbout('');
-                    setUrl('');
-                    setType('');
-                    setIsPrivate('');
-                    navigate(`/groups/${last}`);
+                    navigate(`/groups/${thisGroup.id}`);
                 }
         })
     }
@@ -78,7 +72,7 @@ function CreateGroup() {
     return (
         <div className="create-group">
             <form onSubmit={handleSubmit} >
-                <h1>Start a new Group</h1>
+                <h1>Update your Group</h1>
                 <div>
                     <h2>{`Set your group's location`}</h2>
                     <div>
@@ -154,21 +148,11 @@ function CreateGroup() {
                     </select>
                     <p style={{color: 'red'}}>{errors.private ? `${errors.private}` : ''}</p>
                 </div>
-                <div>
-                    <label>Please add an image URL for your group below:</label>
-                    <input
-                        type='text'
-                        value={url}
-                        placeholder="Image Url"
-                        onChange={(e) => setUrl(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type='submit' >Create Group</button>
+                <button type='submit' >Update Group</button>
             </form>
 
         </div>
     )
 }
 
-export default CreateGroup;
+export default UpdateGroup;

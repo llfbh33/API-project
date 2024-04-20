@@ -1,0 +1,6 @@
+.create-group {
+    display: flex;
+    justify-content: center;
+    background-color: rgba(138, 138, 212, 0.37);
+    padding-bottom: 40px;
+}

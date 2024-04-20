@@ -2,13 +2,16 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import * as groupActions from '../../store/groupById';
+import DestroyGroup from '../Destroy/DestroyGroup';
 
 import './IndividualGroup.css';
 import { ApplicationContext } from '../../context/GroupContext';
 
 
+
 function IndividualGroup() {
     const {groupId} = useParams();
+    const {setCurrGroupId, currGroupPrev, setCurrEventPrev, currGroupId} = useContext(ApplicationContext);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     let group = useSelector(state => state.groupById)
@@ -21,16 +24,20 @@ function IndividualGroup() {
     const [loaded, setLoaded] = useState(false);
     const [picture, setPicture] = useState('');
 
-    const {currGroupPrev, setCurrEventPrev} = useContext(ApplicationContext);
+
 
     useEffect(() => {
         dispatch(groupActions.getGroupDetails(groupId))
+        .then(() => {
+            console.log('currGroup', currGroupId)
+            setCurrGroupId(group.id)
+            console.log('currGroup after', currGroupId)
+        })
     }, [dispatch])
 
     useEffect(() => {
-        if(currGroupPrev) setPicture(currGroupPrev)
-        else setPicture('https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg');
-    }, [group])
+        setPicture(currGroupPrev);
+    }, [currGroupPrev])
 
     useEffect(() => {
         if (user) {
@@ -53,8 +60,24 @@ function IndividualGroup() {
                 lastName: group.Organizer.lastName,
                 name: group.name,
                 image: group?.GroupImages[0].url || '',
-                city: group.city,
+                city: group?.city,
                 state: group.state}})
+    }
+
+    const createEvent = () => {
+
+        setCurrGroupId(group.id)
+
+        navigate(`/groups/${groupId}/events`, {state: {gId: group.id,
+            groupName: group.name,
+            id: group.organizerId,
+            firstName: group.Organizer.firstName,
+            lastName: group.Organizer.lastName,
+            name: group.name,
+            image: group?.GroupImages[0].url || '',
+            city: group?.city,
+            state: group.state
+            }})
     }
 
     return (
@@ -70,7 +93,7 @@ function IndividualGroup() {
                 <div className='bottom-section'>
                     <div>
                         <h1>{`${group.name}`}</h1>
-                        <p>{`${group.city}, ${group.state}`}</p>
+                        <p>{`${group?.city}, ${group.state}`}</p>
                         <p>{`Events: ${currEvents.length} · `}{group.private ? 'Private' : 'Public'}</p>
                         <p>{group.Organizer ? `Organized by: ${group.Organizer.firstName} ${group.Organizer.lastName}` : ''} </p>
                     </div>
@@ -79,6 +102,20 @@ function IndividualGroup() {
                             hidden={user && !organizer ? false : true}
                             onClick={() => alert('Feature Coming Soon')}
                             >Join This Group</button>
+                    </div>
+                    <div className='btn-container'>
+                        <button className='org-btn'
+                            hidden={!organizer}
+                            onClick={() => navigate('/updateGroup')}
+                            >Update
+                        </button>
+                        <div
+                            hidden={!organizer}
+                            className={!organizer ? '' :'delete-group'}
+                            >
+                            {<DestroyGroup organizer={organizer} />}
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -89,16 +126,7 @@ function IndividualGroup() {
                 <p>{`${group.about}`}</p>
                 <button className='org-btn'
                 hidden={!organizer}
-                onClick={() => navigate('/createEvent', {state: {gId: group.id,
-                                                                groupName: group.name,
-                                                                id: group.organizerId,
-                                                                firstName: group.Organizer.firstName,
-                                                                lastName: group.Organizer.lastName,
-                                                                name: group.name,
-                                                                image: group?.GroupImages[0].url || '',
-                                                                city: group.city,
-                                                                state: group.state
-                                                                }})}
+                onClick={() => createEvent()}
                 >Create Event
                 </button>
             </div>
@@ -106,23 +134,25 @@ function IndividualGroup() {
             <h2>{`Events (${currEvents.length})`}</h2>
                 {currEvents.map(event => (
                     <div key={`${event.id}`}>
-                        <div className='event-top-sec' onClick={() => seeEvent(event.id, event.previewImage)}>
+                        <div className='event-top-sec' >
                             <div>
-                                <img src={`${event.previewImage}`} />
+                                <img src={`${event.previewImage}`} onClick={() => seeEvent(event.id, event.previewImage)}/>
                             </div>
                             <div className='event-details'>
-                                <div>
+                                <div onClick={() => seeEvent(event.id, event.previewImage)}>
     `                               <p>{`${event.name}`}</p>
                                     <p>{event.startDate ? `Start Date: ${event.startDate.slice(0, 10)} · ${event.startDate.slice(11)}` : ''}</p>
-                                    <p>{`${event.Venue.city}, ${event.Venue.state}`}</p>
+                                    <p>{event.Venue ? `${event?.Venue.city}, ${event.Venue.state}` : ''}</p>
                                 </div>
                                 <div>
                                     <button className='org-btn'
                                         hidden={!organizer}
+                                        onClick={() => alert('feature coming soon')}
                                         >Update
                                     </button>
                                     <button className='org-btn'
                                         hidden={!organizer}
+                                        onClick={() => alert('feature coming soon')}
                                         >Delete
                                     </button>
                                 </div>

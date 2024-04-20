@@ -36,6 +36,16 @@ const seedGroupImages = [
     groupId: 3,
     url: "https://plus.unsplash.com/premium_photo-1668606763482-8dd2042c934e?q=80&w=2564&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     preview: true
+  },
+  {
+    groupId: 4,
+    url: "https://cdn.pixabay.com/photo/2016/10/02/20/41/dog-1710409_1280.jpg",
+    preview: true
+  },
+  {
+    groupId: 5,
+    url: "https://cdn.pixabay.com/photo/2019/10/05/17/58/pet-4528469_1280.jpg",
+    preview: true
   }
 ];
 

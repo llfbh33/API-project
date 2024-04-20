@@ -24,7 +24,7 @@ const seedEventImages = [
   },
   {
     eventId: 2,
-    url: "https://www.enjoyillinois.com/assets/Tourism-Operators/images/Old-Plank-Road-Trail-main.jpg",
+    url: "https://cdn.pixabay.com/photo/2020/03/16/16/12/sunset-4937516_1280.jpg",
     preview: true
   },
   {
@@ -41,6 +41,16 @@ const seedEventImages = [
     eventId: 3,
     url: "https://s.hdnux.com/photos/01/01/00/72/17043091/8/rawImage.jpg",
     preview: false
+  },
+  {
+    eventId: 4,
+    url: "https://cdn.pixabay.com/photo/2017/01/30/23/22/puppy-2022351_1280.jpg",
+    preview: true
+  },
+  {
+    eventId: 5,
+    url: "https://cdn.pixabay.com/photo/2019/10/05/17/58/pet-4528469_1280.jpg",
+    preview: true
   },
 ]
 

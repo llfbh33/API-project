@@ -1,0 +1,32 @@
+.create-event {
+    display: flex;
+    justify-content: center;
+    background-color: rgba(138, 138, 212, 0.37);
+    padding-bottom: 40px;
+}
+
+label {
+    font-size: 18px;
+}
+
+.combo {
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+}
+
+.create-btn {
+    display: flex;
+    justify-content: center;
+}
+
+.create-btn > button {
+    width: 200px;
+    height: 40px;
+    border-radius: 5px;
+    border-color: rgba(128, 128, 128, 0.541);
+}
+
+input {
+    height: 25px
+}

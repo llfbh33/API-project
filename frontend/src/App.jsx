@@ -15,6 +15,7 @@ import IndividualEvent from './components/IndividualEvent/IndividualEvent';
 import Events from './components/Events/Events';
 import CreateGroup from './components/CreateGroup/CreateGroup';
 import CreateEvent from './components/CreateEvent/CreateEvent';
+import UpdateGroup from './components/UpdateGroup/UpdateGroup';
 
 
 function Layout() {
@@ -75,8 +76,12 @@ const router = createBrowserRouter([
         element: <CreateGroup />
       },
       {
-        path: '/createEvent',
+        path: '/groups/:groupId/events',
         element: <CreateEvent />
+      },
+      {
+        path: '/updateGroup',
+        element: <UpdateGroup />
       },
       {
         path: '*',

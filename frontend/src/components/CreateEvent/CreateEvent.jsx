@@ -1,11 +1,15 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as eventActions from '../../store/events';
 import * as eventImageActions from '../../store/imagesByEventId';
-import { useLocation, useNavigate } from "react-router-dom";
+import * as groupActions from '../../store/groupById';
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ApplicationContext } from "../../context/GroupContext";
 
+import './CreateEvent.css';
+
 function CreateEvent() {
+    const {groupId} = useParams();
     const location = useLocation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -16,24 +20,63 @@ function CreateEvent() {
     const [endDate, setEndDate] = useState('')
     const [about, setAbout] = useState('');
     const [url, setUrl] = useState('');
-    const {groupId} = useContext(ApplicationContext);
+    const {currGroupId, setCurrGroupId, setCurrEventPrev} = useContext(ApplicationContext);
     // const [groupId] = useState(location.state.gId)
+    let group = useSelector(state => state.groupById);
 
     const [errors, setErrors] = useState('');
     const events = useSelector(state => state.events);
 
-    const [eventId] = useState(Object.values(events).length + 1);
+    const [eventId] = useState(Object.values(events).length + 1); // this will need to change before we set up delete
+
     let validationErrors = {};
 
-    // console.log(location.state.id) // does have the id in it
+    useEffect(() => {
+        dispatch(groupActions.getGroupDetails(groupId))
+        .then(() => {
+            console.log('currGroup', currGroupId)
+            setCurrGroupId(group.id)
+            console.log('currGroup after', currGroupId)
+        })
+    }, [dispatch])
+
+    const adjustStartTime = () => {
+        let start = startDate.split(', ');
+        let amPm = start[1].slice(6)
+        let minutes = start[1].slice(3, 5)
+        let hour = parseInt(start[1].slice(0, 2))
+        if (amPm.toUpperCase() === 'PM') hour += 12;
+        let adjustedTime = `${hour}:${minutes}`
+        let startReturn = `${start[0]} ${adjustedTime}:00`
+        console.log(startReturn)
+        setStartDate(startReturn)
+        return
+    }
+
+    const adjustEndTime = () => {
+        let start = endDate.split(', ');
+        let amPm = start[1].slice(6)
+        let minutes = start[1].slice(3, 5)
+        let hour = parseInt(start[1].slice(0, 2))
+        if (amPm.toUpperCase() === 'PM') hour += 12;
+        let adjustedTime = `${hour}:${minutes}`
+        let startReturn = `${start[0]} ${adjustedTime}:00`
+        console.log(startReturn)
+        setEndDate(startReturn)
+        return
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // console.log(groupId, location.state.groupName)
+        setErrors('');
+
+        adjustStartTime()
+        adjustEndTime()
 
         dispatch(
-            eventActions.createEvent(groupId, eventId, {
-                venueId: 1,
+
+            eventActions.createEvent(currGroupId, eventId, {
+                venueId: '1',
                 name,
                 type,
                 capacity: 10,
@@ -44,7 +87,6 @@ function CreateEvent() {
             })
         )
         .then(() => {
-            setErrors('');
             dispatch(
                 eventImageActions.postEventImages(eventId,
                     {url, preview: true}))
@@ -59,8 +101,12 @@ function CreateEvent() {
             }
         })
         .then(() => {
+            dispatch(eventActions.getEvents())
+        })
+        .then(() => {
             console.log(location.state.id)
                 if(!Object.values(validationErrors).length) {
+                    setCurrEventPrev(url)
                     setName('');
                     setType('');
                     setPrice('');
@@ -69,10 +115,10 @@ function CreateEvent() {
                     setAbout('');
                     setUrl('');
                     navigate(`/events/${eventId}`, {state: {
-                                                    id: location.state.id,
+                                                    id: group.organizerId,
                                                     firstName: location.state.firstName,
                                                     lastName: location.state.lastName,
-                                                    name: location.state.name,
+                                                    name: group.name,
                                                     image: location.state.image,
                                                     city: location.state.city,
                                                     state: location.state.state,
@@ -83,10 +129,10 @@ function CreateEvent() {
     }
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <h1>Create a New Event for {`${location.state.groupName}`}</h1>
-                <div>
+        <div className="create-event">
+            <form onSubmit={handleSubmit} >
+                <h1>Create a New Event for {`${group.name}`}</h1>
+                <div className="combo">
                     <label>What is the name of your event?</label>
                     <input
                         type='text'
@@ -97,18 +143,19 @@ function CreateEvent() {
                     />
                     <p style={{color: 'red'}}>{errors.name ? `${errors.name}` : ''}</p>
                 </div>
-                <div>
+                <div className="combo">
                     <label>Is this an in-person or online group?</label>
                     <select
                         value={type}
                         onChange={(e) => setType(e.target.value)}
                         >
+                        <option value={''} disabled>Choose One</option>
                         <option>In person</option>
                         <option>Online</option>
                     </select>
                     <p style={{color: 'red'}}>{errors.type ? `${errors.type}` : ''}</p>
                 </div>
-                <div>
+                <div className="combo">
                     <label>What is the price for your event?</label>
                     <input
                         type='number'
@@ -118,7 +165,7 @@ function CreateEvent() {
                     />
                     <p style={{color: 'red'}}>{errors.name ? `${errors.name}` : ''}</p>
                 </div>
-                <div>
+                <div className="combo">
                     <label>When does your event start?</label>
                     <input
                         type='text'
@@ -129,7 +176,7 @@ function CreateEvent() {
                     />
                     <p style={{color: 'red'}}>{errors.name ? `${errors.name}` : ''}</p>
                 </div>
-                <div>
+                <div className="combo">
                     <label>When does your event end?</label>
                     <input
                         type='text'
@@ -140,7 +187,7 @@ function CreateEvent() {
                     />
                     <p style={{color: 'red'}}>{errors.name ? `${errors.name}` : ''}</p>
                 </div>
-                <div>
+                <div className="combo">
                     <label>Please add an image URL for your event below:</label>
                     <input
                         type='text'
@@ -150,7 +197,7 @@ function CreateEvent() {
                         required
                     />
                 </div>
-                <div>
+                <div className="combo">
                     <label>Please describe your event</label>
                     <textarea
                         value={about}
@@ -161,7 +208,9 @@ function CreateEvent() {
                     />
                     <p style={{color: 'red'}}>{errors.about ? `${errors.about}` : ''}</p>
                 </div>
-                <button type='submit' >Create Event</button>
+                <div className="create-btn">
+                    <button type='submit' >Create Event</button>
+                </div>
             </form>
 
         </div>

@@ -19,8 +19,9 @@ function IndividualEvent() {
     const navigate = useNavigate();
     const {eventId} = useParams();
 
-    let event = useSelector(state => state.eventById);
-    let user = useSelector(state => state.session.user);
+    const group = useSelector(state => state.groupById);
+    const event = useSelector(state => state.eventById);
+    const user = useSelector(state => state.session.user);
 
     const [loaded, setLoaded] = useState(false);
     const [organizer, setOrganizer] = useState(false);
@@ -32,7 +33,7 @@ function IndividualEvent() {
         .then(() => {
             setCurrGroupId(event.groupId)
         })
-    }, [dispatch, event])
+    }, [dispatch])
 
     useEffect(() => {
         if (user && user.id === parseInt(location.state.id)) setOrganizer(true);
@@ -47,24 +48,33 @@ function IndividualEvent() {
         setCurrGroupPrev(location.state.image)
     }, [organizer, user, loaded, eventId, event, location])
 
+    const groupDetails = () => {
+
+        if (location.state.groupId) {
+            setCurrGroupId(group.id)
+            setCurrGroupPrev(location.state.image);
+            navigate(`/groups/${group.id}`)
+        } else navigate(`/groups/${currGroupId}`)
+    }
+
     return (
         <div className='individual'
             hidden={!loaded}>
             <div className='headliner'>
                 <Link to='/events'>{`<-- Events`}</Link>
                 <h1>{`${event.name}`}</h1>
-                <h4>Hosted by: {`${location.state.firstName} ${location.state.lastName}`}</h4>
+                <h4>Hosted by: {`${group.Organizer.firstName} ${group.Organizer.lastName}`}</h4>
             </div>
             <div className='img-info'>
                 <div>
                     {picture && picture === '' ? (<h1>Loading...</h1>) : ( <img src={picture} />)}
                 </div>
                 <div>
-                    <div className='group-section' onClick={() => navigate(`/groups/${currGroupId}`)}>
+                    <div className='group-section' onClick={() => groupDetails()}>
                         <img src={`${location.state.image}`} />
                         <div>
-                            <h2>{`${location.state.name}`}</h2>
-                            <h3>{`${location.state.city}, ${location.state.state}`}</h3>
+                            <h2>{`${group.name}`}</h2>
+                            <h3>{`${group.city}, ${group.state}`}</h3>
                         </div>
                     </div>
                     <div className='event-info'>
