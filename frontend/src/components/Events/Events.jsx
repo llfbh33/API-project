@@ -1,47 +1,15 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import './Events.css';
-// import groupsReducer from "../../store/group";
+
 import { useNavigate } from "react-router-dom";
-// import { useEffect } from "react";
-import * as groupActions from '../../store/groupById';
-import * as eventByIdActions from '../../store/eventById';
-import { useContext } from "react";
-import { ApplicationContext } from "../../context/GroupContext";
+
 
 function Events() {
 
     const navigate = useNavigate();
-    const dispatch = useDispatch();
 
     const eventsList = useSelector(state => state.events)
     const events = Object.values(eventsList)
-    const groupList = useSelector(state => state.groups);
-    const groups = Object.values(groupList);
-
-    const groupDetails = useSelector(state => state.groupById);
-    const {setCurrEventPrev} = useContext(ApplicationContext);
-
-
-
-    const eventPage = (event) => {
-        const thisGroup = groups.find(group => group.id === event.groupId)
-
-            dispatch(groupActions.getGroupDetails(thisGroup.id))
-        .then(() => {
-            dispatch(eventByIdActions.getEventDetails(event.id))
-        })
-        .then(() => {
-            setCurrEventPrev(event.previewImage)
-            navigate(`/events/${event.id}`, {state: {id: thisGroup.organizerId,
-                firstName: groupDetails.Organizer.firstName,
-                lastName: groupDetails.Organizer.lastName,
-                name: thisGroup.name,
-                eventName: event.name,
-                image: thisGroup.previewImage,
-                city: thisGroup.city,
-                state: thisGroup.state}})
-        })
-    }
 
     const organizeEvents = () => {
         let dates = []
@@ -75,7 +43,7 @@ function Events() {
             </div>
             <div>
                 {organizeEvents().map(event => (
-                    <div key={`${event?.id}`} className='event-list' onClick={() => eventPage(event)}>
+                    <div key={`${event?.id}`} className='event-list' onClick={() => navigate(`/loadingEvent/${event.id}/${event.groupId}`)}>
                     <div className='event-top-sec' >
                         <div>
                             <img src={event?.previewImage ? `${event.previewImage}` : 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg'} />

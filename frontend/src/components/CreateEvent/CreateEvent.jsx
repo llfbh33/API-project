@@ -137,16 +137,7 @@ function CreateEvent() {
                     setEndDate('');
                     setAbout('');
                     setUrl('');
-                    navigate(`/events/${eventId}`, {state: {
-                                                    id: group.organizerId,
-                                                    firstName: location.state.firstName,
-                                                    lastName: location.state.lastName,
-                                                    name: group.name,
-                                                    image: location.state.image,
-                                                    city: location.state.city,
-                                                    state: location.state.state,
-                                                    groupId: location.state.gId
-                                                    }});
+                    navigate(`/loadingEvent/${eventId}/${groupId}`)
                 }
         })
     }
@@ -219,6 +210,7 @@ function CreateEvent() {
                         onChange={(e) => setUrl(e.target.value)}
                         required
                     />
+                    {console.log(url)}
                 </div>
                 <div className="combo">
                     <label>Please describe your event</label>

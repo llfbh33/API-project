@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import * as groupActions from '../../store/groupById';
 import * as eventActions from '../../store/events';
+import * as singleEventActions from '../../store/eventById';
 import DestroyGroup from '../Destroy/DestroyGroup';
 
 import './IndividualGroup.css';
@@ -23,22 +24,31 @@ function IndividualGroup() {
 
     const [organizer, setOrganizer] = useState(false);
     const [loaded, setLoaded] = useState(false);
+    const [eventLoaded, setEventLoaded] = useState(false)
     const [picture, setPicture] = useState('');
+    const [eventId, setEventId] = useState('');
 
 
 
     useEffect(() => {
         dispatch(groupActions.getGroupDetails(groupId))
         .then(() => {
-            console.log('currGroup', currGroupId)
-            setCurrGroupId(group.id)
-            console.log('currGroup after', currGroupId)
+            
         })
     }, [dispatch])
 
     useEffect(() => {
-        setPicture(currGroupPrev);
-    }, [currGroupPrev])
+        if (Object.values(group)) {
+            let image = Object.values(group.GroupImages)
+            let imageFind = image.find(pic => pic)
+            // console.log(imageFind.url)
+            setPicture(imageFind.url)
+        }
+    }, [group])
+
+    useEffect(() => {
+        if (eventLoaded === true) navToEvent();
+    }, [eventLoaded])
 
     useEffect(() => {
         if (user) {
@@ -49,20 +59,25 @@ function IndividualGroup() {
         else setLoaded(false)
     }, [loaded, group, groupId, user])
 
-    const seeEvent = (id, image) => {
+
+    const navToEvent = () => {
+        setEventLoaded(false)
         setLoaded(false);
         setOrganizer(false);
         setPicture('');
-        setCurrEventPrev(image)
-        navigate(`/events/${id}`,
-            {state: {
-                id: group.organizerId,
-                firstName: group.Organizer.firstName,
-                lastName: group.Organizer.lastName,
-                name: group.name,
-                image: group?.GroupImages[0].url || '',
-                city: group?.city,
-                state: group.state}})
+        setCurrEventPrev(group?.GroupImages[0].url)
+        navigate(`/loadingEvent/${eventId}/${groupId}`)
+    }
+
+    const seeEvent = (id) => {
+        setEventId(id)
+        dispatch(groupActions.getGroupDetails(groupId))
+        .then(() => {
+            dispatch(singleEventActions.getEventDetails(id))
+        })
+        .then(() => {
+            setEventLoaded(true)
+        })
     }
 
     const createEvent = () => {
@@ -112,10 +127,12 @@ function IndividualGroup() {
         <div className='individual'
             hidden={!loaded}
             >
+                {console.log(group)}
             <div className='top-section'>
                 <div className='img-groups'>
                     <Link to='/groups' className='groups-link'>{ `<--- Groups`}</Link>
                     {picture && picture === '' ? (<h1>Loading...</h1>) : ( <img src={picture} />)}
+                    {/* <img src={group ? `${Object.values(group.GroupImages)[0]}` : ''} /> */}
                 </div>
                 <div className='bottom-section'>
                     <div>
