@@ -4,7 +4,7 @@ import { useState, useEffect, useContext } from 'react';
 import * as groupActions from '../../store/groupById';
 import * as eventActions from '../../store/events';
 import * as singleEventActions from '../../store/eventById';
-import DestroyGroup from '../Destroy/DestroyGroup';
+import DestroyGroup from '../DestroyGroup/DestroyGroup';
 
 import './IndividualGroup.css';
 import { ApplicationContext } from '../../context/GroupContext';
@@ -33,12 +33,13 @@ function IndividualGroup() {
     useEffect(() => {
         dispatch(groupActions.getGroupDetails(groupId))
         .then(() => {
-            
+
         })
     }, [dispatch])
 
     useEffect(() => {
-        if (Object.values(group)) {
+        console.log(group)
+        if (group) {
             let image = Object.values(group.GroupImages)
             let imageFind = image.find(pic => pic)
             // console.log(imageFind.url)
@@ -47,7 +48,9 @@ function IndividualGroup() {
     }, [group])
 
     useEffect(() => {
-        if (eventLoaded === true) navToEvent();
+        if (eventLoaded === true) {
+            navToEvent();
+        }
     }, [eventLoaded])
 
     useEffect(() => {

@@ -6,6 +6,8 @@ import { TbClockHour4 } from "react-icons/tb";
 import { AiOutlineDollar } from "react-icons/ai";
 import { TfiLocationPin } from "react-icons/tfi";
 
+import DestroyEvent from '../DestroyEvent/DestroyEvent';
+
 import './IndividualEvent.css'
 
 
@@ -91,10 +93,12 @@ function IndividualEvent() {
                                     onClick={() => alert('Function coming soon')}
                                     >Update
                                 </button>
-                                <button className='org-btn'
+                                <div
                                     hidden={!organizer}
-                                    >Delete
-                                </button>
+                                    className={!organizer ? '' :'delete-event'}
+                                    >
+                                    {<DestroyEvent organizer={organizer} />}
+                                </div>
                             </div>
                         </div>
                     </div>

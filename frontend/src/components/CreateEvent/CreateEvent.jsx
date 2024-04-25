@@ -4,14 +4,13 @@ import * as eventActions from '../../store/events';
 import * as eventImageActions from '../../store/imagesByEventId';
 import * as groupActions from '../../store/groupById';
 import * as groupsActions from '../../store/group';
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ApplicationContext } from "../../context/GroupContext";
 
 import './CreateEvent.css';
 
 function CreateEvent() {
     const {groupId} = useParams();
-    const location = useLocation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [name, setName] = useState('');
@@ -33,13 +32,9 @@ function CreateEvent() {
 
     useEffect(() => {
         let lastEvent = Object.values(events)
-        console.log('lastEvent:', lastEvent)
         let again = lastEvent.length - 1
-        console.log('again:', again)
         let lastEventEle = Object.values(events)[again]
-        console.log('lastEventEle:', lastEventEle)
         let identity = lastEventEle.id + 1;
-        console.log('identity', identity)
         setEventId(identity)
     }, [])
 
@@ -114,7 +109,6 @@ function CreateEvent() {
         })
         .catch(async (res) => {
             const data = await res.json()
-            console.log('data', data)
             if(data.errors) {
                 validationErrors = data.errors;
                 setErrors(validationErrors)
@@ -127,7 +121,7 @@ function CreateEvent() {
             dispatch(groupsActions.getGroups())
         })
         .then(() => {
-            console.log(location.state.id)
+
                 if(!Object.values(validationErrors).length) {
                     setCurrEventPrev(url)
                     setName('');
@@ -210,7 +204,6 @@ function CreateEvent() {
                         onChange={(e) => setUrl(e.target.value)}
                         required
                     />
-                    {console.log(url)}
                 </div>
                 <div className="combo">
                     <label>Please describe your event</label>

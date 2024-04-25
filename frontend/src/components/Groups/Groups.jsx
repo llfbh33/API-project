@@ -2,6 +2,7 @@ import { useDispatch, useSelector }  from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import * as groupActions from '../../store/group';
+import * as groupAction from '../../store/groupById';
 import { ApplicationContext } from "../../context/GroupContext";
 
 import './Group.css'
@@ -30,9 +31,13 @@ function Groups() {
     }
 
     const toGroupDetails = (id, image) => {
-        setCurrGroupId(id);
-        setCurrGroupPrev(image);
-        navigate(`/groups/${id}`);
+        dispatch(groupAction.getGroupDetails(id))
+        .then(() => {
+            setCurrGroupId(id);
+            setCurrGroupPrev(image);
+            navigate(`/groups/${id}`);
+        })
+
     }
 
     return (

@@ -3,6 +3,7 @@ import { csrfFetch } from "./csrf";
 
 const LOAD = 'events/LOAD';
 const CREATE = 'events/CREATE';
+const DESTROY = 'events/DESTROY';
 
 const load = list => ({
     type: LOAD,
@@ -13,6 +14,11 @@ const create = (event, id) => ({
     type: CREATE,
     event,
     id
+})
+
+const destroy = (eventId) => ({
+    type: DESTROY,
+    eventId
 })
 
 
@@ -48,6 +54,15 @@ export const createEvent = (groupId, eventId, event) => async dispatch => {
 }
 
 
+export const destroyEvent = (eventId) => async dispatch => {
+    const response = await csrfFetch(`/api/events/${eventId}`, {
+        method: 'DELETE',
+    });
+    dispatch(destroy(eventId));
+    return response;
+}
+
+
 const eventsReducer = (state = {}, action) => {
     switch (action.type) {
         case LOAD:
@@ -62,6 +77,11 @@ const eventsReducer = (state = {}, action) => {
             const thisEvent = {...state};
             thisEvent[action.id] = action.event;
             return thisEvent;
+        }
+        case DESTROY: {
+            const newState = {...state};
+            delete newState[action.eventId];
+            return newState;
         }
         default:
             return state;
