@@ -29,7 +29,7 @@ export const getEventImages = (id) => async dispatch => {
 
 export const postEventImages = (eventId, image) => async dispatch => {
     const { url, preview } = image;
-    const response = await csrfFetch(`api/events/${eventId}/images`, {
+    const response = await csrfFetch(`/api/events/${eventId}/images`, {
         method: 'POST',
         body: JSON.stringify({
             url,

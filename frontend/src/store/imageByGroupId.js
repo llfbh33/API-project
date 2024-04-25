@@ -29,7 +29,7 @@ export const getGroupImages = (id) => async dispatch => {
 
 export const postGroupImages = (groupId, image) => async dispatch => {
     const { url, preview } = image;
-    const response = await csrfFetch(`api/groups/${groupId}/images`, {
+    const response = await csrfFetch(`/api/groups/${groupId}/images`, {
         method: 'POST',
         body: JSON.stringify({
             url,

@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as groupActions from '../../store/group';
 import * as groupImageActions from '../../store/imageByGroupId';
@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { ApplicationContext } from "../../context/GroupContext";
 
 import './CreateGroup.css';
-
 
 
 function CreateGroup() {
@@ -19,16 +18,40 @@ function CreateGroup() {
     const [type, setType] = useState('');
     const [isPrivate, setIsPrivate] = useState('');
     const [errors, setErrors] = useState('');
-    const groups = useSelector(state => state.groups);
-    const [lastGroup] = useState(Object.values(groups).length);
-    let lastGroupEle = Object.values(groups)[lastGroup - 1]
-    let last = lastGroupEle.id + 1
-    // console.log('lastGroup', last)
+    const [loaded, setLoaded] = useState(false)
+
+    let getGroups = useSelector(state => state.groups)
+    let groups = Object.keys(getGroups)
+    let thisIsIt = groups[groups.length - 1]
 
 
     const {setCurrGroupId, setCurrGroupPrev} = useContext(ApplicationContext);
 
     let validationErrors = {};
+
+
+    useEffect(() => {
+        if (loaded === true) completeSubmit()
+    }, [loaded])
+
+    const completeSubmit= () => {
+
+        setErrors('');
+        setCurrGroupId(thisIsIt);
+        dispatch(
+            groupImageActions.postGroupImages(thisIsIt,
+                {url, preview: true}))
+        .then(() => {
+            setCurrGroupPrev(url);
+            setLocation('');
+            setName('');
+            setAbout('');
+            setUrl('');
+            setType('');
+            setIsPrivate('');
+            navigate(`/groups/${thisIsIt}`);
+        })
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -36,7 +59,7 @@ function CreateGroup() {
         const cityStateArr = location.split(',')
 
         dispatch(
-            groupActions.createGroup(last, {
+            groupActions.createGroup({
                 name,
                 about,
                 type,
@@ -46,36 +69,10 @@ function CreateGroup() {
             })
         )
         .then(() => {
-            setErrors('');
-            setCurrGroupId(last);
-            dispatch(
-                groupImageActions.postGroupImages(last,
-                    {url, preview: true}))
-
-        })
-        .catch(async (res) => {
-            const data = await res.json()
-            console.log('data', data)
-            if(data.errors) {
-                validationErrors = data.errors;
-                setErrors(validationErrors)
-            }
+            dispatch(groupActions.getGroups())  // still loaded without this but may still need it
         })
         .then(() => {
-            dispatch(groupActions.getGroups())
-        })
-        .then(() => {
-
-                if(!Object.values(validationErrors).length) {
-                    setCurrGroupPrev(url);
-                    setLocation('');
-                    setName('');
-                    setAbout('');
-                    setUrl('');
-                    setType('');
-                    setIsPrivate('');
-                    navigate(`/groups/${last}`);
-                }
+            setLoaded(true);
         })
     }
 
@@ -117,11 +114,11 @@ function CreateGroup() {
                     <div>
                         <div>
                             <p>{`People will see this when we promote your group, but you'll be able to add to it later, too.`}</p>
-                            <dev>
+                            <div>
                                 <p>{`1. What's the purpose of the group?`}</p>
                                 <p>2. Who should join?</p>
                                 <p>3. What will you do at your events?</p>
-                            </dev>
+                            </div>
                         </div>
                         <textarea
                             value={about}

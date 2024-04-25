@@ -14,10 +14,9 @@ const load = list => ({
     list
 })
 
-const create = (group, id) => ({
+const create = (data) => ({
     type: CREATE,
-    group,
-    id
+    data
 })
 
 const edit = (group, id) => ({
@@ -43,9 +42,9 @@ export const getGroups = () => async dispatch => {
     }
 }
 
-export const createGroup = (groupId, group) => async dispatch => {
+export const createGroup = (group) => async dispatch => {
     const { name, about, type, isPrivate, city, state } = group;
-    const response = await csrfFetch('api/groups', {
+    const response = await csrfFetch('/api/groups', {
         method: 'POST',
         body: JSON.stringify({
             name,
@@ -57,13 +56,15 @@ export const createGroup = (groupId, group) => async dispatch => {
         })
     });
     const data = await response.json();
-    dispatch(create(data.group, groupId));
+    console.log('data', data.group)
+    console.log('group', group)
+    dispatch(create(data));
     return response
 }
 
 export const editGroup = (groupId, group) => async dispatch => {
     const { name, about, type, isPrivate, city, state } = group;
-    const response = await csrfFetch(`api/groups/${groupId}`, {
+    const response = await csrfFetch(`/api/groups/${groupId}`, {
         method: 'PUT',
         body: JSON.stringify({
             name,
@@ -89,6 +90,7 @@ export const destroyGroup = (groupId) => async dispatch => {
 
 
 const groupsReducer = (state = {}, action) => {
+    // console.log('reducer', action.data)
     switch (action.type) {
         case LOAD: {
             const theseGroups = {};
@@ -99,7 +101,7 @@ const groupsReducer = (state = {}, action) => {
         }
         case CREATE: {
             const thisGroup = {};
-            thisGroup[action.id] = action.group;
+            thisGroup[action.data.id] = action.data;
             return {...state, ...thisGroup};
             }
         case EDIT: {
