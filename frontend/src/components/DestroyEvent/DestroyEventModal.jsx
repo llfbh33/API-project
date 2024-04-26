@@ -1,6 +1,6 @@
 // import { useEffect, useState } from 'react';
 // import * as sessionActions from '../../store/session';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useModal } from '../../context/Modal';
 import '../LoginFormModal/LoginForm.css';
 // import { useRef } from 'react';
@@ -13,20 +13,19 @@ import './DestroyEvent.css'
 import { useParams } from 'react-router-dom';
 
 
+
 function DestroyEventModal() {
   const dispatch = useDispatch();
   const {eventId} = useParams();
-//   const [credential, setCredential] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [errors, setErrors] = useState('');
   const { closeModal } = useModal();
   const navigate = useNavigate();
-//   const { currGroupId, setCurrGroupId } = useContext(ApplicationContext)
-
+  const group = useSelector(state => state.groupById)
+  const event = useSelector(state => state.event)
 
   const destroyEvent = (e) => {
     e.preventDefault();
-    dispatch(eventActions.destroyEvent(eventId))
+    console.log(event)
+    dispatch(eventActions.destroyEvent(eventId ? eventId : event.id))
     .then(closeModal)
     .then(() => {
         dispatch(eventActions.getEvents())
@@ -35,7 +34,7 @@ function DestroyEventModal() {
         dispatch(groupActions.getGroups())
     })
     .then(() => {
-        navigate('/events')
+        navigate(`/groups/${group.id}`)
     })
   };
 

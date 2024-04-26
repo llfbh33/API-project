@@ -18,7 +18,8 @@ function CreateGroup() {
     const [type, setType] = useState('');
     const [isPrivate, setIsPrivate] = useState('');
     const [errors, setErrors] = useState('');
-    const [loaded, setLoaded] = useState(false)
+    const [loaded, setLoaded] = useState(false);
+    const [hasSubmitted, setHasSubmitted] = useState(false);
 
     let getGroups = useSelector(state => state.groups)
     let groups = Object.keys(getGroups)
@@ -27,8 +28,17 @@ function CreateGroup() {
 
     const {setCurrGroupId, setCurrGroupPrev} = useContext(ApplicationContext);
 
-    let validationErrors = {};
-
+    useEffect(() => {
+        const validationErrors = {};
+        if (name.length > 60) validationErrors.name = "Name must be 60 characters or less";
+        if (name.length < 5) validationErrors.name = 'Name must be more than 5 characters'
+        if (about.length < 50) validationErrors.about = "About must be 50 characters or more";
+        if (!type) validationErrors.type = "Group must be Online or In person";
+        if (!isPrivate) validationErrors.private = "Group must be Private or Public";
+        if (location.length < 2 && !location.includes(',')) validationErrors.city = 'City is required';
+        if (!location.includes(',')) validationErrors.state = "State is required"
+        setErrors(validationErrors);
+    }, [name, location, type, about, isPrivate])
 
     useEffect(() => {
         if (loaded === true) completeSubmit()
@@ -36,7 +46,7 @@ function CreateGroup() {
 
     const completeSubmit= () => {
 
-        setErrors('');
+        setErrors('')
         setCurrGroupId(thisIsIt);
         dispatch(
             groupImageActions.postGroupImages(thisIsIt,
@@ -56,24 +66,29 @@ function CreateGroup() {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const cityStateArr = location.split(',')
+        if(Object.values(errors).length) {
+            return;
+        } else {
+            setHasSubmitted(false)
+            const cityStateArr = location.split(',')
 
-        dispatch(
-            groupActions.createGroup({
-                name,
-                about,
-                type,
-                isPrivate: isPrivate === 'private' ? true : false,
-                city: cityStateArr[0],
-                state: cityStateArr[1]
+            dispatch(
+                groupActions.createGroup({
+                    name,
+                    about,
+                    type,
+                    isPrivate: isPrivate === 'private' ? true : false,
+                    city: cityStateArr[0],
+                    state: cityStateArr[1]
+                })
+            )
+            .then(() => {
+                dispatch(groupActions.getGroups())  // still loaded without this but may still need it
             })
-        )
-        .then(() => {
-            dispatch(groupActions.getGroups())  // still loaded without this but may still need it
-        })
-        .then(() => {
-            setLoaded(true);
-        })
+            .then(() => {
+                setLoaded(true);
+            })
+        }
     }
 
     return (
@@ -91,8 +106,8 @@ function CreateGroup() {
                             onChange={(e) => setLocation(e.target.value)}
                             required
                         />
-                        {/* <p style={{color: 'red'}}>{errors.city ? `${errors.city}` : ''}</p> */}
-                        <p style={{color: 'red'}}>{errors.state ? `${errors.state}` : ''}</p>
+                        <p style={{color: 'red'}}>{hasSubmitted && errors.city ? `${errors.city}` : ''}</p>
+                        <p style={{color: 'red'}}>{hasSubmitted && errors.state ? `${errors.state}` : ''}</p>
                     {/* </div> */}
                 </div>
                 <div>
@@ -106,7 +121,7 @@ function CreateGroup() {
                             onChange={(e) => setName(e.target.value)}
                             required
                         />
-                        <p style={{color: 'red'}}>{errors.name ? `${errors.name}` : ''}</p>
+                        <p style={{color: 'red'}}>{hasSubmitted && errors.name ? `${errors.name}` : ''}</p>
                     </div>
                 </div>
                 <div>
@@ -127,7 +142,7 @@ function CreateGroup() {
                             required
                             rows='5'
                         />
-                        <p style={{color: 'red'}}>{errors.about ? `${errors.about}` : ''}</p>
+                        <p style={{color: 'red'}}>{hasSubmitted && errors.about ? `${errors.about}` : ''}</p>
                     </div>
                 </div>
                 <div className="sec-one">
@@ -140,7 +155,7 @@ function CreateGroup() {
                         <option>In person</option>
                         <option>Online</option>
                     </select>
-                    <p style={{color: 'red'}}>{errors.type ? `${errors.type}` : ''}</p>
+                    <p style={{color: 'red'}}>{hasSubmitted && errors.type ? `${errors.type}` : ''}</p>
                 </div>
                 <div className="sec-one">
                     <label>Is this group private or public?</label>
@@ -152,7 +167,7 @@ function CreateGroup() {
                         <option>Private</option>
                         <option>Public</option>
                     </select>
-                    <p style={{color: 'red'}}>{errors.private ? `${errors.private}` : ''}</p>
+                    <p style={{color: 'red'}}>{hasSubmitted && errors.private ? `${errors.private}` : ''}</p>
                 </div>
                 <div className="sec-one">
                     <label>Please add an image URL for your group below:</label>
@@ -164,7 +179,9 @@ function CreateGroup() {
                         required
                     />
                 </div>
-                <button type='submit' className="sub-btn">Create Group</button>
+                <div className="sub-btn-con">
+                    <button type='submit' className="sub-btn" onClick={() => setHasSubmitted(true)}>Create Group</button>
+                </div>
             </form>
 
         </div>

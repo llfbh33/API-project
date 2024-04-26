@@ -5,7 +5,7 @@ import DestroyEventModal from "./DestroyEventModal";
 import './DestroyEvent.css'
 
 
-function DestroyEvent({organizer}) {
+function DestroyEvent({organizer, event}) {
 
     const [showMenu, setShowMenu] = useState(false);
     const ulRef = useRef();
@@ -28,6 +28,7 @@ function DestroyEvent({organizer}) {
 
 
     return (
+
         <div className="destroy"
             hidden={!organizer}>
             <OpenModalMenuItem
@@ -35,6 +36,7 @@ function DestroyEvent({organizer}) {
                     onItemClick={closeMenu}
                     modalComponent={<DestroyEventModal />}
             />
+            {console.log(event)}
         </div>
     )
 }

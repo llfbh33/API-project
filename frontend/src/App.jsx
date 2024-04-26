@@ -81,7 +81,7 @@ const router = createBrowserRouter([
         element: <CreateEvent />
       },
       {
-        path: '/updateGroup',
+        path: '/groups/:groupId/update',
         element: <UpdateGroup />
       },
       {

@@ -33,30 +33,30 @@ function Events() {
     }
 
     return (
-        <div>
-            <div>
-                <div className='groups-title'>
-                    <h1 style={{textDecoration: 'underline'}}>Events</h1>
-                    <h1 style={{color: '#525151'}}>Groups</h1>
+        <div className="all-events">
+            <div className="container">
+                <div className='events-title'>
+                    <h1>Events</h1>
+                    <h2>Groups</h2>
                 </div>
-                <h3>Events in Meet Dogs</h3>
+                <h1>Events in Meet Dogs</h1>
             </div>
-            <div>
+            <div className="events-container">
                 {organizeEvents().map(event => (
                     <div key={`${event?.id}`} className='event-list' onClick={() => navigate(`/loadingEvent/${event.id}/${event.groupId}`)}>
-                    <div className='event-top-sec' >
-                        <div>
-                            <img src={event?.previewImage ? `${event.previewImage}` : 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg'} />
+                    <div className='event-card' >
+                        <div className='event-img'>
+                            <img  src={event?.previewImage ? `${event.previewImage}` : 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg'} />
                         </div>
-                        <div className='event-details'>
-                            <div>
-`                               <p>{`${event?.name}`}</p>
-                                <p>{event?.startDate ? `Start Date: ${new Date(event.startDate).toDateString()} · ${event.startDate.slice(11, 16)}` : ''}</p>
-                                <p>{`${event?.Venue.city}, ${event?.Venue.state}`}</p>
+                        <div>
+                            <div  className='event-details'>
+                               <h3>{`${event?.name}`}</h3>
+                                <h4>{event?.startDate ? `Start Date: ${new Date(event.startDate).toDateString()} · ${event.startDate.slice(11, 16)}` : ''}</h4>
+                                <h4>{`${event?.Venue.city}, ${event?.Venue.state}`}</h4>
                             </div>
                         </div>
                     </div>
-                    <p>{event.description ? `${event.description}` : ''}</p>
+                    <p className="description">{event.description ? `${event.description}` : ''}</p>
                 </div>
                 ))}
             </div>

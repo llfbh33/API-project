@@ -20,6 +20,7 @@ function CreateEvent() {
     const [endDate, setEndDate] = useState('')
     const [about, setAbout] = useState('');
     const [url, setUrl] = useState('');
+    const [hasSubmitted, setHasSubmitted] = useState(false);
     const {currGroupId, setCurrGroupId, setCurrEventPrev} = useContext(ApplicationContext);
 
     let group = useSelector(state => state.groupById);
@@ -27,8 +28,19 @@ function CreateEvent() {
     const [errors, setErrors] = useState('');
     const events = useSelector(state => state.events);
 
-    let validationErrors = {};
     const [eventId, setEventId] = useState('');
+
+    useEffect(() => {
+        const validationErrors = {};
+        if (name.length < 5) validationErrors.name = "Name must be atleast 5 characters";
+        if (about.length < 50) validationErrors.about = "Description is required";
+        if (!type) validationErrors.type = "Type must be 'Online' or 'In person'";
+        if (price < 0) validationErrors.price = "Price is invalid";
+        if (startDate < 10) validationErrors.startDate = 'Provide a start date in the indicated format';
+        if (endDate < 10) validationErrors.endDate = "Provide an end date in the indicated format"
+        if (!url.includes('https:')) validationErrors.url = "Provide a valid url"
+        setErrors(validationErrors);
+    }, [name, price, type, about, startDate, endDate])
 
     useEffect(() => {
         let lastEvent = Object.values(events)
@@ -86,54 +98,58 @@ function CreateEvent() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setErrors('');
 
-        dispatch(
-
-            eventActions.createEvent(currGroupId, eventId, {
-                venueId: '1',
-                name,
-                type,
-                capacity: 10,
-                price: price || '0',
-                description: about,
-                startDate,
-                endDate
-            })
-        )
-        .then(() => {
+        if(Object.values(errors).length) {
+            return;
+        } else {
+            setHasSubmitted(false)
             dispatch(
-                eventImageActions.postEventImages(eventId,
-                    {url, preview: true}))
 
-        })
-        .catch(async (res) => {
-            const data = await res.json()
-            if(data.errors) {
-                validationErrors = data.errors;
-                setErrors(validationErrors)
-            }
-        })
-        .then(() => {
-            dispatch(eventActions.getEvents())
-        })
-        .then(() => {
-            dispatch(groupsActions.getGroups())
-        })
-        .then(() => {
+                eventActions.createEvent(currGroupId, eventId, {
+                    venueId: '1',
+                    name,
+                    type,
+                    capacity: 10,
+                    price: price || '0',
+                    description: about,
+                    startDate,
+                    endDate
+                })
+            )
+            .then(() => {
+                dispatch(
+                    eventImageActions.postEventImages(eventId,
+                        {url, preview: true}))
 
-                if(!Object.values(validationErrors).length) {
-                    setCurrEventPrev(url)
-                    setName('');
-                    setType('');
-                    setPrice('');
-                    setStartDate('');
-                    setEndDate('');
-                    setAbout('');
-                    setUrl('');
-                    navigate(`/loadingEvent/${eventId}/${groupId}`)
-                }
-        })
+            })
+            // .catch(async (res) => {
+            //     const data = await res.json()
+            //     if(data.errors) {
+            //         validationErrors = data.errors;
+            //         setErrors(validationErrors)
+            //     }
+            // })
+            .then(() => {
+                dispatch(eventActions.getEvents())
+            })
+            .then(() => {
+                dispatch(groupsActions.getGroups())
+            })
+            .then(() => {
+
+                    if(!Object.values(errors).length) {
+                        setCurrEventPrev(url)
+                        setName('');
+                        setType('');
+                        setPrice('');
+                        setStartDate('');
+                        setEndDate('');
+                        setAbout('');
+                        setUrl('');
+                        navigate(`/loadingEvent/${eventId}/${groupId}`)
+                    }
+            })
+        }
     }
 
     return (
@@ -149,7 +165,7 @@ function CreateEvent() {
                         onChange={(e) => setName(e.target.value)}
                         required
                     />
-                    <p style={{color: 'red'}}>{errors.name ? `${errors.name}` : ''}</p>
+                    <p style={{color: 'red'}}>{hasSubmitted && errors.name ? `${errors.name}` : ''}</p>
                 </div>
                 <div className="combo">
                     <label>Is this an in-person or online group?</label>
@@ -161,7 +177,7 @@ function CreateEvent() {
                         <option>In person</option>
                         <option>Online</option>
                     </select>
-                    <p style={{color: 'red'}}>{errors.type ? `${errors.type}` : ''}</p>
+                    <p style={{color: 'red'}}>{hasSubmitted && errors.type ? `${errors.type}` : ''}</p>
                 </div>
                 <div className="combo">
                     <label>What is the price for your event?</label>
@@ -171,7 +187,7 @@ function CreateEvent() {
                         onChange={(e) => setPrice(e.target.value)}
                         required
                     />
-                    <p style={{color: 'red'}}>{errors.name ? `${errors.name}` : ''}</p>
+                    <p style={{color: 'red'}}>{hasSubmitted && errors.price ? `${errors.price}` : ''}</p>
                 </div>
                 <div className="combo">
                     <label>When does your event start?</label>
@@ -182,7 +198,7 @@ function CreateEvent() {
                         onChange={(e) => setStartDate(e.target.value)}
                         required
                     />
-                    <p style={{color: 'red'}}>{errors.name ? `${errors.name}` : ''}</p>
+                    <p style={{color: 'red'}}>{hasSubmitted && errors.name ? `${errors.name}` : ''}</p>
                 </div>
                 <div className="combo">
                     <label>When does your event end?</label>
@@ -193,7 +209,7 @@ function CreateEvent() {
                         onChange={(e) => setEndDate(e.target.value)}
                         required
                     />
-                    <p style={{color: 'red'}}>{errors.name ? `${errors.name}` : ''}</p>
+                    <p style={{color: 'red'}}>{hasSubmitted && errors.name ? `${errors.name}` : ''}</p>
                 </div>
                 <div className="combo">
                     <label>Please add an image URL for your event below:</label>
@@ -204,6 +220,7 @@ function CreateEvent() {
                         onChange={(e) => setUrl(e.target.value)}
                         required
                     />
+                    <p style={{color: 'red'}}>{hasSubmitted && errors.url ? `${errors.url}` : ''}</p>
                 </div>
                 <div className="combo">
                     <label>Please describe your event</label>
@@ -214,10 +231,10 @@ function CreateEvent() {
                         required
                         rows='8'
                     />
-                    <p style={{color: 'red'}}>{errors.about ? `${errors.about}` : ''}</p>
+                    <p style={{color: 'red'}}>{hasSubmitted && errors.about ? `${errors.about}` : ''}</p>
                 </div>
                 <div className="create-btn">
-                    <button type='submit' >Create Event</button>
+                    <button type='submit' onClick={() => setHasSubmitted(true)} >Create Event</button>
                 </div>
             </form>
 

@@ -5,6 +5,7 @@ import * as groupActions from '../../store/groupById';
 import * as eventActions from '../../store/events';
 import * as singleEventActions from '../../store/eventById';
 import DestroyGroup from '../DestroyGroup/DestroyGroup';
+import DestroyEvent from '../DestroyEvent/DestroyEvent';
 
 import './IndividualGroup.css';
 import { ApplicationContext } from '../../context/GroupContext';
@@ -13,7 +14,7 @@ import { ApplicationContext } from '../../context/GroupContext';
 
 function IndividualGroup() {
     const {groupId} = useParams();
-    const {setCurrGroupId, currGroupPrev, setCurrEventPrev, currGroupId} = useContext(ApplicationContext);
+    const {setCurrGroupId, setCurrEventPrev} = useContext(ApplicationContext);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     let group = useSelector(state => state.groupById)
@@ -38,11 +39,9 @@ function IndividualGroup() {
     }, [dispatch])
 
     useEffect(() => {
-        console.log(group)
         if (group) {
             let image = Object.values(group.GroupImages)
             let imageFind = image.find(pic => pic)
-            // console.log(imageFind.url)
             setPicture(imageFind.url)
         }
     }, [group])
@@ -125,19 +124,23 @@ function IndividualGroup() {
         return sorted;
     }
 
+    const chosenEvent= (id) => {
+        dispatch(singleEventActions.getEventDetails(id))
+    }
+
     return (
 
-        <div className='individual'
+        <div className='main-group-container'
             hidden={!loaded}
             >
-                {console.log(group)}
+            <Link to='/groups' className='groups-link'>{ `<--- Groups`}</Link>
             <div className='top-section'>
                 <div className='img-groups'>
-                    <Link to='/groups' className='groups-link'>{ `<--- Groups`}</Link>
+
                     {picture && picture === '' ? (<h1>Loading...</h1>) : ( <img src={picture} />)}
                     {/* <img src={group ? `${Object.values(group.GroupImages)[0]}` : ''} /> */}
                 </div>
-                <div className='bottom-section'>
+                <div className='top-group-dets'>
                     <div>
                         <h1>{`${group.name}`}</h1>
                         <p>{`${group?.city}, ${group.state}`}</p>
@@ -150,19 +153,20 @@ function IndividualGroup() {
                             onClick={() => alert('Feature Coming Soon')}
                             >Join This Group</button>
                     </div>
-                    <div className='btn-container'>
-                        <button className='org-btn'
-                            hidden={!organizer}
-                            onClick={() => navigate('/updateGroup')}
-                            >Update
-                        </button>
-                        <div
-                            hidden={!organizer}
-                            className={!organizer ? '' :'delete-group'}
-                            >
-                            {<DestroyGroup organizer={organizer} />}
+                    <div>
+                        <div className='btn-container'>
+                            <button className='org-btn'
+                                hidden={!organizer}
+                                onClick={() => navigate(`/groups/${groupId}/update`)}
+                                >Update
+                            </button>
+                            <div
+                                hidden={!organizer}
+                                className={!organizer ? '' :'delete-group'}
+                                >
+                                {<DestroyGroup organizer={organizer} />}
+                            </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -190,16 +194,19 @@ function IndividualGroup() {
                                     <p>{event.Venue ? `${event?.Venue.city}, ${event.Venue.state}` : ''}</p>
                                 </div>
                                 <div>
-                                    <button className='org-btn'
-                                        hidden={!organizer}
-                                        onClick={() => alert('feature coming soon')}
-                                        >Update
-                                    </button>
-                                    <button className='org-btn'
-                                        hidden={!organizer}
-                                        onClick={() => alert('feature coming soon')}
-                                        >Delete
-                                    </button>
+                                    <div className='btn-container'>
+                                        <button className='org-btn'
+                                            hidden={!organizer}
+                                            onClick={() => alert('feature coming soon')}
+                                            >Update
+                                        </button>
+                                        <div onClick={() => chosenEvent(event.id)}
+                                            hidden={!organizer}
+                                            className={!organizer ? '' :'delete-event'}
+                                            >
+                                            { <DestroyEvent organizer={organizer} />}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div>

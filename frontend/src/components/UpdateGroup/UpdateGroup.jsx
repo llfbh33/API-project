@@ -9,6 +9,7 @@ import { ApplicationContext } from "../../context/GroupContext";
 
 
 function UpdateGroup() {
+    // const {groupId} = useParams();
     let thisGroup = useSelector(state => state.groupById)
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -50,7 +51,6 @@ function UpdateGroup() {
         )
         .catch(async (res) => {
             const data = await res.json()
-            console.log('data', data)
             if(data.errors) {
                 validationErrors = data.errors;
                 setErrors(validationErrors)
@@ -61,11 +61,11 @@ function UpdateGroup() {
         })
         .then(() => {
 
-                if(!Object.values(validationErrors).length) {
-                    setCurrGroupId(thisGroup.id);
-                    setCurrGroupPrev(url);
-                    navigate(`/groups/${thisGroup.id}`);
-                }
+            if(!Object.values(validationErrors).length) {
+                setCurrGroupId(thisGroup.id);
+                setCurrGroupPrev(url);
+                navigate(`/groups/${thisGroup.id}`);
+            }
         })
     }
 

@@ -1,11 +1,41 @@
-.individual {
-    background-color: rgba(158, 158, 201, 0.596);;
+.main-group-container {
+    /* background-color: rgb(218, 243, 218); */
+    margin: auto;
+    width: 70%;
+    margin-top: 40px;
 }
 
 img {
     width: 600px;
     height: 500px;
     object-fit: cover;
+}
+
+.top-group-dets {
+    border: 1px solid grey;
+    padding: 10px 50px;
+    border-radius: 20px;
+}
+
+.top-group-dets  > div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    text-align: center;
+    width: 600px;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.top-group-dets > div > h1 {
+    font-size: 40px;
+    text-decoration: underline;
+    margin-bottom: 0px;
+}
+
+.top-group-dets > div > p {
+    font-size: 25px;
 }
 
 .org-btn {
@@ -16,7 +46,10 @@ img {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10%
+    gap: 10%;
+    background-color: rgb(218, 243, 218);
+    border-radius: 30px;
+    height: 700px
 }
 
 .img-groups {
@@ -24,11 +57,15 @@ img {
     flex-direction: column;
 }
 
+.img-groups > img {
+    border: 2px solid grey;
+    border-radius: 20px;
+}
+
 .groups-link {
-    font-size: 20px;
+    font-size: 28px;
     color: black;
     text-decoration: none;
-    margin: 8px;
 }
 
 .groups-link:hover {
@@ -39,7 +76,6 @@ img {
 
 
 .join-btn {
-    margin-top: 100px;
     background-color: rgba(255, 0, 0, 0.514);
     width: 180px;
     height: 50px;
@@ -74,7 +110,7 @@ img {
 }
 
 .btn-container {
-    display: flex;
+    display: inline-flex
 }
 
 .org-btn {

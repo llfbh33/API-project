@@ -1,8 +1,9 @@
 /* TODO: Add sitewide styles */
 body {
-    background-image: url('https://images.pexels.com/photos/358904/pexels-photo-358904.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+    /* background-image: url('https://images.pexels.com/photos/358904/pexels-photo-358904.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'); */
     background-size: 100vw 100vh;
     background-attachment: fixed;
+    /* background-color: rgb(242, 244, 243); */
 }
 
 li {

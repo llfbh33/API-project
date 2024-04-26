@@ -1,20 +1,32 @@
 
 
 .individual {
-    background-color: rgba(158, 158, 201, 0.596);
-    width: 90%;
+    background-color: rgba(166, 188, 234, 0.411);
+    width: 80%;
     margin: auto;
-    padding: 20px 50px;
+    padding: 80px 50px;
+    border-radius: 20px;
+    border: 1px solid grey;
 }
 
-.headliner {
-    margin-left: 10%
+.headliner > h1 {
+    font-size: 40px;
+    text-decoration: underline;
+}
+
+.headliner > h4 {
+    font-size: 22px;
 }
 
 .img-info {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 10%;
+}
+
+.adjustment {
+    margin: 0px 130px;
 }
 
 .clock {
@@ -26,7 +38,7 @@
 .event-info {
     border: 1px solid grey;
     padding: 10px 50px;
-    border-radius: 20px;;
+    border-radius: 20px;
 }
 
 .group-section > img {

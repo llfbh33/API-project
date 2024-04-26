@@ -1,8 +1,96 @@
-.event-list:hover {
-    cursor: pointer;
+.all-events {
+    margin: 20px 25%;
+}
+
+.events-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.events-title {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.events-title > h1 {
+    font-size: 46px;
+    text-decoration: underline;
+}
+
+.events-title > h2 {
+    font-size: 46px;
+    color: rgba(128, 128, 128, 0.534)
 }
 
 .event-list {
     border-bottom: 1px solid grey;
-    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(218, 243, 218);
+    margin: 20px 0;
+    padding: 50px;
+    border-radius: 10px;
+    border: 1px solid grey;
+    width: 94%
+}
+
+.event-list:hover {
+    cursor: pointer;
+    img {
+        border: 4px ridge grey;
+    }
+    .event-details {
+        border: 2px solid grey;
+    }
+}
+
+.event-img {
+    width: 50%;
+    height: 350px;
+}
+
+.event-img > img {
+    max-width: 100%;
+    max-height: 100%;
+    border: 1px ridge grey;
+    border-radius: 10px;
+}
+
+.event-details  {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 450px;
+    border: 1px solid grey;
+    padding: 10px 50px;
+    border-radius: 20px;
+    height: 330px;
+
+}
+
+.event-details > h3 {
+    font-size: 30px;
+    text-decoration: underline;
+
+}
+
+.event-details > h4 {
+    font-size: 20px;
+}
+
+.event-card {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px
+}
+
+.description {
+    font-size: 22px;
+    font-weight: 500;
+    margin: 30px 60px
 }

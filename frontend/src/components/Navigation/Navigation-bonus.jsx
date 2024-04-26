@@ -13,23 +13,11 @@ function Navigation({ isLoaded }) {
 
 
   return (
-    <div className='header'>
+    <div className='nav-header'>
       <nav>
         <div>
           <div>
-            <NavLink to="/">Meet Dogs <TbDog /></NavLink>
-          </div>
-          <div>
-            {/* <NavLink to="/groups">All Groups</NavLink> */}
-          </div>
-          <div>
-            {/* <NavLink to="/groups">All Groups</NavLink> */}
-          </div>
-          <div>
-            {/* <NavLink to="/groups">All Groups</NavLink> */}
-          </div>
-          <div>
-            {/* <NavLink to="/groups">All Groups</NavLink> */}
+            <NavLink to="/">Meet Dogs . <TbDog /></NavLink>
           </div>
         </div>
         {isLoaded && (

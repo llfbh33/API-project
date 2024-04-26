@@ -29,11 +29,15 @@ function SignupFormModal() {
     }
   }, [email, password, username, firstName, lastName, confirmPassword, isDisabled])
 
+  useEffect(() => {
+
+  })
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setErrors({})
 
-    setIsDisabled(true);
+      setIsDisabled(true);
 
     if (password === confirmPassword) {
       setErrors({});
@@ -50,7 +54,7 @@ function SignupFormModal() {
         .then(closeModal)
         .catch(async (res) => {
           const data = await res.json();
-          console.log('data', data)
+          console.log(data)
           if (data?.errors) {
             setErrors(data.errors);
           }
@@ -59,7 +63,10 @@ function SignupFormModal() {
     return setErrors({
       confirmPassword: "Confirm Password field must be the same as the Password field"
     });
-  };
+
+    }
+
+
 
   return (
     <div className='modal'>
@@ -125,7 +132,7 @@ function SignupFormModal() {
           />
         </label>
         {errors.confirmPassword && <p style={{color: 'red'}} >{errors.confirmPassword}</p>}
-        <button type="submit" disabled={isDisabled}>Sign Up</button>
+        <button type="submit" disabled={isDisabled} >Sign Up</button>
       </form>
     </div>
   );
