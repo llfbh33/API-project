@@ -51,7 +51,7 @@ function Events() {
                         <div>
                             <div  className='event-details'>
                                <h3>{`${event?.name}`}</h3>
-                                <h4>{event?.startDate ? `Start Date: ${new Date(event.startDate).toDateString()} · ${event.startDate.slice(11, 16)}` : ''}</h4>
+                                <h4>{event?.startDate ? `Start Date: ${new Date(event.startDate).toDateString()} · ${new Date(event.startDate).toLocaleTimeString('en-US')}` : ''}</h4>
                                 <h4>{`${event?.Venue.city}, ${event?.Venue.state}`}</h4>
                             </div>
                         </div>

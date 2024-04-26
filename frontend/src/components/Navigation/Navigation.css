@@ -8,18 +8,19 @@
 
 .nav-header {
   border-bottom: 1px solid grey;
-  height: 80px
+  height: 80px;
+  position: sticky;
 }
 
 nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 400px;
+  /* height: 400px; */
   margin: 0 90px;
   margin-top: 30px;
   height: 50px;
-
+  position: sticky;
 }
 
 nav a,
@@ -33,7 +34,7 @@ nav a,
   width: 180px;
   border: solid 1px rgba(128, 128, 128, 0.285);
   border-radius: 30px;
-
+  position: sticky;
   font-size: 1.5em;
   margin: 10px;
   text-decoration: none;
@@ -50,6 +51,7 @@ nav a,
   font-size: 1.5em;
   margin: 10px;
   text-decoration: none;
+  position: sticky;
 }
 
 .nav-btn:hover {
@@ -76,6 +78,7 @@ nav a:hover,
 
 li {
   color: rgb(77, 74, 74);
+  position: sticky;
 }
 
 /* .favs {
@@ -109,17 +112,17 @@ li {
 .drop-down {
   color: white;
   position: relative;
-  right: 100px;
+  right: 18%;
   line-height: 1.8;
   background-color: rgba(10, 20, 75, 0.363);
   border: 2px solid rgb(52, 114, 194);
   padding: 15px;
-  width: 150px;
+  width: 180px;
 }
 
 .drop-down > li {
   color: white;
-  font-size: 18px;
+  font-size: 24px;
   margin-bottom: 15px;
 }
 
@@ -133,5 +136,5 @@ li {
 .all-groups {
   display: flex;
   align-items: center;
-  gap: 60px
+  gap: 60px;
 }

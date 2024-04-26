@@ -18,6 +18,7 @@ const EventsMediator = () => {
 
 
     useEffect(() => {
+        localStorage.groupId = groupId;
         dispatch(singleGroupAction.getGroupDetails(groupId))
         .then(() => {
             setTestLoad(true)

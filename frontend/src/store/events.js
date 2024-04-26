@@ -10,10 +10,9 @@ const load = list => ({
     list
 })
 
-const create = (event, id) => ({
+const create = (event) => ({
     type: CREATE,
     event,
-    id
 })
 
 const destroy = (eventId) => ({
@@ -32,7 +31,7 @@ export const getEvents = () => async dispatch => {
     }
 }
 
-export const createEvent = (groupId, eventId, event) => async dispatch => {
+export const createEvent = (groupId, event) => async dispatch => {
     const { venueId, name, type, capacity, price, description, startDate, endDate } = event;
     const response = await csrfFetch(`/api/groups/${groupId}/events`, {
         method: 'POST',
@@ -49,7 +48,8 @@ export const createEvent = (groupId, eventId, event) => async dispatch => {
         })
     });
     const data = await response.json();
-    dispatch(create(data.event, eventId));
+    console.log(data);
+    dispatch(create(data));
     return response
 }
 
@@ -74,9 +74,9 @@ const eventsReducer = (state = {}, action) => {
             return {...state, ...theseEvents}
         }
         case CREATE: {
-            const thisEvent = {...state};
-            thisEvent[action.id] = action.event;
-            return thisEvent;
+            const thisEvent = {};
+            thisEvent[action.event.id] = action.event;
+            return {...state, ...thisEvent}
         }
         case DESTROY: {
             const newState = {...state};

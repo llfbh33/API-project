@@ -21,14 +21,16 @@ function CreateEvent() {
     const [about, setAbout] = useState('');
     const [url, setUrl] = useState('');
     const [hasSubmitted, setHasSubmitted] = useState(false);
-    const {currGroupId, setCurrGroupId, setCurrEventPrev} = useContext(ApplicationContext);
+    const {setCurrGroupId, setCurrEventPrev} = useContext(ApplicationContext);
 
     let group = useSelector(state => state.groupById);
 
     const [errors, setErrors] = useState('');
-    const events = useSelector(state => state.events);
 
-    const [eventId, setEventId] = useState('');
+    const [loaded, setLoaded] = useState(false);
+    let getEvents = useSelector(state => state.events)
+    let eventKeys = Object.keys(getEvents)
+    let thisIsIt = eventKeys[eventKeys.length - 1]
 
     useEffect(() => {
         const validationErrors = {};
@@ -42,20 +44,21 @@ function CreateEvent() {
         setErrors(validationErrors);
     }, [name, price, type, about, startDate, endDate])
 
-    useEffect(() => {
-        let lastEvent = Object.values(events)
-        let again = lastEvent.length - 1
-        let lastEventEle = Object.values(events)[again]
-        let identity = lastEventEle.id + 1;
-        setEventId(identity)
-    }, [])
 
     useEffect(() => {
-        dispatch(groupActions.getGroupDetails(groupId))
+        dispatch(groupActions.getGroupDetails(parseInt(groupId)))
         .then(() => {
             setCurrGroupId(group.id)
         })
     }, [dispatch])
+
+    useEffect(() => {
+        if (hasSubmitted) {
+            let thisTime = startDate
+            let newTime = new Date(thisTime)
+            console.log(newTime)
+        }
+    }, [hasSubmitted])
 
     // const adjustStartTime = () => {
     //     let thisDate = startDate;
@@ -96,6 +99,40 @@ function CreateEvent() {
 
     // }
 
+    useEffect(() => {
+        if (loaded === true) completeSubmit()
+    }, [loaded])
+
+    const completeSubmit = () => {
+
+        setErrors({})
+
+        dispatch(
+            eventImageActions.postEventImages(thisIsIt,
+                {url, preview: true}))
+
+        .then(() => {
+            dispatch(eventActions.getEvents())
+        })
+        .then(() => {
+            dispatch(groupsActions.getGroups())
+        })
+        .then(() => {
+
+                if(!Object.values(errors).length) {
+                    setCurrEventPrev(url)
+                    setName('');
+                    setType('');
+                    setPrice('');
+                    setStartDate('');
+                    setEndDate('');
+                    setAbout('');
+                    setUrl('');
+                    navigate(`/loadingEvent/${thisIsIt}/${groupId}`)
+                }
+        })
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -105,7 +142,7 @@ function CreateEvent() {
             setHasSubmitted(false)
             dispatch(
 
-                eventActions.createEvent(currGroupId, eventId, {
+                eventActions.createEvent(groupId, {
                     venueId: '1',
                     name,
                     type,
@@ -117,37 +154,10 @@ function CreateEvent() {
                 })
             )
             .then(() => {
-                dispatch(
-                    eventImageActions.postEventImages(eventId,
-                        {url, preview: true}))
-
-            })
-            // .catch(async (res) => {
-            //     const data = await res.json()
-            //     if(data.errors) {
-            //         validationErrors = data.errors;
-            //         setErrors(validationErrors)
-            //     }
-            // })
-            .then(() => {
                 dispatch(eventActions.getEvents())
             })
             .then(() => {
-                dispatch(groupsActions.getGroups())
-            })
-            .then(() => {
-
-                    if(!Object.values(errors).length) {
-                        setCurrEventPrev(url)
-                        setName('');
-                        setType('');
-                        setPrice('');
-                        setStartDate('');
-                        setEndDate('');
-                        setAbout('');
-                        setUrl('');
-                        navigate(`/loadingEvent/${eventId}/${groupId}`)
-                    }
+                setLoaded(true)
             })
         }
     }

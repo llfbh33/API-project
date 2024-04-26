@@ -4,35 +4,38 @@ import * as groupActions from '../../store/group';
 import { useNavigate } from "react-router-dom";
 import { ApplicationContext } from "../../context/GroupContext";
 
-// import './CreateGroup.css';
+import './UpdateGroup.css'
 
 
 
 function UpdateGroup() {
     // const {groupId} = useParams();
-    let thisGroup = useSelector(state => state.groupById)
+    const user = useSelector(state => state.session.user)
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    let thisGroup = useSelector(state => state.groupById)
     const [location, setLocation] = useState(`${thisGroup.city}, ${thisGroup.state}`);
     const [name, setName] = useState(thisGroup.name);
     const [about, setAbout] = useState(thisGroup.about);
-    const [url] = useState(thisGroup.GroupImages[0].url);
     const [type, setType] = useState(thisGroup.type);
     const [isPrivate, setIsPrivate] = useState(thisGroup.private);
     const [errors, setErrors] = useState('');
-    const user = useSelector(state => state.session.user)
+    const [loaded, setLoaded] = useState(false);
 
 
-    const {setCurrGroupId, setCurrGroupPrev} = useContext(ApplicationContext);
+    const {setCurrGroupId} = useContext(ApplicationContext);
 
     let validationErrors = {};
 
-
     useEffect(() => {
-        if (!user || user.id !== thisGroup.organizerId) {
-            navigate('/')
+        if (Object.keys(thisGroup).length) {
+            setLoaded(true)
+            if (loaded && !user || user.id !== thisGroup.organizerId) {
+                navigate('/')
+            }
         }
-    }, [user])
+
+    }, [thisGroup, loaded, user])
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -63,7 +66,7 @@ function UpdateGroup() {
 
             if(!Object.values(validationErrors).length) {
                 setCurrGroupId(thisGroup.id);
-                setCurrGroupPrev(url);
+                setLoaded(false);
                 navigate(`/groups/${thisGroup.id}`);
             }
         })

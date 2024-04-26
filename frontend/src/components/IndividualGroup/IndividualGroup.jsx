@@ -33,12 +33,12 @@ function IndividualGroup() {
     useEffect(() => {
         dispatch(groupActions.getGroupDetails(groupId))
         .then(() => {
-
+            localStorage.groupId = groupId;
         })
     }, [dispatch])
 
     useEffect(() => {
-        if (group) {
+        if (group.GroupImages) {
             let image = Object.values(group.GroupImages)
             let imageFind = image.find(pic => pic)
             setPicture(imageFind.url)
@@ -72,6 +72,7 @@ function IndividualGroup() {
 
     const seeEvent = (id) => {
         setEventId(id)
+        localStorage.eventId = id;
         dispatch(groupActions.getGroupDetails(groupId))
         .then(() => {
             dispatch(singleEventActions.getEventDetails(id))
@@ -180,7 +181,7 @@ function IndividualGroup() {
                     <div key={`${event.id}`}>
                         <div className='event-top-sec' >
                             <div>
-                                <img src={`${event.previewImage}`} onClick={() => seeEvent(event.id, event.previewImage)}/>
+                                <img src={event.previewImage ? `${event.previewImage}` : 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg'} onClick={() => seeEvent(event.id, event.previewImage)}/>
                             </div>
                             <div className='event-details'>
                                 <div onClick={() => seeEvent(event.id, event.previewImage)}>
@@ -188,21 +189,6 @@ function IndividualGroup() {
                                     <p>{event.startDate ? `Start Date: ${new Date(event.startDate).toDateString()} · ${event.startDate.slice(11, 16)}` : ''}</p>
                                     <p>{event.Venue ? `${event?.Venue.city}, ${event.Venue.state}` : ''}</p>
                                 </div>
-                                {/* <div>
-                                    <div className='btn-container'>
-                                        <button className='org-btn'
-                                            hidden={!organizer}
-                                            onClick={() => alert('feature coming soon')}
-                                            >Update
-                                        </button>
-                                        <div onClick={() => chosenEvent(event.id)}
-                                            hidden={!organizer}
-                                            className={!organizer ? '' :'delete-event'}
-                                            >
-                                            { <DestroyEvent organizer={organizer} />}
-                                        </div>
-                                    </div>
-                                </div> */}
                             </div>
                             <div>
 

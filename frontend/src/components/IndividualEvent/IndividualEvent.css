@@ -62,12 +62,16 @@
 }
 
 .delete-event {
-    height: 36px;
-    width: 197px;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
     border-radius: 5px;
+    border: 2px outset grey;
+    border-color: rgba(128, 128, 128, 0.637);
+    background-color: rgb(168, 168, 168);
     margin: 8px;
-    background-color: darkgray;
-    border: 2px outset rgb(139, 138, 138);
 }
 
 /* need to fix the layout so that the title and pic are in one div

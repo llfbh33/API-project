@@ -46,7 +46,7 @@ function CreateGroup() {
 
     const completeSubmit= () => {
 
-        setErrors('')
+        setErrors({})
         setCurrGroupId(thisIsIt);
         dispatch(
             groupImageActions.postGroupImages(thisIsIt,
