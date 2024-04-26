@@ -1,5 +1,31 @@
 .main-container {
-    margin: 20px 25%
+    margin: 0px 20%;
+    /* margin: auto;
+    width: 70% */
+}
+
+.groups-title {
+    display: flex;
+    align-items: center;
+    gap: 1%;
+}
+
+.groups-title > h1 {
+    font-size: 3.2vw;
+    text-decoration: underline;
+}
+
+.groups-title > h2 {
+    font-size: 3.2vw;
+    color: rgba(128, 128, 128, 0.534)
+}
+
+.groups-title > h3 {
+    font-size: 3.2vw;
+}
+
+.groups-title-caption {
+    font-size: 2.0vw;
 }
 
 .group-container {
@@ -9,81 +35,71 @@
     width: 100%;
 }
 
-.groups-title {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.groups-title > h1 {
-    font-size: 46px;
-    text-decoration: underline;
-}
-
-.groups-title > h2 {
-    font-size: 46px;
-    color: rgba(128, 128, 128, 0.534)
-}
-
-
-.group-card {
-    border-bottom: 1px solid grey;
-    display: flex;
-    flex-direction: column;
+.group-card-container {
     background-color: rgb(218, 243, 218);
     margin: 20px 0;
-    padding: 50px;
-    border-radius: 10px;
-    border: 1px solid grey;
-    width: 94%
+    padding: 5%;
+    border-radius: 20px;
+    border: 1px ridge grey;
+    width: 100%;
+    height: 100%;
+}
+
+.group-card-container:hover {
+    cursor: pointer;
+    border: 3px solid grey;
 }
 
 .group-details {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 120px;
+    gap: 5%;
+    height: 100%;
 }
 
-.group-img {
+.group-img-container {
     width: 100%;
-    height: 380px;
+    height: 100%;
+    object-fit: contain;
 }
 
-.group-img > img {
-    max-width: 100%;
-    max-height: 100%;
+.group-img-container > img {
+    width: 100%;
+    height: 100%;
+    max-height: 600px;
     border: 1px ridge grey;
     border-radius: 10px;
 }
 
-.group-details> div > h3 {
-    font-size: 30px;
-    text-decoration: underline;
+.details-top-container {
+    width: 100%;
+    height: 100%;
+    border: 1px solid grey;
+    border-radius: 20px;
 }
 
-.group-details > div> h4 {
-    font-size: 20px;
-}
-
-.details {
+.details-container {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    width: 100%;
-    border: 1px solid grey;
-    padding: 10px 50px;
-    border-radius: 20px;
+    width: 90%;
+    padding: 6%;
+}
 
+.details-container > h3 {
+    font-size: 1.8vw;
+    text-decoration: underline;
+}
+
+.details-container > h4 {
+    font-size: 1.3vw;
+}
+
+.all-events-container {
+    display: flex;
+    flex-direction: column;
+    width: 80%
 }
 
 
-.group-details:hover {
-    cursor: pointer;
-    :is(img) {
-        border: 4px ridge grey;
-    }
-    .details {
-        border: 2px solid grey;
-    }
-}

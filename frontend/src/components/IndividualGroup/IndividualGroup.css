@@ -1,69 +1,19 @@
-.main-group-container {
+.individual-group-container {
     /* background-color: rgb(218, 243, 218); */
     margin: auto;
-    width: 70%;
-    margin-top: 40px;
-}
-
-img {
-    width: 600px;
-    height: 500px;
-    object-fit: cover;
-}
-
-.top-group-dets {
-    border: 1px solid grey;
-    padding: 10px 50px;
-    border-radius: 20px;
-}
-
-.top-group-dets  > div{
+    width: 75%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    align-content: center;
-    text-align: center;
-    width: 600px;
-    gap: 15px;
-    margin-bottom: 25px;
 }
 
-.top-group-dets > div > h1 {
-    font-size: 40px;
-    text-decoration: underline;
-    margin-bottom: 0px;
-}
-
-.top-group-dets > div > p {
-    font-size: 25px;
-}
-
-.org-btn {
-    background-color: darkgray;
-}
-
-.top-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10%;
-    background-color: rgb(218, 243, 218);
-    border-radius: 30px;
-    height: 700px
-}
-
-.img-groups {
-    display: flex;
-    flex-direction: column;
-}
-
-.img-groups > img {
-    border: 2px solid grey;
-    border-radius: 20px;
+.return-nav-link {
+    width: 100%;
+    margin-top: 4%
 }
 
 .groups-link {
-    font-size: 28px;
+    font-size: 1.5vw;
     color: black;
     text-decoration: none;
 }
@@ -71,58 +21,86 @@ img {
 .groups-link:hover {
     color: rgb(73, 73, 223)
 }
-/* set the buttons on the group page to work*/
 
-
-
-.join-btn {
-    background-color: rgba(255, 0, 0, 0.514);
-    width: 180px;
-    height: 50px;
+.top-section-container {
+    background-color: rgb(218, 243, 218);
+    padding: 5%;
     border-radius: 20px;
-    font-size: 18px;
-    font-weight: 700;
+    border: 1px ridge grey;
+    width: 100%;
+    height: 100%;
 }
 
-.join-btn:hover {
-    background-color: red;
-}
-
-.about-section {
-    margin: 80px 300px;
-
-}
-
-.event-top-sec {
+.top-section-details {
     display: flex;
     align-items: center;
-    gap: 12%
+    justify-content: center;
+    gap: 5%;
+    height: 100%;
 }
 
-.event-top-sec:hover {
-    cursor: pointer;
+.img-group {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
-.event-details {
+.img-group > img {
+    width: 100%;
+    height: 100%;
+    border: 1px ridge grey;
+    border-radius: 20px;
+}
+
+.top-group-details {
+    width: 100%;
+    height: 100%;
+    border: 1px solid grey;
+    border-radius: 20px;
+}
+
+.group-details-container {
     display: flex;
     flex-direction: column;
-    gap: 40px
+    align-items: center;
+    width: 90%;
+    height: 100%;
+    padding: 6%;
 }
 
-.event-details > div {
-    width: 400px;
+.group-details-container > div > h1 {
+    font-size: 2.5vw;
+    text-decoration: underline;
+    margin-bottom: 0px;
 }
 
-.btn-container {
-    display: inline-flex
+.group-details-container > div > h3 {
+    font-size: 1.5vw;
 }
 
-.org-btn {
-    width: 200px;
-    height: 40px;
-    border-radius: 5px;
+.btn-container,
+.join-group-btn {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5%;
+    width: 100%;
+    /* height: 100%; */
+    border-top: 1px solid grey;
+    border-bottom: 1px solid grey;
+    padding: 3% 0%;
+}
+
+.org-btn,
+.delete-group {
+    background-color: rgba(195, 191, 191, 0.694);
+    width: 100%;
     border-color: rgba(128, 128, 128, 0.541);
-    margin: 8px;
+    border-radius: 5px;
+    max-width: 180px;
+    font-size: 1.3vw;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    margin: 2% 0%;
 }
 
 .org-btn:hover,
@@ -132,15 +110,84 @@ img {
 }
 
 .delete-group {
-    color: black;
     display: flex;
-    align-items: center;
     justify-content: center;
-    width: 200px;
-    border-radius: 5px;
     border: 2px outset grey;
     border-color: rgba(128, 128, 128, 0.637);
-    background-color: rgb(168, 168, 168);
-    margin: 8px;
 }
 
+.about-section > h2 {
+    font-size: 1.6vw;
+}
+
+.about-section > p {
+    font-size: 1.2vw;
+}
+
+/* set the buttons on the group page to work*/
+
+.join-btn {
+    background-color: rgba(255, 0, 0, 0.514);
+    width: 45%;
+    height: 100%;
+    border-radius: 10px;
+    font-size: 1.4vw;
+    font-weight: 700;
+}
+
+.join-btn:hover {
+    background-color: red;
+}
+
+
+/* Event list*/
+
+.event-display-card-container {
+    width: 100%;
+    background-color: rgba(125, 196, 154, 0.29);
+    border-radius: 20px;
+    margin: 2% 0;
+    padding: 5%;
+}
+
+.event-top-sec {
+    display: flex;
+    align-items: center;
+    gap: 12%
+}
+
+.event-display-img-container {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.event-display-img {
+    width: 100%;
+    height: 100%
+}
+
+.group-event-details-top-container {
+    border: 1px solid grey;
+    border-radius: 20px;
+    width: 100%
+}
+
+.group-event-details-container {
+    padding: 10%;
+    width: 100%
+
+}
+
+/*
+
+
+.event-top-sec:hover {
+    cursor: pointer;
+}
+
+
+
+.event-details > div {
+    width: 400px;
+} */

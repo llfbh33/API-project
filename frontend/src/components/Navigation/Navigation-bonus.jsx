@@ -14,21 +14,27 @@ function Navigation({ isLoaded }) {
 
   return (
     <div className='nav-header'>
-      <nav>
-        <div>
-          <div>
-            <NavLink to="/">Meet Dogs . <TbDog /></NavLink>
+      <nav >
+        <div className='nav-home-a'>
+          <div >
+            <NavLink to="/" className='navigation-link' >Meet Dogs . <TbDog /></NavLink>
           </div>
         </div>
         {isLoaded && (
           <div className='all-groups'>
-            <NavLink to="/groups">View Groups</NavLink>
-            <NavLink to="/events">View Events</NavLink>
-            <button
-              hidden={!sessionUser}
-              className='nav-btn'
-              onClick={() => navigate('/createGroup')}
-                >Start a New Group</button>
+            <div className='nav-other-a'>
+              <NavLink to="/groups" className='navigation-link'>View Groups</NavLink>
+            </div>
+            <div className='nav-home-a'>
+              <NavLink to="/events" className='navigation-link'>View Events</NavLink>
+            </div>
+            <div>
+              <button
+                hidden={!sessionUser}
+                className='nav-btn'
+                onClick={() => navigate('/createGroup')}
+                  >Start a New Group</button>
+            </div>
             <ProfileButton user={sessionUser} />
           </div>
         )}

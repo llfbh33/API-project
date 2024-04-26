@@ -126,78 +126,83 @@ function IndividualGroup() {
 
     return (
 
-        <div className='main-group-container'
-            hidden={!loaded}
-            >
-            <Link to='/groups' className='groups-link'>{ `<--- Groups`}</Link>
-            <div className='top-section'>
-                <div className='img-groups'>
-
-                    {picture && picture === '' ? (<h1>Loading...</h1>) : ( <img src={picture} />)}
-                    {/* <img src={group ? `${Object.values(group.GroupImages)[0]}` : ''} /> */}
-                </div>
-                <div className='top-group-dets'>
-                    <div>
-                        <h1>{`${group.name}`}</h1>
-                        <p>{`${group?.city}, ${group.state}`}</p>
-                        <p>{`Events: ${currEvents.length} · `}{group.private ? 'Private' : 'Public'}</p>
-                        <p>{group.Organizer ? `Organized by: ${group.Organizer.firstName} ${group.Organizer.lastName}` : ''} </p>
+        <div className='individual-group-container'
+            hidden={!loaded}>
+            <div className='return-nav-link'>
+                <Link to='/groups' className='groups-link'>{ `<--- Groups`}</Link>
+            </div>
+            <div className='top-section-container'>
+                <div className='top-section-details'>
+                    <div className='img-group'>
+                        {picture && picture === '' ? (<h1>Loading...</h1>) : ( <img src={picture} />)}
                     </div>
-                    <div className='join-group-btn'>
-                        <button className='join-btn'
-                            hidden={user && !organizer ? false : true}
-                            onClick={() => alert('Feature Coming Soon')}
-                            >Join This Group</button>
-                    </div>
-                    <div>
-                        <div className='btn-container'>
-                            <button className='org-btn'
-                                hidden={!organizer}
-                                onClick={() => createEvent()}
-                                >Create Event
-                            </button>
-                            <button className='org-btn'
-                                hidden={!organizer}
-                                onClick={() => navigate(`/groups/${groupId}/update`)}
-                                >Update
-                            </button>
-                            <div
-                                hidden={!organizer}
-                                className={!organizer ? '' :'delete-group'}
-                                >
-                                {<DestroyGroup organizer={organizer} />}
+                    <div className='top-group-details'>
+                        <div className='group-details-container'>
+                            <div >
+                                <h1>{`${group.name}`}</h1>
+                                <h3>{`${group?.city}, ${group.state}`}</h3>
+                                <h3>{`Events: ${currEvents.length} · `}{group.private ? 'Private' : 'Public'}</h3>
+                                <h3>{group.Organizer ? `Organized by: ${group.Organizer.firstName} ${group.Organizer.lastName}` : ''} </h3>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className='about-section'>
-                <h2>{`What We're About`}</h2>
-                <p>{`${group.about}`}</p>
-            </div>
-            <div className='about-section'>
-            <h2>{`Events (${currEvents.length})`}</h2>
-                {organizeEvents().map(event => (
-                    <div key={`${event.id}`}>
-                        <div className='event-top-sec' >
+                            <div className={user && organizer ? '' : 'join-group-btn'}>
+                                <button className='join-btn'
+                                    hidden={user && !organizer ? false : true}
+                                    onClick={() => alert('Feature Coming Soon')}
+                                    >Join This Group</button>
+                            </div>
                             <div>
-                                <img src={event.previewImage ? `${event.previewImage}` : 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg'} onClick={() => seeEvent(event.id, event.previewImage)}/>
-                            </div>
-                            <div className='event-details'>
-                                <div onClick={() => seeEvent(event.id, event.previewImage)}>
-                                    <p>{`${event.name}`}</p>
-                                    <p>{event.startDate ? `Start Date: ${new Date(event.startDate).toDateString()} · ${event.startDate.slice(11, 16)}` : ''}</p>
-                                    <p>{event.Venue ? `${event?.Venue.city}, ${event.Venue.state}` : ''}</p>
+                                <div className='btn-container'>
+                                    <button className='org-btn'
+                                        hidden={!organizer}
+                                        onClick={() => createEvent()}
+                                        >Create Event
+                                    </button>
+                                    <button className='org-btn'
+                                        hidden={!organizer}
+                                        onClick={() => navigate(`/groups/${groupId}/update`)}
+                                        >Update
+                                    </button>
+                                    <div
+                                        hidden={!organizer}
+                                        className={!organizer ? '' :'delete-group'}
+                                        >
+                                        {<DestroyGroup organizer={organizer} />}
+                                    </div>
                                 </div>
                             </div>
-                            <div>
+                            <div className='about-section'>
+                                <h2>{`What We're About`}</h2>
+                                <p>{`${group.about}`}</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div className='all-events-container'>
+                <h2>{`Events (${currEvents.length})`}</h2>
+                    {organizeEvents().map(event => (
+                        <div key={`${event.id}`} className='event-display-card-container'>
+                            <div className='event-top-sec' >
+                                <div className='event-display-img-container'>
+                                    <img src={event.previewImage ? `${event.previewImage}` : 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg'} onClick={() => seeEvent(event.id, event.previewImage)} className='event-display-img'/>
+                                </div>
+                                <div className='group-event-details-top-container'>
+                                    <div onClick={() => seeEvent(event.id, event.previewImage)} className='group-event-details-container'>
+                                        <p>{`${event.name}`}</p>
+                                        <p>{event.startDate ? `Start Date: ${new Date(event.startDate).toDateString()} · ${new Date(event.startDate).toLocaleTimeString('en-US')}` : ''}</p>
+                                        <p>{event.Venue ? `${event?.Venue.city}, ${event.Venue.state}` : ''}</p>
+                                    </div>
+                                </div>
+                                <div>
+
+                                </div>
 
                             </div>
-
+                            <p>{event.description ? `${event.description}` : ''}</p>
                         </div>
-                        <p>{event.description ? `${event.description}` : ''}</p>
-                    </div>
-                ))}
+                    ))}
             </div>
         </div>
     )

@@ -1,66 +1,63 @@
-.profile-dropdown {
-  position: absolute;
-}
-
-.hidden {
-  display: none;
-}
-
-.nav-header {
-  border-bottom: 1px solid grey;
-  height: 80px;
-  position: sticky;
-}
-
 nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* height: 400px; */
-  margin: 0 90px;
-  margin-top: 30px;
-  height: 50px;
+  padding: 0 3%;
+  background-color: rgb(96, 173, 96);
+  border-bottom: 1px solid grey;
   position: sticky;
+
 }
 
-nav a,
-.favs {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: rgb(51, 51, 51);
-  background: white;
-  height: 80px;
-  width: 180px;
-  border: solid 1px rgba(128, 128, 128, 0.285);
-  border-radius: 30px;
-  position: sticky;
-  font-size: 1.5em;
-  margin: 10px;
-  text-decoration: none;
+.nav-home-a {
+  height: 100%;
+}
 
+.nav-other-a {
+  height: 100%;
+}
+
+.all-groups {
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 
 .nav-btn {
-  color: rgb(51, 51, 51);
-  background: white;
-  height: 80px;
-  width: 180px;
-  border: solid 1px rgba(128, 128, 128, 0.285);
-  border-radius: 30px;
-  font-size: 1.5em;
-  margin: 10px;
-  text-decoration: none;
-  position: sticky;
+  background-color: rgba(255, 255, 255, 0);
+  border: none;
+  max-width: 100%;
 }
 
-.nav-btn:hover {
-  cursor: pointer;
-  background-color: rgba(237, 244, 247, 0.416);
-  border: solid 2px rgba(128, 128, 128, 0.285);
+nav a,
+.favs,
+.nav-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(237, 244, 247, 0.416);
+  height: 100%;
+  width: 100%;
+  font-size: 1.6vw;
+  margin: 10px;
+  text-decoration: none;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.favs {
+  font-size: 4.0vw;
+  border-radius: 50%;
+  background-color: rgb(96, 173, 96);
+  border: 2px solid rgba(128, 128, 128, 0.484);
+  color: rgba(255, 255, 255, 0.724)
 }
 
 nav a:hover,
+.nav-btn:hover {
+  cursor: pointer;
+  color: rgb(149, 247, 190)
+}
+
 .favs:hover {
   cursor: pointer;
   background-color: rgba(237, 244, 247, 0.416);
@@ -71,70 +68,35 @@ nav a:hover,
 .nav-btn:active,
 .nav-btn:focus {
   font-weight: bold;
-  font-size: 1.7em;
-  background-color: rgba(214, 219, 246, 0.393);
+  font-size: 2.1vw;
+  color: white;
   padding: 1px;
 }
-
-li {
-  color: rgb(77, 74, 74);
-  position: sticky;
-}
-
-/* .favs {
-  width: 150px;
-  height: 68px;
-  font-size: 26px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 30px;
-  /* border: 5px solid green; */
-
-
-
-/* affects the login and signup clicks add a demo user to this list?
-.login {
-  font-size: 20px;
-  line-height: 1.5;
-  width: 100px;
-  position: relative;
-  right: 50px;
-  color: black;
-  /* background-color: rgb(233, 198, 198); */
-
 
 .login:hover {
   cursor: pointer;
 }
 
-
 .drop-down {
   color: white;
-  position: relative;
-  right: 18%;
-  line-height: 1.8;
-  background-color: rgba(10, 20, 75, 0.363);
-  border: 2px solid rgb(52, 114, 194);
-  padding: 15px;
-  width: 180px;
+  line-height: 2.5;
 }
 
 .drop-down > li {
   color: white;
-  font-size: 24px;
-  margin-bottom: 15px;
+  font-size: 1.7vw;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .drop-down > li > button {
   border: none;
   background-color: rgba(0, 0, 0, 0);
   color: white;
-  font-size: 16px;
+  font-size: 1.7vw;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.all-groups {
-  display: flex;
-  align-items: center;
-  gap: 60px;
+
+.hidden {
+  display: none;
 }

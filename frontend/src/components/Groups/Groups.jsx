@@ -45,22 +45,25 @@ function Groups() {
             <div>
                 <div className='groups-title'>
                     <h2>Events</h2>
+                    <h3> · </h3>
                     <h1>Groups</h1>
                 </div>
-                <h1 className="headline" >Groups in Meet Dogs</h1>
+                <h1 className="groups-title-caption" >Groups in Meet Dogs</h1>
             </div>
-            <div className='group-container'>
+        <div className='group-container'>
             {list.map(group =>  (
-                <div key={group?.id} className='group-card' onClick={() => toGroupDetails(group.id, group.previewImage)}>
+                <div key={group?.id} className='group-card-container' onClick={() => toGroupDetails(group.id, group.previewImage)}>
                     <div className="group-details">
-                        <div className="group-img">
+                        <div className="group-img-container">
                             <img src={group?.previewImage ? `${group?.previewImage}` : 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg'} />
                         </div>
-                        <div className="details">
-                            <h3>{`${group?.name}`}</h3>
-                            <h4>{`${group?.city}, ${group?.state}`}</h4>
-                            <h4>{`${group?.about}`}</h4>
-                            <h4>{eventCount(group?.id)} Events · {group?.private ? 'Private' : 'Public' }</h4>
+                        <div className="details-top-container">
+                            <div className="details-container">
+                                <h3>{`${group?.name}`}</h3>
+                                <h4>{`${group?.city}, ${group?.state}`}</h4>
+                                <h4>{`${group?.about}`}</h4>
+                                <h4>{eventCount(group?.id)} Events · {group?.private ? 'Private' : 'Public' }</h4>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -1,5 +1,29 @@
 .all-events {
-    margin: 20px 25%;
+    margin: 0px 20%;
+}
+
+.events-title {
+    display: flex;
+    align-items: center;
+    gap: 1%;
+}
+
+.events-title > h1 {
+    font-size: 3.2vw;
+    text-decoration: underline;
+}
+
+.events-title > h2 {
+    font-size: 3.2vw;
+    color: rgba(128, 128, 128, 0.534)
+}
+
+.events-title > h3 {
+    font-size: 3.2vw;
+}
+
+.events-title-caption {
+    font-size: 2.0vw;
 }
 
 .events-container {
@@ -9,99 +33,67 @@
     width: 100%;
 }
 
-.events-title {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.events-title > h1 {
-    font-size: 46px;
-    text-decoration: underline;
-}
-
-.events-title > h2 {
-    font-size: 46px;
-    color: rgba(128, 128, 128, 0.534)
-}
-
-.event-list {
-    border-bottom: 1px solid grey;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+.event-card-container {
     background-color: rgb(218, 243, 218);
     margin: 20px 0;
-    padding: 50px;
-    border-radius: 10px;
-    border: 1px solid grey;
-    width: 94%
+    padding: 5%;
+    border-radius: 20px;
+    border: 1px ridge grey;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-.event-list:hover {
+.event-card-container:hover {
     cursor: pointer;
-    :is(img) {
-        border: 4px ridge grey;
-    }
-    .event-details {
-        border: 2px solid grey;
-    }
+    border: 3px solid grey;
 }
 
-.event-card {
+.event-details-main-container {
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 10px;
-    width: 100%
+    justify-content: center;
+    gap: 5%;
+    height: 100%
 }
 
 .event-img-container {
-    width: 50%;
-    height: 350px;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
-.event-img  {
+.event-img-container > img {
     width: 100%;
-    max-height: 100%;
+    height: 100%;
+    max-height: 450px;
     border: 1px ridge grey;
     border-radius: 10px;
 }
 
-.event-details-container {
-    width: 50%
+.top-event-details-container {
+    width: 100%;
+    height: 100%;
+    border: 1px solid grey;
+    border-radius: 20px;
 }
 
-.event-details  {
+.event-details-container  {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    width: 450px;
-    border: 1px solid grey;
-    padding: 10px 50px;
-    border-radius: 20px;
-    height: 330px;
-    width: 100%;
-
 }
 
-.event-details > h3 {
-    font-size: 30px;
+.event-details-container > h3 {
+    font-size: 1.8vw;
     text-decoration: underline;
-
 }
 
-.event-details > h4 {
-    font-size: 20px;
+.event-details-container > h4 {
+    font-size: 1.3vw;
 }
-
-
 
 .description {
-    font-size: 22px;
-    font-weight: 500;
-    margin: 30px 60px
+    font-size: 1.4vw;
 }
+

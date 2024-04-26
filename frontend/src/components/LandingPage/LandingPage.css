@@ -111,14 +111,11 @@
 }
 
 .join-btn-container {
-    margin-top: 3%;
-    border: solid 1px rgba(128, 128, 128, 0.358);
-    border-radius: 15px;
+    margin-top: 5%;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 25%;
-    height: 86px;
     color: black;
 }
 
@@ -128,14 +125,12 @@
     justify-content: center;
     border: none;
     background-color: rgba(250, 235, 215, 0);
-    font-size: 16px;
     font-weight: 600;
     width: 100%;
-    font-size: 1.7vw;
+    font-size: 2vw;
 }
 
 .join-btn-container:hover {
-    background-color: rgba(237, 244, 247, 0.416);
     text-decoration: underline;
     cursor: pointer;
 }
@@ -143,7 +138,7 @@
 .cap-container:hover {
     cursor: pointer;
     border: solid 2px rgba(128, 128, 128, 0.285);
-    background-color: rgba(237, 244, 247, 0.416);
+    background-color: rgba(218, 243, 218, 0.521);
     :is(button) {
         text-decoration: underline;
     }
