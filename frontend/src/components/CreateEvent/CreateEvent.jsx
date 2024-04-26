@@ -38,8 +38,26 @@ function CreateEvent() {
         if (about.length < 50) validationErrors.about = "Description is required";
         if (!type) validationErrors.type = "Type must be 'Online' or 'In person'";
         if (price < 0) validationErrors.price = "Price is invalid";
-        if (startDate < 10) validationErrors.startDate = 'Provide a start date in the indicated format';
-        if (endDate < 10) validationErrors.endDate = "Provide an end date in the indicated format"
+        if (startDate.split('/').length !== 4
+            || startDate.split(',').length !== 2
+            || startDate.length !== 20
+            || (!startDate.toUpperCase().endsWith('AM')
+                && !startDate.toUpperCase().endsWith('PM'))) {
+                    validationErrors.startDate = 'Provide a start date with the indicated format';
+                }
+        if (endDate.includes (',')) {
+            if (!checkStartDate(startDate)) validationErrors.startDate = 'Start date must be in the future'
+        }
+        if (endDate.split('/').length !== 4
+            || endDate.split(',').length !== 2
+            || endDate.length !== 20
+            || (!endDate.toUpperCase().endsWith('AM')
+                && !endDate.toUpperCase().endsWith('PM'))) {
+                    validationErrors.endDate = 'Provide a start date with the indicated format';
+                }
+        if (endDate.includes (',')) {
+            if (!checkEndDate(endDate, startDate)) validationErrors.endDate = 'End date must be after start date'
+        }
         if (!url.includes('https:')) validationErrors.url = "Provide a valid url"
         setErrors(validationErrors);
     }, [name, price, type, about, startDate, endDate])
@@ -52,25 +70,46 @@ function CreateEvent() {
         })
     }, [dispatch])
 
-    useEffect(() => {
-        if (hasSubmitted) {
-            let thisTime = startDate
-            let newTime = new Date(thisTime)
-            console.log(newTime)
+    const checkStartDate = (givenTime) => {
+        let resDate = givenTime;
+        let dateArr = resDate.split(',');
+        let date = dateArr[0].replaceAll('/', '-')
+
+        const curr = new Date().getTime();
+        const given = new Date(date).getTime();
+        if (given < curr) {
+            return false
         }
-    }, [hasSubmitted])
+        return true
+    }
 
-    useEffect(() => {
-        console.log(startDate)
-        console.log(new Date(startDate))
-    }, [startDate])
+    const checkEndDate = (givenTime, givenStartTime) => {
 
+        let resDate = givenTime;
+        let dateArr = resDate.split(',');
+        let date = dateArr[0].replaceAll('/', '-')
+        let time = dateArr[1].replaceAll('/', ':')
+
+        let resStartDate = givenStartTime;
+        let startArr = resStartDate.split(',');
+        let startDate = startArr[0].replaceAll('/', '-')
+        let startTime = startArr[1].replaceAll('/', ':')
+
+        let start = new Date(startDate + startTime).getTime();
+        let end = new Date(`${date} ${time}`).getTime();
+        if (end <= start ) {
+            return false
+        }
+        return true
+    }
 
     const adjustTime = (givenTime) => {
         let resDate = givenTime;
         let dateArr = resDate.split(',');
         let date = dateArr[0].replaceAll('/', '-')
         let time = dateArr[1].replaceAll('/', ':')
+
+        console.log('after adjust function', `${date} ${time}`)
         return `${date} ${time}`
     }
 
@@ -115,6 +154,10 @@ function CreateEvent() {
             return;
         } else {
             setHasSubmitted(false)
+            let starting = adjustTime(startDate);
+            let ending = adjustTime(endDate)
+            console.log('start adjusted', Date.UTC(starting))
+            console.log('end adjusted', ending)
             dispatch(
 
                 eventActions.createEvent(groupId, {
@@ -124,8 +167,8 @@ function CreateEvent() {
                     capacity: 10,
                     price: price || '0',
                     description: about,
-                    startDate: adjustTime(startDate),
-                    endDate: adjustTime(endDate)
+                    startDate: starting,
+                    endDate: ending
                 })
             )
             .then(() => {
@@ -183,7 +226,7 @@ function CreateEvent() {
                         onChange={(e) => setStartDate(e.target.value)}
                         required
                     />
-                    <p style={{color: 'red'}}>{hasSubmitted && errors.name ? `${errors.name}` : ''}</p>
+                    <p style={{color: 'red'}}>{hasSubmitted && errors.startDate ? `${errors.startDate}` : ''}</p>
                 </div>
                 <div className="combo">
                     <label>When does your event end?</label>
@@ -194,7 +237,7 @@ function CreateEvent() {
                         onChange={(e) => setEndDate(e.target.value)}
                         required
                     />
-                    <p style={{color: 'red'}}>{hasSubmitted && errors.name ? `${errors.name}` : ''}</p>
+                    <p style={{color: 'red'}}>{hasSubmitted && errors.endDate ? `${errors.endDate}` : ''}</p>
                 </div>
                 <div className="combo">
                     <label>Please add an image URL for your event below:</label>

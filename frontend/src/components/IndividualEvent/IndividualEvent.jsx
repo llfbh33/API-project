@@ -45,7 +45,6 @@ function IndividualEvent() {
     useEffect(() => {
         localStorage.eventId = eventId;
         if (!Object.keys(event).length && !Object.keys(group).length) {
-            console.log('id', localStorage.groupId)
             navigate(`/loadingEvent/${eventId}/${localStorage.groupId}`)
         }
     }, [event, group])
@@ -67,7 +66,6 @@ function IndividualEvent() {
         if (Object.values(event).length) {
             let image = Object.values(event.EventImages)
             let imageFind = image.find(pic => pic)
-            console.log('image', !imageFind)
             if (!imageFind) setEventPic('https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg')
             else setEventPic(imageFind.url)
         }
@@ -81,7 +79,6 @@ function IndividualEvent() {
                 <div className='headliner'>
                     <Link to='/events'>{`<-- Events`}</Link>
                     <h1>{`${event?.name}`}</h1>
-                    {console.log('group', group.Organizer)}
                     <h4>{group? `Hosted by: ${group?.Organizer.firstName} ${group?.Organizer.lastName}` : ''}</h4>
                 </div>
                 <div className='img-info'>
