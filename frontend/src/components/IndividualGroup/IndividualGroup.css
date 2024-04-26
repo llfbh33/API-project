@@ -128,6 +128,7 @@ img {
 .org-btn:hover,
 .delete-group:hover {
     background-color: rgba(150, 152, 177, 0.753);
+    cursor: pointer;
 }
 
 .delete-group {
@@ -143,6 +144,3 @@ img {
     margin: 8px;
 }
 
-.delete-group:hover {
-    cursor: pointer;
-}

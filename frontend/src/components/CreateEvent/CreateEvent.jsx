@@ -154,10 +154,6 @@ function CreateEvent() {
             return;
         } else {
             setHasSubmitted(false)
-            let starting = adjustTime(startDate);
-            let ending = adjustTime(endDate)
-            console.log('start adjusted', Date.UTC(starting))
-            console.log('end adjusted', ending)
             dispatch(
 
                 eventActions.createEvent(groupId, {
@@ -167,8 +163,8 @@ function CreateEvent() {
                     capacity: 10,
                     price: price || '0',
                     description: about,
-                    startDate: starting,
-                    endDate: ending
+                    startDate: adjustTime(startDate),
+                    endDate: adjustTime(endDate)
                 })
             )
             .then(() => {

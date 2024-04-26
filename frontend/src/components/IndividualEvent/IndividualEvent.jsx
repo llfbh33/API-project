@@ -6,9 +6,6 @@ import { TbClockHour4 } from "react-icons/tb";
 import { AiOutlineDollar } from "react-icons/ai";
 import { TfiLocationPin } from "react-icons/tfi";
 
-// import * as groupActions from '../../store/groupById';
-// import * as eventActions from '../../store/eventById';
-
 import DestroyEvent from '../DestroyEvent/DestroyEvent';
 
 import './IndividualEvent.css'
@@ -18,29 +15,14 @@ function IndividualEvent() {
 
     const navigate = useNavigate();
     const {eventId} = useParams();
-    // const dispatch = useDispatch();
 
     const group = useSelector(state => state.groupById);
     const event = useSelector(state => state.eventById);
     const user = useSelector(state => state.session.user);
-    // const [loaded, setLoaded] = useState(false)
 
     const [organizer, setOrganizer] = useState(false);
     const [groupPic, setGroupPic] = useState('');
     const [eventPic, setEventPic] = useState('');
-
-
-    // attempting to let the user refresh the page
-    // useEffect(() => {
-    //     if(!group && localStorage.groupId) {
-    //         dispatch(groupActions.getGroupDetails(localStorage.groupId))
-    //     }
-    //     if(!event && localStorage.eventId) {
-    //         dispatch(eventActions.getEventDetails(localStorage.eventId))
-    //     }
-    //     if (event && group) setLoaded(true)
-
-    // }, [group, event])
 
     useEffect(() => {
         localStorage.eventId = eventId;
