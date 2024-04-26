@@ -60,44 +60,19 @@ function CreateEvent() {
         }
     }, [hasSubmitted])
 
-    // const adjustStartTime = () => {
-    //     let thisDate = startDate;
+    useEffect(() => {
+        console.log(startDate)
+        console.log(new Date(startDate))
+    }, [startDate])
 
-    //     setEventId(identity);
 
-    //     let start = thisDate.split(', ');
-    //     let dateArr = start[0].split('/')
-    //     let date = `${dateArr[2]}-${dateArr[0]}-${dateArr[1]}`;
-    //     let amPm = start[1].slice(6)
-    //     let minutes = start[1].slice(3, 5)
-    //     let hour = parseInt(start[1].slice(0, 2))
-    //     if (hour.length < 2) hour = `0${hour}`
-    //     if (amPm.toUpperCase() === 'PM') hour += 12;
-    //     let adjustedTime = `${hour}:${minutes}`
-    //     let startReturn = `${date} ${adjustedTime}:00`
-    //     console.log('start', startReturn)
-    //     setStartDate(startReturn)
-    //     return adjustEndTime()
-    // }
-
-    // const adjustEndTime = () => {
-    //     let thisDate = endDate;
-
-    //     let start = thisDate.split(', ');
-    //     let dateArr = start[0].split('/')
-    //     let date = `${dateArr[2]}-${dateArr[0]}-${dateArr[1]}`;
-    //     let amPm = start[1].slice(6)
-    //     let minutes = start[1].slice(3, 5)
-    //     let hour = parseInt(start[1].slice(0, 2))
-    //     if (amPm.toUpperCase() === 'PM') hour += 12;
-    //     let adjustedTime = `${hour}:${minutes}`
-    //     let startReturn = `${date} ${adjustedTime}:00`
-    //     console.log('end', startReturn)
-    //     setEndDate(startReturn)
-    //     console.log(endDate)
-    //     return handleSubmit()
-
-    // }
+    const adjustTime = (givenTime) => {
+        let resDate = givenTime;
+        let dateArr = resDate.split(',');
+        let date = dateArr[0].replaceAll('/', '-')
+        let time = dateArr[1].replaceAll('/', ':')
+        return `${date} ${time}`
+    }
 
     useEffect(() => {
         if (loaded === true) completeSubmit()
@@ -149,8 +124,8 @@ function CreateEvent() {
                     capacity: 10,
                     price: price || '0',
                     description: about,
-                    startDate,
-                    endDate
+                    startDate: adjustTime(startDate),
+                    endDate: adjustTime(endDate)
                 })
             )
             .then(() => {
