@@ -32,11 +32,11 @@
     font-size: 1.6vw;
 }
 
-.title-img-container {
+.landing-title-img-container {
     width: 100%;
 }
 
-.title-img-container > img {
+.landing-title-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -97,13 +97,13 @@
     margin: 25px
 }
 
-.img-container {
+.landing-img-container {
     width: 80%;
     height: 140px;
     border-radius: 100px;
 }
 
-.cap-img {
+.landing-cap-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -144,7 +144,7 @@
     cursor: pointer;
     border: solid 2px rgba(128, 128, 128, 0.285);
     background-color: rgba(237, 244, 247, 0.416);
-    button {
+    :is(button) {
         text-decoration: underline;
     }
 }

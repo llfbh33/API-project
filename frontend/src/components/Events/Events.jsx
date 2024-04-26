@@ -45,10 +45,10 @@ function Events() {
                 {organizeEvents().map(event => (
                     <div key={`${event?.id}`} className='event-list' onClick={() => navigate(`/loadingEvent/${event.id}/${event.groupId}`)}>
                     <div className='event-card' >
-                        <div className='event-img'>
-                            <img  src={event?.previewImage ? `${event.previewImage}` : 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg'} />
+                        <div className='event-img-container'>
+                            <img  src={event?.previewImage ? `${event.previewImage}` : 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg'} className="event-img"/>
                         </div>
-                        <div>
+                        <div className='event-details-container'>
                             <div  className='event-details'>
                                <h3>{`${event?.name}`}</h3>
                                 <h4>{event?.startDate ? `Start Date: ${new Date(event.startDate).toDateString()} · ${new Date(event.startDate).toLocaleTimeString('en-US')}` : ''}</h4>
