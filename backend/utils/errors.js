@@ -78,10 +78,12 @@ const noEvent = async (req, res, next) => {
 
 
 const dateAdjust = (date) => {
+    console.log('dateAdjust backend', date)
     let thisDate = date.toISOString()
     let array = thisDate.split('T');
     let remove = array[1].slice(0,8);
     let result = array[0] + " " + remove;
+    console.log('result for backend', result)
     return result;
 }
 
