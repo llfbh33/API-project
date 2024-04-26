@@ -80,7 +80,7 @@
 
 .group-details:hover {
     cursor: pointer;
-    img {
+    :is(img) {
         border: 4px ridge grey;
     }
     .details {

@@ -39,7 +39,7 @@
 
 .event-list:hover {
     cursor: pointer;
-    img {
+    :is(img) {
         border: 4px ridge grey;
     }
     .event-details {

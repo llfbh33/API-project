@@ -61,5 +61,14 @@
     border: 2px solid grey;
 }
 
+.delete-event {
+    height: 36px;
+    width: 197px;
+    border-radius: 5px;
+    margin: 8px;
+    background-color: darkgray;
+    border: 2px outset rgb(139, 138, 138);
+}
+
 /* need to fix the layout so that the title and pic are in one div
 the dates are in another, and they are all in one together*/

@@ -30,7 +30,7 @@ const EventsMediator = () => {
 
     useEffect(() => {
         if(loaded && testLoad) toEvent();
-    }, [loaded, testLoad])
+    }, [loaded, testLoad, groupId, eventId])
 
     const toEvent = () => {
         setTestLoad(false);

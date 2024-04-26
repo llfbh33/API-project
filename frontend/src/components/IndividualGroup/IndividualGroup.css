@@ -109,6 +109,10 @@ img {
     gap: 40px
 }
 
+.event-details > div {
+    width: 400px;
+}
+
 .btn-container {
     display: inline-flex
 }

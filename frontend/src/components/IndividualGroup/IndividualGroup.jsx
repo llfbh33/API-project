@@ -5,7 +5,6 @@ import * as groupActions from '../../store/groupById';
 import * as eventActions from '../../store/events';
 import * as singleEventActions from '../../store/eventById';
 import DestroyGroup from '../DestroyGroup/DestroyGroup';
-import DestroyEvent from '../DestroyEvent/DestroyEvent';
 
 import './IndividualGroup.css';
 import { ApplicationContext } from '../../context/GroupContext';
@@ -124,10 +123,6 @@ function IndividualGroup() {
         return sorted;
     }
 
-    const chosenEvent= (id) => {
-        dispatch(singleEventActions.getEventDetails(id))
-    }
-
     return (
 
         <div className='main-group-container'
@@ -157,6 +152,11 @@ function IndividualGroup() {
                         <div className='btn-container'>
                             <button className='org-btn'
                                 hidden={!organizer}
+                                onClick={() => createEvent()}
+                                >Create Event
+                            </button>
+                            <button className='org-btn'
+                                hidden={!organizer}
                                 onClick={() => navigate(`/groups/${groupId}/update`)}
                                 >Update
                             </button>
@@ -173,11 +173,6 @@ function IndividualGroup() {
             <div className='about-section'>
                 <h2>{`What We're About`}</h2>
                 <p>{`${group.about}`}</p>
-                <button className='org-btn'
-                hidden={!organizer}
-                onClick={() => createEvent()}
-                >Create Event
-                </button>
             </div>
             <div className='about-section'>
             <h2>{`Events (${currEvents.length})`}</h2>
@@ -193,7 +188,7 @@ function IndividualGroup() {
                                     <p>{event.startDate ? `Start Date: ${new Date(event.startDate).toDateString()} · ${event.startDate.slice(11, 16)}` : ''}</p>
                                     <p>{event.Venue ? `${event?.Venue.city}, ${event.Venue.state}` : ''}</p>
                                 </div>
-                                <div>
+                                {/* <div>
                                     <div className='btn-container'>
                                         <button className='org-btn'
                                             hidden={!organizer}
@@ -207,7 +202,7 @@ function IndividualGroup() {
                                             { <DestroyEvent organizer={organizer} />}
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                             <div>
 

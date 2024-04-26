@@ -89,16 +89,18 @@ function IndividualEvent() {
                                 <h3>Description:</h3>
                                 <p>{`${event.description}`}</p>
                                 <div>
-                                    <button className='org-btn'
-                                        hidden={!organizer}
-                                        onClick={() => alert('Function coming soon')}
-                                        >Update
-                                    </button>
-                                    <div
-                                        hidden={!organizer}
-                                        className={!organizer ? '' :'delete-event'}
-                                        >
-                                        {<DestroyEvent organizer={organizer} />}
+                                    <div className='btn-container'>
+                                        <button className='org-btn'
+                                            hidden={!organizer}
+                                            onClick={() => alert('Function coming soon')}
+                                            >Update
+                                        </button>
+                                        <div
+                                            hidden={!organizer}
+                                            className={!organizer ? '' :'delete-event'}
+                                            >
+                                            {<DestroyEvent organizer={organizer} />}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
