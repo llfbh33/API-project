@@ -1,5 +1,6 @@
 .delete {
     color: white;
+    font-size: 17px;
     background-color: rgb(110, 15, 15);
     border-color: rgba(219, 152, 152, 0.541);
 }
@@ -9,6 +10,7 @@
 }
 
 .keep {
+    font-size: 17px;
     border-color: rgba(128, 128, 128, 0.541);
     background-color: grey;
     color: rgb(239, 240, 248);
@@ -18,20 +20,26 @@
     background-color: rgb(153, 151, 151);
 }
 
-.btn-container > div > button {
+.btn-container-destroy {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5%;
+    width: 100%;
+    padding: 3% 0%;
+}
+
+.btn-container-destroy > div > button {
     width: 200px;
     height: 40px;
     border-radius: 5px;
     margin: 8px;
 }
 
-
-.destroy > li {
-    color: black;
-    width: 200px;
-    height: 35px;
-    display: flex;
+.destroy-group > li {
+    width: 9vw;
+    height: 2vw;
     justify-content: center;
     align-items: center;
-
 }

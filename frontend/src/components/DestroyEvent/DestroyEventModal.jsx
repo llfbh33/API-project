@@ -42,7 +42,7 @@ function DestroyEventModal() {
     <div className='modal'>
       <h1>Confirm Delete</h1>
       <h3>Are you sure you want to remove this event?</h3>
-        <div className='btn-container'>
+        <div className='btn-container-destroy'>
             <div>
                 <button className=' delete'
                     onClick={destroyEvent} >Yes (Delete Event)</button>

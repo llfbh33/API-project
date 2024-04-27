@@ -55,23 +55,24 @@ function IndividualEvent() {
 
 
     return (
-        <div className='individual'>
-            {/* // hidden={!loaded}> */}
-            <div className='adjustment'>
+        <div className='individual-event-container'>
+            <div className='return-nav-link'>
+                <Link to='/events' className='event-link'>{`<-- Events`}</Link>
+            </div>
+            <div className='individual-event'>
                 <div className='headliner'>
-                    <Link to='/events'>{`<-- Events`}</Link>
                     <h1>{`${event?.name}`}</h1>
                     <h4>{group? `Hosted by: ${group?.Organizer.firstName} ${group?.Organizer.lastName}` : ''}</h4>
                 </div>
-                <div className='img-info'>
-                    <div>
-                        {/* <img src={event? `${event?.EventImages[0].url}` : ''} /> */}
+                <div className='event-img-details-info'>
+                    <div className='individual-event-img-container'>
                         {eventPic && eventPic === '' ? (<h1>Loading...</h1>) : ( <img src={eventPic} />)}
                     </div>
-                    <div>
+                    <div className='individual-event-details'>
                         <div className='group-section' onClick={() => navigate(`/groups/${group.id}`)}>
-                            {/* <img src={group ? `${group.GroupImages[0].url}` : ''} /> */}
-                            {groupPic && groupPic === '' ? (<h1>Loading...</h1>) : ( <img src={groupPic} />)}
+                            <div className='group-prev-img-container'>
+                                {groupPic && groupPic === '' ? (<h1>Loading...</h1>) : ( <img src={groupPic} />)}
+                            </div>
                             <div>
                                 <h2>{`${group?.name}`}</h2>
                                 <h3>{`${group?.city}, ${group?.state}`}</h3>
@@ -79,39 +80,39 @@ function IndividualEvent() {
                         </div>
                         <div className='event-info'>
                             <div className='clock'>
-                                <TbClockHour4 style={{fontSize: '40px'}}/>
+                                <TbClockHour4  className='clock-div'/>
                                 <div>
                                     <h3>{event.startDate ? `Start: ${new Date(event.startDate).toDateString()} · ${new Date(event.startDate).toLocaleTimeString('en-US')}` : ''}</h3>
                                     <h3>{event.endDate ? `End: ${new Date(event.endDate).toDateString()} · ${new Date(event.endDate).toLocaleTimeString('en-US')}` : ''}</h3>
                                 </div>
                             </div>
                             <div className='clock' >
-                                <AiOutlineDollar style={{fontSize: '40px'}}/>
+                                <AiOutlineDollar className='clock-div'/>
                                 <h3>{event.price === 0 ? 'FREE' : `$${event.price}`}</h3>
                             </div>
                             <div className='clock'>
-                                <TfiLocationPin style={{fontSize: '40px'}} />
+                                <TfiLocationPin className='clock-div'/>
                                 <div>
                                     <h3>{`${event.type}`}</h3>
                                 </div>
                             </div>
-                            <div>
+                            <div className='ind-event-description-container'>
                                 <h3>Description:</h3>
                                 <p>{`${event.description}`}</p>
-                                <div>
-                                    <div className='btn-container'>
-                                        <button className='org-btn'
+                                <div className='event-btn-container'>
+                                    {/* <div > */}
+                                        <button className={!organizer ? '' :'event-org-btn'}
                                             hidden={!organizer}
                                             onClick={() => alert('Function coming soon')}
                                             >Update
                                         </button>
                                         <div
                                             hidden={!organizer}
-                                            className={!organizer ? '' :'delete-event'}
+                                            className={!organizer ? '' :'delete-this-event-btn'}
                                             >
                                             {<DestroyEvent organizer={organizer} />}
                                         </div>
-                                    </div>
+                                    {/* </div> */}
                                 </div>
                             </div>
                         </div>

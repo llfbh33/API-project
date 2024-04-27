@@ -28,7 +28,7 @@ function DestroyGroup({organizer}) {
 
 
     return (
-        <div className="destroy"
+        <div className="destroy-group"
             hidden={!organizer}>
             <OpenModalMenuItem
                     itemText="Delete"

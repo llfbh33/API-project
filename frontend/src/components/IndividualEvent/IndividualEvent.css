@@ -1,38 +1,111 @@
 
 
-.individual {
-    background-color: rgba(166, 188, 234, 0.411);
-    width: 80%;
+.individual-event-container {
     margin: auto;
-    padding: 80px 50px;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.return-nav-link {
+    width: 100%;
+    margin-top: 3%
+}
+
+.event-link {
+    font-size: 1.5vw;
+    color: black;
+    text-decoration: none;
+}
+
+.event-link:hover {
+    color: rgb(73, 73, 223)
+}
+
+.individual-event {
+    background-color: rgb(218, 243, 218);
+    padding: 5%;
     border-radius: 20px;
-    border: 1px solid grey;
+    border: 1px ridge grey;
+    width: 100%;
+    height: 100%;
 }
 
 .headliner > h1 {
-    font-size: 40px;
+    font-size: 2.3vw;
     text-decoration: underline;
+    margin: 0;
 }
 
 .headliner > h4 {
-    font-size: 22px;
+    font-size: 1.4vw;
+    margin: 1.5%
 }
 
-.img-info {
+.event-img-details-info {
     display: flex;
+    align-items: center;
     justify-content: center;
-    align-items: center;
-    gap: 10%;
+    gap: 8%;
+    height: 100%;
 }
 
-.adjustment {
-    margin: 0px 130px;
+.individual-event-img-container {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    object-fit: cover;
 }
 
-.clock {
+.individual-event-img-container > img {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    border: 1px ridge grey;
+    border-radius: 20px;
+    object-fit: cover;
+}
+
+.individual-event-details {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+}
+
+.group-section {
     display: flex;
-    gap: 20px;
+    justify-content: space-around;
     align-items: center;
+    margin-bottom: 20px;
+    border: 1px solid grey;
+    padding: 12px 50px;
+    border-radius: 20px;
+}
+
+.group-prev-img-container {
+    width: 30%;
+    height: 30%;
+    object-fit: cover;
+}
+
+.group-prev-img-container > img {
+    width: 100%;
+    height: 100%;
+    max-width: 100px;
+    max-height: 80px;
+    border: 2px solid grey;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+.group-section > div > h2 {
+    font-size: 1.4vw;
+    text-decoration: underline;
+}
+
+.group-section > div > h3 {
+    font-size: 1.1vw;
 }
 
 .event-info {
@@ -41,19 +114,19 @@
     border-radius: 20px;
 }
 
-.group-section > img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-}
-
-.group-section {
+.clock {
     display: flex;
     gap: 20px;
-    margin-bottom: 20px;
-    border: 1px solid grey;
-    padding: 10px 50px;
-    border-radius: 20px;
+    align-items: center;
+}
+
+.clock > h3,
+.clock > div > h3{
+    font-size: 1vw;
+}
+
+.clock-div {
+    font-size: 2.2vw;
 }
 
 .group-section:hover {
@@ -61,21 +134,65 @@
     border: 2px solid grey;
 }
 
-.delete-event {
-    color: black;
+.ind-event-description-container > h3 {
+    font-size: 1.2vw;
+}
+
+.ind-event-description-container > p {
+    font-size: 1vw;
+}
+
+.event-btn-container {
+    display: flex;
+    justify-content: space-around;
+    margin: 6% 0 4% 0;
+    width: 100%
+}
+
+.event-org-btn {
+    font-size: 1.1vw;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    background-color: rgba(195, 191, 191, 0.694);
+    border-color: rgba(128, 128, 128, 0.541);
+    border-radius: 5px;
+    width: 100%;
+    height: 100%;
+    max-width: 160px;
+    max-height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 200px;
-    border-radius: 5px;
-    border: 2px outset grey;
-    border-color: rgba(128, 128, 128, 0.637);
-    background-color: rgb(168, 168, 168);
-    margin: 8px;
+
+
+    /* margin: 2% 0%; */
+    padding: 1.8% 0;
+
 }
 
-.delete-event:hover,
-.org-btn:hover {
+.delete-this-event-btn {
+    color: black;
+    font-size: 1.1vw;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    background-color: rgba(195, 191, 191, 0.694);
+    border: 2px outset rgba(128, 128, 128, 0.637);
+    border-radius: 5px;
+    width: 100%;
+    max-width: 155px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+
+
+
+
+
+    /* margin: 3%; */
+}
+
+.delete-this-event-btn:hover,
+.event-org-btn:hover {
     cursor: pointer;
     background-color: rgba(150, 152, 177, 0.753);
 }

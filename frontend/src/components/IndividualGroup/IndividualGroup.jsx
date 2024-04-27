@@ -151,17 +151,19 @@ function IndividualGroup() {
                                     >Join This Group</button>
                             </div>
                             <div>
-                                <div className='btn-container'>
-                                    <button className='org-btn'
-                                        hidden={!organizer}
-                                        onClick={() => createEvent()}
-                                        >Create Event
-                                    </button>
-                                    <button className='org-btn'
-                                        hidden={!organizer}
-                                        onClick={() => navigate(`/groups/${groupId}/update`)}
-                                        >Update
-                                    </button>
+                                <div className={user && !organizer ? '' : 'btn-container'}>
+                                    <div className='create-update-btns'>
+                                        <button className='org-btn-group'
+                                            hidden={!organizer}
+                                            onClick={() => createEvent()}
+                                            >Create Event
+                                        </button>
+                                        <button className='org-btn-group'
+                                            hidden={!organizer}
+                                            onClick={() => navigate(`/groups/${groupId}/update`)}
+                                            >Update
+                                        </button>
+                                    </div>
                                     <div
                                         hidden={!organizer}
                                         className={!organizer ? '' :'delete-group'}
@@ -181,7 +183,7 @@ function IndividualGroup() {
 
             </div>
             <div className='all-events-container'>
-                <h2>{`Events (${currEvents.length})`}</h2>
+                <h2 className='events-count'>{`Events (${currEvents.length})`}</h2>
                     {organizeEvents().map(event => (
                         <div key={`${event.id}`} className='event-display-card-container'>
                             <div className='event-top-sec' >
@@ -190,7 +192,7 @@ function IndividualGroup() {
                                 </div>
                                 <div className='group-event-details-top-container'>
                                     <div onClick={() => seeEvent(event.id, event.previewImage)} className='group-event-details-container'>
-                                        <p>{`${event.name}`}</p>
+                                        <h4>{`${event.name}`}</h4>
                                         <p>{event.startDate ? `Start Date: ${new Date(event.startDate).toDateString()} · ${new Date(event.startDate).toLocaleTimeString('en-US')}` : ''}</p>
                                         <p>{event.Venue ? `${event?.Venue.city}, ${event.Venue.state}` : ''}</p>
                                     </div>
@@ -200,7 +202,7 @@ function IndividualGroup() {
                                 </div>
 
                             </div>
-                            <p>{event.description ? `${event.description}` : ''}</p>
+                            <p className='group-event-description'>{event.description ? `${event.description}` : ''}</p>
                         </div>
                     ))}
             </div>

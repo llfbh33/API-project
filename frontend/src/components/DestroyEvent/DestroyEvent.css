@@ -1,3 +1,9 @@
+.modal {
+    background-color: rgb(49, 49, 49);
+    border: 4px double rgb(43, 121, 43);
+    padding: 30px 40px 40px;
+}
+
 .delete {
     color: white;
     background-color: rgb(110, 15, 15);
@@ -19,16 +25,14 @@
 }
 
 .btn-container > div > button {
-    width: 200px;
-    height: 40px;
     border-radius: 5px;
     margin: 8px;
 }
 
-.destroy-event {
+.destroy-event > li {
     color: black;
-    width: 200px;
-    height: 35px;
+    width: 9vw;
+    height: 2vw;
     display: flex;
     justify-content: center;
     align-items: center;

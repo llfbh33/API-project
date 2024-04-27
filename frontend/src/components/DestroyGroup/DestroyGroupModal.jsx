@@ -43,7 +43,7 @@ function DestroyGroupModal() {
     <div className='modal'>
       <h1>Confirm Delete</h1>
       <h3>Are you sure you want to remove this group?</h3>
-        <div className='btn-container'>
+        <div className='btn-container-destroy'>
             <div>
                 <button className=' delete'
                     onClick={destroyGroup} >Yes (Delete Group)</button>
