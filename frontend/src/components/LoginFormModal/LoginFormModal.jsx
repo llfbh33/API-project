@@ -64,10 +64,11 @@ function LoginFormModal() {
         </label>
         {errors.credential && <p>{errors.credential}</p>}
         <button
+          className={isDisabled ? 'login-btn-disabled' : 'login-btn-modal'}
           type="submit"
           disabled={isDisabled}
           >Log In</button>
-        <button onClick={demoLogin}>Log in as Demo User</button>
+        <button className='login-btn-modal' onClick={demoLogin}>Log in as Demo User</button>
       </form>
     </div>
   );

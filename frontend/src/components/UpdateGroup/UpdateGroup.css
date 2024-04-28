@@ -1,0 +1,44 @@
+.create-group {
+    display: flex;
+    justify-content: center;
+    background-color: rgba(230, 245, 237, 0.662);
+    padding-bottom: 40px;
+    /* text-align: center; */
+}
+
+.create-group-inner {
+    width: 30%;
+}
+
+input {
+    max-width: 400px;
+}
+
+textarea {
+    width: 450px;
+}
+
+select {
+    max-width: 120px;
+    height: 30px
+}
+
+.sec-one {
+    display: flex;
+    flex-direction: column;
+    gap: 20px
+}
+
+.sub-btn-con {
+    display: flex;
+    /* justify-content: center; */
+    width: 100%
+}
+
+.sub-btn {
+    margin: 40px;
+    width: 200px;
+    height: 30px;
+
+    /* justify-content: center; */
+}

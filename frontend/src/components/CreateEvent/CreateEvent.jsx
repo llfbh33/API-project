@@ -36,9 +36,11 @@ function CreateEvent() {
     useEffect(() => {
         const validationErrors = {};
         if (name.length < 5) validationErrors.name = "Name must be atleast 5 characters";
-        if (about.length < 50) validationErrors.about = "Description is required";
-        if (!type) validationErrors.type = "Type must be 'Online' or 'In person'";
+        if (name.length < 1) validationErrors.name = "Name is required";
+        if (about.length < 30) validationErrors.about = "Description must be at least 30 characters long";
+        if (!type) validationErrors.type = "Event Type is required";
         if (price < 0) validationErrors.price = "Price is invalid";
+        if (price.length < 0) validationErrors.price = "Price is Required"
         if (startDate.split('/').length !== 4
             || startDate.split(',').length !== 2
             || startDate.length !== 20
@@ -46,6 +48,7 @@ function CreateEvent() {
                 && !startDate.toUpperCase().endsWith('PM'))) {
                     validationErrors.startDate = 'Provide a start date with the indicated format';
                 }
+        if (startDate.length < 1) validationErrors.startDate = "Event start is required"
         if (endDate.includes (',')) {
             if (!checkStartDate(startDate)) validationErrors.startDate = 'Start date must be in the future'
         }
@@ -59,7 +62,10 @@ function CreateEvent() {
         if (endDate.includes (',')) {
             if (!checkEndDate(endDate, startDate)) validationErrors.endDate = 'End date must be after start date'
         }
-        if (url.length < 15) validationErrors.url = 'Provide a valid url'
+        if (endDate.length < 1) validationErrors.startDate = "Event end is required"
+        if (!url.includes('.png') && !url.includes('.jpg') && !url.includes('.jpeg')) {
+            validationErrors.url = "Image URL must end in .png, .jpg, or .jpeg"
+        }
         setErrors(validationErrors);
     }, [name, price, type, about, startDate, endDate, url])
 
@@ -181,90 +187,91 @@ function CreateEvent() {
 
     return (
         <div className="create-event">
-            <form onSubmit={handleSubmit} >
-                <h1>Create a New Event for {`${group.name}`}</h1>
-                <div className="combo">
-                    <label>What is the name of your event?</label>
-                    <input
-                        type='text'
-                        value={name}
-                        placeholder="Event Name"
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                    />
-                    <p style={{color: 'red'}}>{hasSubmitted && errors.name ? `${errors.name}` : ''}</p>
-                </div>
-                <div className="combo">
-                    <label>Is this an in-person or online group?</label>
-                    <select
-                        value={type}
-                        onChange={(e) => setType(e.target.value)}
-                        >
-                        <option value={''} disabled>Choose One</option>
-                        <option>In person</option>
-                        <option>Online</option>
-                    </select>
-                    <p style={{color: 'red'}}>{hasSubmitted && errors.type ? `${errors.type}` : ''}</p>
-                </div>
-                <div className="combo">
-                    <label>What is the price for your event?</label>
-                    <input
-                        type='number'
-                        value={price}
-                        onChange={(e) => setPrice(e.target.value)}
-                        required
-                    />
-                    <p style={{color: 'red'}}>{hasSubmitted && errors.price ? `${errors.price}` : ''}</p>
-                </div>
-                <div className="combo">
-                    <label>When does your event start?</label>
-                    <input
-                        type='text'
-                        value={startDate}
-                        placeholder="MM/DD/YYYY, HH/mm AM"
-                        onChange={(e) => setStartDate(e.target.value)}
-                        required
-                    />
-                    <p style={{color: 'red'}}>{hasSubmitted && errors.startDate ? `${errors.startDate}` : ''}</p>
-                </div>
-                <div className="combo">
-                    <label>When does your event end?</label>
-                    <input
-                        type='text'
-                        value={endDate}
-                        placeholder="MM/DD/YYYY, HH/mm PM"
-                        onChange={(e) => setEndDate(e.target.value)}
-                        required
-                    />
-                    <p style={{color: 'red'}}>{hasSubmitted && errors.endDate ? `${errors.endDate}` : ''}</p>
-                </div>
-                <div className="combo">
-                    <label>Please add an image URL for your event below:</label>
-                    <input
-                        type='url'
-                        value={url}
-                        placeholder="Image Url"
-                        onChange={(e) => setUrl(e.target.value)}
-                        required
-                    />
-                    <p style={{color: 'red'}}>{hasSubmitted && errors.url ? `${errors.url}` : ''}</p>
-                </div>
-                <div className="combo">
-                    <label>Please describe your event</label>
-                    <textarea
-                        value={about}
-                        placeholder="Please include at least 30 characters"
-                        onChange={(e) => setAbout(e.target.value)}
-                        required
-                        rows='8'
-                    />
-                    <p style={{color: 'red'}}>{hasSubmitted && errors.about ? `${errors.about}` : ''}</p>
-                </div>
-                <div className="create-btn">
-                    <button type='submit' onClick={() => setHasSubmitted(true)} >Create Event</button>
-                </div>
-            </form>
-
+            <div className="create-group-inner">
+                <form onSubmit={handleSubmit} >
+                    <h1>Create a New Event for {`${group.name}`}</h1>
+                    <div className="combo">
+                        <label>What is the name of your event?</label>
+                        <input
+                            type='text'
+                            value={name}
+                            placeholder="Event Name"
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                        />
+                        <p style={{color: 'red'}}>{hasSubmitted && errors.name ? `${errors.name}` : ''}</p>
+                    </div>
+                    <div className="combo">
+                        <label>Is this an in-person or online group?</label>
+                        <select
+                            value={type}
+                            onChange={(e) => setType(e.target.value)}
+                            >
+                            <option value={''} disabled>Choose One</option>
+                            <option>In person</option>
+                            <option>Online</option>
+                        </select>
+                        <p style={{color: 'red'}}>{hasSubmitted && errors.type ? `${errors.type}` : ''}</p>
+                    </div>
+                    <div className="combo">
+                        <label>What is the price for your event?</label>
+                        <input
+                            type='number'
+                            value={price}
+                            onChange={(e) => setPrice(e.target.value)}
+                            required
+                        />
+                        <p style={{color: 'red'}}>{hasSubmitted && errors.price ? `${errors.price}` : ''}</p>
+                    </div>
+                    <div className="combo">
+                        <label>When does your event start?</label>
+                        <input
+                            type='text'
+                            value={startDate}
+                            placeholder="MM/DD/YYYY, HH/mm AM"
+                            onChange={(e) => setStartDate(e.target.value)}
+                            required
+                        />
+                        <p style={{color: 'red'}}>{hasSubmitted && errors.startDate ? `${errors.startDate}` : ''}</p>
+                    </div>
+                    <div className="combo">
+                        <label>When does your event end?</label>
+                        <input
+                            type='text'
+                            value={endDate}
+                            placeholder="MM/DD/YYYY, HH/mm PM"
+                            onChange={(e) => setEndDate(e.target.value)}
+                            required
+                        />
+                        <p style={{color: 'red'}}>{hasSubmitted && errors.endDate ? `${errors.endDate}` : ''}</p>
+                    </div>
+                    <div className="combo">
+                        <label>Please add an image URL for your event below:</label>
+                        <input
+                            type='url'
+                            value={url}
+                            placeholder="Image Url"
+                            onChange={(e) => setUrl(e.target.value)}
+                            required
+                        />
+                        <p style={{color: 'red'}}>{hasSubmitted && errors.url ? `${errors.url}` : ''}</p>
+                    </div>
+                    <div className="combo">
+                        <label>Please describe your event</label>
+                        <textarea
+                            value={about}
+                            placeholder="Please include at least 30 characters"
+                            onChange={(e) => setAbout(e.target.value)}
+                            required
+                            rows='8'
+                        />
+                        <p style={{color: 'red'}}>{hasSubmitted && errors.about ? `${errors.about}` : ''}</p>
+                    </div>
+                    <div className="create-btn">
+                        <button type='submit' onClick={() => setHasSubmitted(true)} >Create Event</button>
+                    </div>
+                </form>
+            </div>
         </div>
     )
 }

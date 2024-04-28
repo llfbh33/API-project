@@ -30,13 +30,16 @@ function CreateGroup() {
 
     useEffect(() => {
         const validationErrors = {};
-        if (name.length > 60) validationErrors.name = "Name must be 60 characters or less";
+        if (name.length < 1) validationErrors.name = 'Name is required'
+        if (name.length > 60) validationErrors.name = "Name must be less than 60 characters";
         if (name.length < 5) validationErrors.name = 'Name must be more than 5 characters'
-        if (about.length < 50) validationErrors.about = "About must be 50 characters or more";
-        if (!type) validationErrors.type = "Group must be Online or In person";
-        if (!isPrivate) validationErrors.private = "Group must be Private or Public";
-        if (location.length < 2 && !location.includes(',')) validationErrors.city = 'City is required';
-        if (!location.includes(',')) validationErrors.state = "State is required"
+        if (about.length < 50) validationErrors.about = "Description must be at least 50 characters long";
+        if (!type) validationErrors.type = "Group type is required";
+        if (!isPrivate) validationErrors.private = "Visibility type is required";
+        if (location.length < 1) validationErrors.city = 'location is required';
+        if (!url.includes('.png') && !url.includes('.jpg') && !url.includes('.jpeg')) {
+            validationErrors.url = "Image URL must end in .png, .jpg, or .jpeg"
+        }
         setErrors(validationErrors);
     }, [name, location, type, about, isPrivate])
 
@@ -93,97 +96,99 @@ function CreateGroup() {
 
     return (
         <div className="create-group">
-            <form onSubmit={handleSubmit} >
-                <h1>Start a new Group</h1>
-                <div className="sec-one">
-                    <h2>{`Set your group's location`}</h2>
-                    {/* <div  > */}
-                        <label>Meet Dogs groups meet locally, in person, and online. Well connect you with people in your area</label>
-                        <input
-                            type='text'
-                            value={location}
-                            placeholder="City, STATE"
-                            onChange={(e) => setLocation(e.target.value)}
-                            required
-                        />
-                        <p style={{color: 'red'}}>{hasSubmitted && errors.city ? `${errors.city}` : ''}</p>
-                        <p style={{color: 'red'}}>{hasSubmitted && errors.state ? `${errors.state}` : ''}</p>
-                    {/* </div> */}
-                </div>
-                <div>
-                    <h2>{`What will your group's name be?`}</h2>
+            <div className="create-group-inner">
+                <form onSubmit={handleSubmit} >
+                    <h1>Start a new Group</h1>
                     <div className="sec-one">
-                        <label>Choose a name that will give people a clear idea of what the group is about. Feel free to get creative! You can edit this later if you change your mind.</label>
+                        <h2>{`Set your group's location`}</h2>
+                        {/* <div  > */}
+                            <label>Meet Dogs groups meet locally, in person, and online. Well connect you with people in your area</label>
+                            <input
+                                type='text'
+                                value={location}
+                                placeholder="City, STATE"
+                                onChange={(e) => setLocation(e.target.value)}
+                                required
+                            />
+                            <p style={{color: 'red'}}>{hasSubmitted && errors.city ? `${errors.city}` : ''}</p>
+                        {/* </div> */}
+                    </div>
+                    <div>
+                        <h2>{`What will your group's name be?`}</h2>
+                        <div className="sec-one">
+                            <label>Choose a name that will give people a clear idea of what the group is about. Feel free to get creative! You can edit this later if you change your mind.</label>
+                            <input
+                                type='text'
+                                value={name}
+                                placeholder="What is your group name?"
+                                onChange={(e) => setName(e.target.value)}
+                                required
+                            />
+                            <p style={{color: 'red'}}>{hasSubmitted && errors.name ? `${errors.name}` : ''}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h2>{`Describe the purpose of your group.`}</h2>
+                        <div>
+                            <div>
+                                <p>{`People will see this when we promote your group, but you'll be able to add to it later, too.`}</p>
+                                <div>
+                                    <p>{`1. What's the purpose of the group?`}</p>
+                                    <p>2. Who should join?</p>
+                                    <p>3. What will you do at your events?</p>
+                                </div>
+                            </div>
+                            <textarea
+
+                                value={about}
+                                placeholder="Please write at least 50 characters"
+                                onChange={(e) => setAbout(e.target.value)}
+                                required
+                                rows='5'
+                            />
+                            <p style={{color: 'red'}}>{hasSubmitted && errors.about ? `${errors.about}` : ''}</p>
+                        </div>
+                    </div>
+                    <div className="sec-one">
+                        <label>Is this an in-person or online group?</label>
+                        <select
+                            value={type}
+                            onChange={(e) => setType(e.target.value)}
+                            >
+                            <option value={''} disabled>Choose One</option>
+                            <option>In person</option>
+                            <option>Online</option>
+                        </select>
+                        <p style={{color: 'red'}}>{hasSubmitted && errors.type ? `${errors.type}` : ''}</p>
+                    </div>
+                    <div className="sec-one">
+                        <label>Is this group private or public?</label>
+                        <select
+                            value={isPrivate}
+                            onChange={(e) => setIsPrivate(e.target.value)}
+                            >
+                            <option value={''} disabled>Choose One</option>
+                            <option>Private</option>
+                            <option>Public</option>
+                        </select>
+                        <p style={{color: 'red'}}>{hasSubmitted && errors.private ? `${errors.private}` : ''}</p>
+                    </div>
+                    <div className="sec-one">
+                        <label>Please add an image URL for your group below:</label>
                         <input
                             type='text'
-                            value={name}
-                            placeholder="What is your group name?"
-                            onChange={(e) => setName(e.target.value)}
+                            value={url}
+                            placeholder="Image Url"
+                            onChange={(e) => setUrl(e.target.value)}
                             required
                         />
-                        <p style={{color: 'red'}}>{hasSubmitted && errors.name ? `${errors.name}` : ''}</p>
+                        <p style={{color: 'red'}}>{hasSubmitted && errors.state ? `${errors.state}` : ''}</p>
                     </div>
-                </div>
-                <div>
-                    <h2>{`"Describe the purpose of your group."`}</h2>
-                    <div>
-                        <div>
-                            <p>{`People will see this when we promote your group, but you'll be able to add to it later, too.`}</p>
-                            <div>
-                                <p>{`1. What's the purpose of the group?`}</p>
-                                <p>2. Who should join?</p>
-                                <p>3. What will you do at your events?</p>
-                            </div>
-                        </div>
-                        <textarea
-                            value={about}
-                            placeholder="Please write at least 30 characters"
-                            onChange={(e) => setAbout(e.target.value)}
-                            required
-                            rows='5'
-                        />
-                        <p style={{color: 'red'}}>{hasSubmitted && errors.about ? `${errors.about}` : ''}</p>
+                    <div className="sub-btn-con">
+                        <button type='submit' className="sub-btn" onClick={() => setHasSubmitted(true)}>Create Group</button>
                     </div>
-                </div>
-                <div className="sec-one">
-                    <label>Is this an in-person or online group?</label>
-                    <select
-                        value={type}
-                        onChange={(e) => setType(e.target.value)}
-                        >
-                        <option value={''} disabled>Choose One</option>
-                        <option>In person</option>
-                        <option>Online</option>
-                    </select>
-                    <p style={{color: 'red'}}>{hasSubmitted && errors.type ? `${errors.type}` : ''}</p>
-                </div>
-                <div className="sec-one">
-                    <label>Is this group private or public?</label>
-                    <select
-                        value={isPrivate}
-                        onChange={(e) => setIsPrivate(e.target.value)}
-                        >
-                        <option value={''} disabled>Choose One</option>
-                        <option>Private</option>
-                        <option>Public</option>
-                    </select>
-                    <p style={{color: 'red'}}>{hasSubmitted && errors.private ? `${errors.private}` : ''}</p>
-                </div>
-                <div className="sec-one">
-                    <label>Please add an image URL for your group below:</label>
-                    <input
-                        type='text'
-                        value={url}
-                        placeholder="Image Url"
-                        onChange={(e) => setUrl(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="sub-btn-con">
-                    <button type='submit' className="sub-btn" onClick={() => setHasSubmitted(true)}>Create Group</button>
-                </div>
-            </form>
-
+                </form>
+            </div>
         </div>
     )
 }

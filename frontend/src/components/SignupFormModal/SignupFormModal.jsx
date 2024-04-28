@@ -132,7 +132,7 @@ function SignupFormModal() {
           />
         </label>
         {errors.confirmPassword && <p style={{color: 'red'}} >{errors.confirmPassword}</p>}
-        <button type="submit" disabled={isDisabled} >Sign Up</button>
+        <button type="submit" className={isDisabled ? 'login-btn-disabled' : 'login-btn-modal'} disabled={isDisabled} >Sign Up</button>
       </form>
     </div>
   );

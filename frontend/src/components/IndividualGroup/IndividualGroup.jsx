@@ -91,17 +91,6 @@ function IndividualGroup() {
         .then(() => {
             navigate(`/groups/${groupId}/events`)
         })
-        // , {state: {gId: group.id,
-        //     groupName: group.name,
-        //     id: group.organizerId,
-        //     firstName: group.Organizer.firstName,
-        //     lastName: group.Organizer.lastName,
-        //     name: group.name,
-        //     image: group?.GroupImages[0].url || '',
-        //     city: group?.city,
-        //     state: group.state
-        //     }}
-
     }
 
     const organizeEvents = () => {
@@ -119,10 +108,25 @@ function IndividualGroup() {
                 events.splice(events.indexOf(currEvent), 1)
             })
         }
-        if (expired) {
-            expired.forEach(event => sorted.push(event));
-        }
         return sorted;
+    }
+
+    const organizeExpiredEvents = () => {
+        let dates = []
+        let sorted = [];
+        let expired = [];
+        let events = [...currEvents]
+        if(events) {
+            events.forEach(event => dates.push(event.startDate))
+            dates.sort()
+            dates.forEach(date => {
+                let currEvent = events.find(event => event.startDate === date)
+                if(new Date(currEvent.startDate).getTime() < new Date().getTime()) expired.push(currEvent)
+                else sorted.push(currEvent)
+                events.splice(events.indexOf(currEvent), 1)
+            })
+        }
+        return expired
     }
 
     return (
@@ -152,14 +156,14 @@ function IndividualGroup() {
                                     >Join This Group</button>
                             </div>
                             <div>
-                                <div className={!user && !organizer ? '' : 'btn-container'}>
-                                    <div className={!user && !organizer ? '' : 'create-update-btns'}>
-                                        <button className={!user && !organizer ? '' : 'org-btn-group'}
+                                <div className={!user || !organizer ? '' : 'btn-container'}>
+                                    <div className={!user || !organizer ? '' : 'create-update-btns'}>
+                                        <button className={!user || !organizer ? '' : 'org-btn-group'}
                                             hidden={!organizer}
                                             onClick={() => createEvent()}
                                             >Create Event
                                         </button>
-                                        <button className={user && !organizer ? '' : 'org-btn-group'}
+                                        <button className={!user || !organizer ? '' : 'org-btn-group'}
                                             hidden={!organizer}
                                             onClick={() => navigate(`/groups/${groupId}/update`)}
                                             >Update
@@ -184,8 +188,32 @@ function IndividualGroup() {
 
             </div>
             <div className='all-events-container'>
-                <h2 className='events-count'>{`Events (${currEvents.length})`}</h2>
+                <h2 className='events-count'>{organizeEvents().length === 0 ? `No Upcoming Events` :`Upcoming Events: (${organizeEvents().length})`}</h2>
                     {organizeEvents().map(event => (
+                        <div key={`${event.id}`} className='event-display-card-container'>
+                            <div className='event-top-sec' >
+                                <div className='event-display-img-container'>
+                                    <img src={event.previewImage ? `${event.previewImage}` : 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg'} onClick={() => seeEvent(event.id, event.previewImage)} className='event-display-img'/>
+                                </div>
+                                <div className='group-event-details-top-container'>
+                                    <div onClick={() => seeEvent(event.id, event.previewImage)} className='group-event-details-container'>
+                                        <h4>{`${event.name}`}</h4>
+                                        <p>{event.startDate ? `Start Date: ${new Date(event.startDate).toDateString()} · ${new Date(event.startDate).toLocaleTimeString('en-US')}` : ''}</p>
+                                        <p>{event.Venue ? `${event?.Venue.city}, ${event.Venue.state}` : ''}</p>
+                                    </div>
+                                </div>
+                                <div>
+
+                                </div>
+
+                            </div>
+                            <p className='group-event-description'>{event.description ? `${event.description}` : ''}</p>
+                        </div>
+                    ))}
+            </div>
+            <div className='all-events-container'>
+            <h2 className='events-count'>{organizeExpiredEvents().length === 0 ? '' :`Expired Events: (${organizeExpiredEvents().length})`}</h2>
+                    {organizeExpiredEvents().map(event => (
                         <div key={`${event.id}`} className='event-display-card-container'>
                             <div className='event-top-sec' >
                                 <div className='event-display-img-container'>
