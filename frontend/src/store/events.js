@@ -48,7 +48,6 @@ export const createEvent = (groupId, event) => async dispatch => {
         })
     });
     const data = await response.json();
-    console.log(data);
     dispatch(create(data));
     return response
 }
@@ -68,10 +67,9 @@ const eventsReducer = (state = {}, action) => {
         case LOAD: {
             const theseEvents = {};
             action.list.forEach(event => {
-                console.log(event)
                 theseEvents[event.id] = event;
             });
-            return {...state, ...theseEvents}
+            return {...theseEvents}
         }
         case CREATE: {
             const thisEvent = {};

@@ -1,6 +1,6 @@
 // import { useEffect, useState } from 'react';
 // import * as sessionActions from '../../store/session';
-import { useDispatch } from 'react-redux';
+import { useDispatch} from 'react-redux';
 import { useModal } from '../../context/Modal';
 import '../LoginFormModal/LoginForm.css';
 // import { useRef } from 'react';
@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 // import { useContext } from 'react';
 import './DestroyGroup.css'
 import { useParams } from 'react-router-dom';
+// import { useEffect, useState } from 'react';
 
 
 function DestroyGroupModal() {
@@ -21,6 +22,7 @@ function DestroyGroupModal() {
 //   const [errors, setErrors] = useState('');
   const { closeModal } = useModal();
   const navigate = useNavigate();
+  // const group = useSelector(state => state.groups);
 //   const { currGroupId, setCurrGroupId } = useContext(ApplicationContext)
 
 
@@ -35,8 +37,9 @@ function DestroyGroupModal() {
         dispatch(eventActions.getEvents())
     })
     .then(() => {
-        navigate('/groups')
-    })
+      navigate('/groups')
+  })
+
   };
 
   return (

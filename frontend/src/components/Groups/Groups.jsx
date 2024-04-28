@@ -1,8 +1,9 @@
 import { useDispatch, useSelector }  from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import * as groupActions from '../../store/group';
 import * as groupAction from '../../store/groupById';
+import * as eventActions from '../../store/events';
 import { ApplicationContext } from "../../context/GroupContext";
 
 import './Group.css'
@@ -15,9 +16,14 @@ function Groups() {
     const eventsList = useSelector(state => state.events)
     const events = Object.values(eventsList)
     const {setCurrGroupId, setCurrGroupPrev} = useContext(ApplicationContext);
+    const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
         dispatch(groupActions.getGroups())
+        dispatch(eventActions.getEvents())
+        .then(() => {
+            setLoaded(true)
+        })
     }, [dispatch])
 
     const eventCount = (id) => {
@@ -35,12 +41,13 @@ function Groups() {
         .then(() => {
             setCurrGroupId(id);
             setCurrGroupPrev(image);
+            setLoaded(false)
             navigate(`/groups/${id}`);
         })
 
     }
 
-    return (
+    if (loaded) return (
         <div className='main-container'>
             <div>
                 <div className='groups-title'>

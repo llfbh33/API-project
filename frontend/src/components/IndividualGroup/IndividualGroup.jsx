@@ -145,21 +145,21 @@ function IndividualGroup() {
                                 <h3>{`Events: ${currEvents.length} · `}{group.private ? 'Private' : 'Public'}</h3>
                                 <h3>{group.Organizer ? `Organized by: ${group.Organizer.firstName} ${group.Organizer.lastName}` : ''} </h3>
                             </div>
-                            <div className={user && organizer ? '' : 'join-group-btn'}>
-                                <button className='join-btn'
+                            <div className={!user || organizer ? '' : 'join-group-btn'}>
+                                <button className={!user || organizer ? '' : 'join-btn'}
                                     hidden={user && !organizer ? false : true}
                                     onClick={() => alert('Feature Coming Soon')}
                                     >Join This Group</button>
                             </div>
                             <div>
-                                <div className={user && !organizer ? '' : 'btn-container'}>
-                                    <div className='create-update-btns'>
-                                        <button className='org-btn-group'
+                                <div className={!user && !organizer ? '' : 'btn-container'}>
+                                    <div className={!user && !organizer ? '' : 'create-update-btns'}>
+                                        <button className={!user && !organizer ? '' : 'org-btn-group'}
                                             hidden={!organizer}
                                             onClick={() => createEvent()}
                                             >Create Event
                                         </button>
-                                        <button className='org-btn-group'
+                                        <button className={user && !organizer ? '' : 'org-btn-group'}
                                             hidden={!organizer}
                                             onClick={() => navigate(`/groups/${groupId}/update`)}
                                             >Update

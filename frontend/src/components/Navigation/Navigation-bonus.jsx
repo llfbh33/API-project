@@ -31,7 +31,7 @@ function Navigation({ isLoaded }) {
             <div>
               <button
                 hidden={!sessionUser}
-                className='nav-btn'
+                className={sessionUser ? 'nav-btn' : ''}
                 onClick={() => navigate('/createGroup')}
                   >Start a New Group</button>
             </div>

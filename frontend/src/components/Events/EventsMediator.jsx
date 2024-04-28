@@ -19,11 +19,11 @@ const EventsMediator = () => {
 
     useEffect(() => {
         localStorage.groupId = groupId;
-        dispatch(singleGroupAction.getGroupDetails(groupId))
+        dispatch(singleEventAction.getEventDetails(eventId))
         .then(() => {
             setTestLoad(true)
         })
-        dispatch(singleEventAction.getEventDetails(eventId))
+        dispatch(singleGroupAction.getGroupDetails(groupId))
         .then(() => {
             setLoaded(true)
         })

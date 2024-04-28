@@ -52,7 +52,6 @@ function Events() {
                             <div className='top-event-details-container'>
                                 <div  className='event-details-container'>
                                     <h3>{`${event?.name}`}</h3>
-                                    {console.log(event)}
                                     <h4 className="dates">{event?.startDate ? `Start Date: ${new Date(event.startDate).toDateString()} · ${new Date(event.startDate).toLocaleTimeString('en-US')}` : ''}</h4>
                                     <h4 className="city-state">{event ?`${event?.Venue.city}, ${event?.Venue.state}` : ''}</h4>
                                 </div>
