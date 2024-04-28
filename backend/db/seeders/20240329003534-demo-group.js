@@ -15,7 +15,7 @@ const seedGroups = [
   {
     organizerId: 1,
     name: 'Time for a Play Date!',
-    about: 'This group is all about providing our pups with and opertunity to make lots of friends!',
+    about: 'This group is all about providing our pups with and opportunity to make lots of friends!',
     type: 'In person',
     private: false,
     city: 'Chicago',

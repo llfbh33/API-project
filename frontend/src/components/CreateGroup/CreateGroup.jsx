@@ -37,7 +37,7 @@ function CreateGroup() {
         if (name.length < 1) validationErrors.name = 'Name is required'
         if (name.length > 60) validationErrors.name = "Name must be less than 60 characters";
         if (name.length < 5) validationErrors.name = 'Name must be more than 5 characters'
-        if (typeof parseInt(about.at(0)) === 'number' && !isNaN(parseInt(about.at(0)))) validationErrors.about = "Structure description in a pharagraph format"
+        if (typeof parseInt(about.at(0)) === 'number' && !isNaN(parseInt(about.at(0)))) validationErrors.about = "Structure description in a paragraph format"
         if (about.replaceAll(' ', '').length < 50) validationErrors.about = "Description must be at least 50 characters long";
         if (!type) validationErrors.type = "Group type is required";
         if (!isPrivate) validationErrors.private = "Visibility type is required";

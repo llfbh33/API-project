@@ -87,6 +87,7 @@ function SignupFormModal() {
           <input
             type="text"
             value={username}
+            placeholder='4 or more characters'
             onChange={(e) => setUsername(e.target.value)}
             required
           />
@@ -116,6 +117,7 @@ function SignupFormModal() {
           Password
           <input
             type="password"
+            placeholder='6 or more characters'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
