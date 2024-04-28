@@ -37,11 +37,12 @@ function CreateGroup() {
         if (name.length < 1) validationErrors.name = 'Name is required'
         if (name.length > 60) validationErrors.name = "Name must be less than 60 characters";
         if (name.length < 5) validationErrors.name = 'Name must be more than 5 characters'
-        if (about.length < 50) validationErrors.about = "Description must be at least 50 characters long";
+        if (typeof parseInt(about.at(0)) === 'number' && !isNaN(parseInt(about.at(0)))) validationErrors.about = "Structure description in a pharagraph format"
+        if (about.replaceAll(' ', '').length < 50) validationErrors.about = "Description must be at least 50 characters long";
         if (!type) validationErrors.type = "Group type is required";
         if (!isPrivate) validationErrors.private = "Visibility type is required";
         if (location.length < 1) validationErrors.city = 'location is required';
-
+        console.log('errors', validationErrors)
         setErrors(validationErrors);
     }, [name, location, type, about, isPrivate, url])
 
@@ -81,7 +82,7 @@ function CreateGroup() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('hello', errors)
+
         if(Object.values(errors).length) {
             return;
         } else {

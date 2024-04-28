@@ -21,14 +21,12 @@ function IndividualGroup() {
     const events = useSelector(state => state.events)
     const currEvents = Object.values(events)
                 .filter(event => event.groupId === parseInt(groupId))
-
     const [organizer, setOrganizer] = useState(false);
     const [loaded, setLoaded] = useState(false);
     const [eventLoaded, setEventLoaded] = useState(false)
     const [picture, setPicture] = useState('');
     const [eventId, setEventId] = useState('');
     const [groupLoaded, setGroupLoaded] = useState(false);
-
 
 
     useEffect(() => {
@@ -38,7 +36,6 @@ function IndividualGroup() {
             setGroupLoaded(true)
         })
     }, [dispatch])
-
 
     useEffect(() => {
         if (group.GroupImages) {
@@ -246,6 +243,5 @@ function IndividualGroup() {
     )
 }
 
-// need to pull in the whole event to get the description and venue address
 
 export default IndividualGroup

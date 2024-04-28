@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 
 import * as groupAction from '../../store/groupById';
 
-
 import './Group.css'
 
 function Groups() {
