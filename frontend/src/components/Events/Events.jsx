@@ -41,8 +41,8 @@ function Events() {
                     <h2>Groups</h2>
                 </div>
                 <h1 className="events-title-caption">Events in Meet Dogs</h1>
-            </div>
-        <div className="events-container">
+                </div>
+                <div className="events-container">
                 {organizeEvents().map(event => (
                     <div key={`${event?.id}`} className='event-card-container' onClick={() => navigate(`/loadingEvent/${event.id}/${event.groupId}`)}>
                         <div className='event-details-main-container' >
@@ -52,13 +52,14 @@ function Events() {
                             <div className='top-event-details-container'>
                                 <div  className='event-details-container'>
                                     <h3>{`${event?.name}`}</h3>
+                                    {console.log(event)}
                                     <h4 className="dates">{event?.startDate ? `Start Date: ${new Date(event.startDate).toDateString()} · ${new Date(event.startDate).toLocaleTimeString('en-US')}` : ''}</h4>
-                                    <h4 className="city-state">{`${event?.Venue.city}, ${event?.Venue.state}`}</h4>
+                                    <h4 className="city-state">{event ?`${event?.Venue.city}, ${event?.Venue.state}` : ''}</h4>
                                 </div>
                             </div>
                         </div>
                     <p className="description">{event.description ? `${event.description}` : ''}</p>
-                </div>
+                    </div>
                 ))}
             </div>
         </div>

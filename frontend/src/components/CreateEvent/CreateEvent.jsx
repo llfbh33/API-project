@@ -25,6 +25,7 @@ function CreateEvent() {
 
     let group = useSelector(state => state.groupById);
 
+
     const [errors, setErrors] = useState('');
 
     const [loaded, setLoaded] = useState(false);
@@ -58,15 +59,16 @@ function CreateEvent() {
         if (endDate.includes (',')) {
             if (!checkEndDate(endDate, startDate)) validationErrors.endDate = 'End date must be after start date'
         }
-        if (!url.includes('https:')) validationErrors.url = "Provide a valid url"
+        if (url.length < 15) validationErrors.url = 'Provide a valid url'
         setErrors(validationErrors);
-    }, [name, price, type, about, startDate, endDate])
+    }, [name, price, type, about, startDate, endDate, url])
 
 
     useEffect(() => {
         dispatch(groupActions.getGroupDetails(parseInt(groupId)))
         .then(() => {
             setCurrGroupId(group.id)
+            console.log(group)
         })
     }, [dispatch])
 
@@ -127,6 +129,7 @@ function CreateEvent() {
 
         .then(() => {
             dispatch(eventActions.getEvents())
+            console.log('included events', getEvents)
         })
         .then(() => {
             dispatch(groupsActions.getGroups())
@@ -156,8 +159,8 @@ function CreateEvent() {
             setHasSubmitted(false)
             dispatch(
 
-                eventActions.createEvent(groupId, {
-                    venueId: '1',
+                eventActions.createEvent(group.id, {
+                    venueId: 1,
                     name,
                     type,
                     capacity: 10,
@@ -238,7 +241,7 @@ function CreateEvent() {
                 <div className="combo">
                     <label>Please add an image URL for your event below:</label>
                     <input
-                        type='text'
+                        type='url'
                         value={url}
                         placeholder="Image Url"
                         onChange={(e) => setUrl(e.target.value)}

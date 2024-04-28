@@ -89,17 +89,18 @@ function IndividualGroup() {
             setCurrGroupId(group.id)
         })
         .then(() => {
-            navigate(`/groups/${groupId}/events`, {state: {gId: group.id,
-                groupName: group.name,
-                id: group.organizerId,
-                firstName: group.Organizer.firstName,
-                lastName: group.Organizer.lastName,
-                name: group.name,
-                image: group?.GroupImages[0].url || '',
-                city: group?.city,
-                state: group.state
-                }})
+            navigate(`/groups/${groupId}/events`)
         })
+        // , {state: {gId: group.id,
+        //     groupName: group.name,
+        //     id: group.organizerId,
+        //     firstName: group.Organizer.firstName,
+        //     lastName: group.Organizer.lastName,
+        //     name: group.name,
+        //     image: group?.GroupImages[0].url || '',
+        //     city: group?.city,
+        //     state: group.state
+        //     }}
 
     }
 

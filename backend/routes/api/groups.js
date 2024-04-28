@@ -413,7 +413,7 @@ router.post('/:groupId/events', requireAuth, noGroup, authOrganizerOrCoHost, noV
 
     const newEvent = await Event.create({
         venueId,
-        groupId,
+        groupId: parseInt(groupId),
         name,
         description,
         type,

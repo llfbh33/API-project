@@ -50,7 +50,7 @@ function Groups() {
                 </div>
                 <h1 className="groups-title-caption" >Groups in Meet Dogs</h1>
             </div>
-        <div className='group-container'>
+            <div className='group-container'>
             {list.map(group =>  (
                 <div key={group?.id} className='group-card-container' onClick={() => toGroupDetails(group.id, group.previewImage)}>
                     <div className="group-details">
@@ -61,13 +61,12 @@ function Groups() {
                             <div className="details-container">
                                 <h3>{`${group?.name}`}</h3>
                                 <h4>{`${group?.city}, ${group?.state}`}</h4>
-                                <h4>{`${group?.about}`}</h4>
                                 <h4>{eventCount(group?.id)} Events · {group?.private ? 'Private' : 'Public' }</h4>
                             </div>
                         </div>
                     </div>
+                    <p className="group-description">{`${group?.about}`}</p>
                 </div>
-
             ))}
             </div>
         </div>

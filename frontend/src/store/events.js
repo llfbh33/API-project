@@ -10,9 +10,9 @@ const load = list => ({
     list
 })
 
-const create = (event) => ({
+const create = (data) => ({
     type: CREATE,
-    event,
+    data,
 })
 
 const destroy = (eventId) => ({
@@ -65,17 +65,17 @@ export const destroyEvent = (eventId) => async dispatch => {
 
 const eventsReducer = (state = {}, action) => {
     switch (action.type) {
-        case LOAD:
-        {
+        case LOAD: {
             const theseEvents = {};
             action.list.forEach(event => {
+                console.log(event)
                 theseEvents[event.id] = event;
             });
             return {...state, ...theseEvents}
         }
         case CREATE: {
             const thisEvent = {};
-            thisEvent[action.event.id] = action.event;
+            thisEvent[action.data.id] = action.data;
             return {...state, ...thisEvent}
         }
         case DESTROY: {

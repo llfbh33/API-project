@@ -1,5 +1,5 @@
 .main-container {
-    margin: 0px 20%;
+    margin: 0px 25%;
     /* margin: auto;
     width: 70% */
 }
@@ -7,25 +7,34 @@
 .groups-title {
     display: flex;
     align-items: center;
-    gap: 1%;
+    /* gap: 1%; */
 }
 
 .groups-title > h1 {
-    font-size: 3.2vw;
+    font-size: 2.8vw;
     text-decoration: underline;
+    margin: 0;
+
+    margin-top: 2%;
 }
 
 .groups-title > h2 {
-    font-size: 3.2vw;
-    color: rgba(128, 128, 128, 0.534)
+    font-size: 2.8vw;
+    color: rgba(128, 128, 128, 0.534);
+    margin: 0;
+    margin-top: 2%;
+    margin-right: 1.5%;
 }
 
 .groups-title > h3 {
-    font-size: 3.2vw;
+    font-size: 2.8vw;
+    margin: 0;
+    margin-right: 1.5%;
+    margin-top: 2%;
 }
 
 .groups-title-caption {
-    font-size: 2.0vw;
+    font-size: 1.7vw;
 }
 
 .group-container {
@@ -37,7 +46,7 @@
 
 .group-card-container {
     background-color: rgb(218, 243, 218);
-    margin: 20px 0;
+    margin: 2% 0;
     padding: 5%;
     border-radius: 20px;
     border: 1px ridge grey;
@@ -67,7 +76,8 @@
 .group-img-container > img {
     width: 100%;
     height: 100%;
-    max-height: 450px;
+    max-height: 250px;
+    max-width: 400px;
     border: 1px ridge grey;
     border-radius: 10px;
     object-fit: cover;
@@ -83,22 +93,29 @@
 .details-container {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    width: 90%;
+    align-items: center;
     padding: 6%;
+    /* line-height: 2; */
 }
 
 .details-container > h3 {
-    font-size: 1.8vw;
+    font-size: 1.5vw;
     text-decoration: underline;
+    /* margin: 0; */
 }
 
 .details-container > h4 {
-    font-size: 1.3vw;
+    font-size: 1.1vw;
+    /* margin: 0; */
 }
 
-.all-events-container {
+.group-description {
+    font-size: 1.2vw;
+}
+
+
+/* .all-events-container {
     display: flex;
     flex-direction: column;
     width: 80%
-}
+} */
