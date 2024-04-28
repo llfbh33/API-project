@@ -4,6 +4,7 @@ import './Events.css';
 import { useNavigate } from "react-router-dom";
 
 
+
 function Events() {
 
     const navigate = useNavigate();
@@ -32,19 +33,25 @@ function Events() {
         return sorted;
     }
 
+    const seeEvent = (eventId, groupId) => {
+        localStorage.eventId = eventId
+        localStorage.groupId = groupId
+        navigate(`/loadingEvent/${eventId}/${groupId}`)
+    }
+
     return (
         <div className="main-container">
             <div >
                 <div className='events-title'>
                     <h1>Events</h1>
                     <h3> · </h3>
-                    <h2>Groups</h2>
+                    <h2 onClick={() => navigate('/groups')}>Groups</h2>
                 </div>
                 <h1 className="events-title-caption">Events in Meet Dogs</h1>
                 </div>
                 <div className="events-container">
                 {organizeEvents().map(event => (
-                    <div key={`${event?.id}`} className='event-card-container' onClick={() => navigate(`/loadingEvent/${event.id}/${event.groupId}`)}>
+                    <div key={`${event?.id}`} className='event-card-container' onClick={() => seeEvent(event.id, event.groupId)}>
                         <div className='event-details-main-container' >
                             <div className='event-img-container'>
                                 <img  src={event?.previewImage ? `${event.previewImage}` : 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg'}/>

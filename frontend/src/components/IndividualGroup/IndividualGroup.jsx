@@ -13,7 +13,7 @@ import { ApplicationContext } from '../../context/GroupContext';
 
 function IndividualGroup() {
     const {groupId} = useParams();
-    const {setCurrGroupId, setCurrEventPrev} = useContext(ApplicationContext);
+    const {setCurrGroupId, setCurrEventPrev } = useContext(ApplicationContext);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     let group = useSelector(state => state.groupById)
@@ -27,6 +27,7 @@ function IndividualGroup() {
     const [eventLoaded, setEventLoaded] = useState(false)
     const [picture, setPicture] = useState('');
     const [eventId, setEventId] = useState('');
+    const [groupLoaded, setGroupLoaded] = useState(false);
 
 
 
@@ -34,14 +35,17 @@ function IndividualGroup() {
         dispatch(groupActions.getGroupDetails(groupId))
         .then(() => {
             localStorage.groupId = groupId;
+            setGroupLoaded(true)
         })
     }, [dispatch])
+
 
     useEffect(() => {
         if (group.GroupImages) {
             let image = Object.values(group.GroupImages)
             let imageFind = image.find(pic => pic)
-            setPicture(imageFind.url)
+            console.log(imageFind)
+            imageFind ? setPicture(imageFind.url) : setPicture('https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg')
         }
     }, [group])
 
@@ -62,7 +66,8 @@ function IndividualGroup() {
 
 
     const navToEvent = () => {
-        setEventLoaded(false)
+        setEventLoaded(false);
+        setGroupLoaded(false);
         setLoaded(false);
         setOrganizer(false);
         setPicture('');
@@ -89,6 +94,8 @@ function IndividualGroup() {
             setCurrGroupId(group.id)
         })
         .then(() => {
+            setLoaded(false);
+            setGroupLoaded(false)
             navigate(`/groups/${groupId}/events`)
         })
     }
@@ -129,7 +136,7 @@ function IndividualGroup() {
         return expired
     }
 
-    return (
+    if (groupLoaded) return (
 
         <div className='individual-group-container'
             hidden={!loaded}>
@@ -190,13 +197,13 @@ function IndividualGroup() {
             <div className='all-events-container'>
                 <h2 className='events-count'>{organizeEvents().length === 0 ? `No Upcoming Events` :`Upcoming Events: (${organizeEvents().length})`}</h2>
                     {organizeEvents().map(event => (
-                        <div key={`${event.id}`} className='event-display-card-container'>
+                        <div key={`${event.id}`} className='event-display-card-container' onClick={() => seeEvent(event.id, event.previewImage)}>
                             <div className='event-top-sec' >
                                 <div className='event-display-img-container'>
-                                    <img src={event.previewImage ? `${event.previewImage}` : 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg'} onClick={() => seeEvent(event.id, event.previewImage)} className='event-display-img'/>
+                                    <img src={event.previewImage ? `${event.previewImage}` : 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg'} className='event-display-img'/>
                                 </div>
                                 <div className='group-event-details-top-container'>
-                                    <div onClick={() => seeEvent(event.id, event.previewImage)} className='group-event-details-container'>
+                                    <div  className='group-event-details-container'>
                                         <h4>{`${event.name}`}</h4>
                                         <p>{event.startDate ? `Start Date: ${new Date(event.startDate).toDateString()} · ${new Date(event.startDate).toLocaleTimeString('en-US')}` : ''}</p>
                                         <p>{event.Venue ? `${event?.Venue.city}, ${event.Venue.state}` : ''}</p>
@@ -212,15 +219,15 @@ function IndividualGroup() {
                     ))}
             </div>
             <div className='all-events-container'>
-            <h2 className='events-count'>{organizeExpiredEvents().length === 0 ? '' :`Expired Events: (${organizeExpiredEvents().length})`}</h2>
+            <h2 className='events-count' hidden={!organizeExpiredEvents().length}>{organizeExpiredEvents().length === 0 ? '' :`Expired Events: (${organizeExpiredEvents().length})`}</h2>
                     {organizeExpiredEvents().map(event => (
-                        <div key={`${event.id}`} className='event-display-card-container'>
+                        <div key={`${event.id}`} className='event-display-card-container' >
                             <div className='event-top-sec' >
                                 <div className='event-display-img-container'>
                                     <img src={event.previewImage ? `${event.previewImage}` : 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg'} onClick={() => seeEvent(event.id, event.previewImage)} className='event-display-img'/>
                                 </div>
                                 <div className='group-event-details-top-container'>
-                                    <div onClick={() => seeEvent(event.id, event.previewImage)} className='group-event-details-container'>
+                                    <div className='group-event-details-container'>
                                         <h4>{`${event.name}`}</h4>
                                         <p>{event.startDate ? `Start Date: ${new Date(event.startDate).toDateString()} · ${new Date(event.startDate).toLocaleTimeString('en-US')}` : ''}</p>
                                         <p>{event.Venue ? `${event?.Venue.city}, ${event.Venue.state}` : ''}</p>

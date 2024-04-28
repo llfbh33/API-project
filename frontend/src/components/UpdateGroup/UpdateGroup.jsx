@@ -1,41 +1,53 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as groupActions from '../../store/group';
-import { useNavigate } from "react-router-dom";
-import { ApplicationContext } from "../../context/GroupContext";
+import * as singleGroupAction from '../../store/groupById';
+import { useNavigate, useParams } from "react-router-dom";
 
 import './UpdateGroup.css'
 
 
 
 function UpdateGroup() {
-    // const {groupId} = useParams();
-    const user = useSelector(state => state.session.user)
+    const {groupId} = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    let thisGroup = useSelector(state => state.groupById)
-    const [location, setLocation] = useState(`${thisGroup.city}, ${thisGroup.state}`);
-    const [name, setName] = useState(thisGroup.name);
-    const [about, setAbout] = useState(thisGroup.about);
-    const [type, setType] = useState(thisGroup.type);
-    const [isPrivate, setIsPrivate] = useState(thisGroup.private);
+
+    const user = useSelector(state => state.session.user)
+    const thisGroup = useSelector(state => state.groupById)
+
+    const [location, setLocation] = useState('');
+    const [name, setName] = useState('');
+    const [about, setAbout] = useState('');
+    const [type, setType] = useState('');
+    const [isPrivate, setIsPrivate] = useState('');
     const [errors, setErrors] = useState('');
     const [loaded, setLoaded] = useState(false);
-
-
-    const {setCurrGroupId} = useContext(ApplicationContext);
 
     let validationErrors = {};
 
     useEffect(() => {
+        if (!Object.keys(thisGroup).length) {
+            dispatch(singleGroupAction.getGroupDetails(groupId))
+        }
+    }, [dispatch])
+
+    useEffect(() => {
         if (Object.keys(thisGroup).length) {
-            setLoaded(true)
-            if (loaded && !user || user.id !== thisGroup.organizerId) {
+            setAbout(thisGroup.about)
+            setName(thisGroup.name)
+            setLocation((`${thisGroup.city}, ${thisGroup.state}`))
+            setType(thisGroup.type);
+            setIsPrivate(thisGroup.private);
+            if (!user || user.id !== thisGroup.organizerId) {
                 navigate('/')
             }
         }
+    }, [thisGroup, user])
 
-    }, [thisGroup, loaded, user])
+    useEffect(() => {
+        if (location) setLoaded(true)
+    }, [location])
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -65,15 +77,14 @@ function UpdateGroup() {
         .then(() => {
 
             if(!Object.values(validationErrors).length) {
-                setCurrGroupId(thisGroup.id);
                 setLoaded(false);
                 navigate(`/groups/${thisGroup.id}`);
             }
         })
     }
 
-    return (
-        <div className="create-group">
+    if (loaded) return (
+        <div className="create-group" >
             <div className="create-group-inner">
                 <form onSubmit={handleSubmit} >
                     <h1>Update your Group</h1>
@@ -83,7 +94,7 @@ function UpdateGroup() {
                             <label>Meet Dogs groups meet locally, in person, and online. Well connect you with people in your area</label>
                             <input
                                 type='text'
-                                value={location}
+                                value={location ? location : 'loading'}
                                 placeholder="City, STATE"
                                 onChange={(e) => setLocation(e.target.value)}
                                 required

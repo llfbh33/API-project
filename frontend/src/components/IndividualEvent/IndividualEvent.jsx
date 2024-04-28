@@ -1,5 +1,5 @@
-import { useState, useEffect} from 'react';
-import { useSelector } from 'react-redux';
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link, useParams } from 'react-router-dom';
 
 import { TbClockHour4 } from "react-icons/tb";
@@ -7,6 +7,8 @@ import { AiOutlineDollar } from "react-icons/ai";
 import { TfiLocationPin } from "react-icons/tfi";
 
 import DestroyEvent from '../DestroyEvent/DestroyEvent';
+import * as singleGroupAction from '../../store/groupById';
+import * as singleEventAction from '../../store/eventById';
 
 import './IndividualEvent.css'
 
@@ -15,6 +17,7 @@ function IndividualEvent() {
 
     const navigate = useNavigate();
     const {eventId} = useParams();
+    const dispatch = useDispatch();
 
     const group = useSelector(state => state.groupById);
     const event = useSelector(state => state.eventById);
@@ -23,20 +26,24 @@ function IndividualEvent() {
     const [organizer, setOrganizer] = useState(false);
     const [groupPic, setGroupPic] = useState('');
     const [eventPic, setEventPic] = useState('');
+    const [preLoaded, setPreLoaded] = useState(false);
+    const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
-        localStorage.eventId = eventId;
-        if (!Object.keys(event).length && !Object.keys(group).length) {
-            navigate(`/loadingEvent/${eventId}/${localStorage.groupId}`)
-        }
-    }, [event, group])
+            dispatch(singleEventAction.getEventDetails(eventId))
+            dispatch(singleGroupAction.getGroupDetails(localStorage.groupId))
+    }, [dispatch, eventId]);
 
+    useEffect(() => {
+        if (Object.values(group).length && Object.values(event).length) {
+            setPreLoaded(true)
+        } else setPreLoaded(false)
+    }, [group, event])
 
     useEffect(() => {
         if (user && user.id === parseInt(group.organizerId)) setOrganizer(true);
         else setOrganizer(false);
     }, [group, user, event])
-
 
     useEffect(() => {
         if (Object.values(group).length) {
@@ -51,10 +58,17 @@ function IndividualEvent() {
             if (!imageFind) setEventPic('https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg')
             else setEventPic(imageFind.url)
         }
-    }, [group, event])
+    }, [group, event, preLoaded])
+
+    useEffect(() => {
+        if (preLoaded && eventPic && groupPic) setLoaded(true)
+        else setLoaded(false)
+    }, [preLoaded, eventPic, groupPic])
 
 
-    return (
+
+
+    if ( preLoaded && loaded ) return (
         <div className='individual-event-container'>
             <div className='return-nav-link'>
                 <Link to='/events' className='event-link'>{`<-- Events`}</Link>
@@ -72,9 +86,10 @@ function IndividualEvent() {
                         <div className='group-section' onClick={() => navigate(`/groups/${group.id}`)}>
                             <div className='group-prev-img-container'>
                                 {groupPic && groupPic === '' ? (<h1>Loading...</h1>) : ( <img src={groupPic} />)}
+                                {/* <img src={`${getGroup.GroupImages[0].url}`} /> */}
                             </div>
                             <div>
-                                <h2>{`${group?.name}`}</h2>
+                                <h2>{`${group.name}`}</h2>
                                 <h3>{`${group?.city}, ${group?.state}`}</h3>
                             </div>
                         </div>

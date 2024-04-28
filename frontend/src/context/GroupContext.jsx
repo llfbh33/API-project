@@ -8,6 +8,7 @@ export default function GroupProvider(props) {
     const [currGroupId, setCurrGroupId] = useState('');
     const [currGroupPrev, setCurrGroupPrev] = useState('');
     const [currEventPrev, setCurrEventPrev] = useState('');
+    const [eventLoaded, setEventLoaded] = useState(false);
 
     return (
         <ApplicationContext.Provider value={{
@@ -16,7 +17,9 @@ export default function GroupProvider(props) {
                 currGroupPrev,
                 setCurrGroupPrev,
                 currEventPrev,
-                setCurrEventPrev
+                setCurrEventPrev,
+                eventLoaded,
+                setEventLoaded
                 }}
             >
             {props.children}

@@ -23,6 +23,10 @@
     margin-top: 2%;
 }
 
+.events-title > h2:hover {
+    cursor: pointer;
+}
+
 .events-title > h3 {
     font-size: 2.8vw;
     margin: 0;

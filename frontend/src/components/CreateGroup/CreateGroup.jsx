@@ -19,6 +19,7 @@ function CreateGroup() {
     const [isPrivate, setIsPrivate] = useState('');
     const [errors, setErrors] = useState('');
     const [loaded, setLoaded] = useState(false);
+    const [fullyLoaded, setFullyLoaded] = useState(false)
     const [hasSubmitted, setHasSubmitted] = useState(false);
 
     let getGroups = useSelector(state => state.groups)
@@ -30,6 +31,9 @@ function CreateGroup() {
 
     useEffect(() => {
         const validationErrors = {};
+        if (!url.endsWith('.png') && !url.endsWith('.jpg') && !url.endsWith('.jpeg')) {
+            validationErrors.url = "Image URL must end in .png, .jpg, or .jpeg"
+        }
         if (name.length < 1) validationErrors.name = 'Name is required'
         if (name.length > 60) validationErrors.name = "Name must be less than 60 characters";
         if (name.length < 5) validationErrors.name = 'Name must be more than 5 characters'
@@ -37,24 +41,32 @@ function CreateGroup() {
         if (!type) validationErrors.type = "Group type is required";
         if (!isPrivate) validationErrors.private = "Visibility type is required";
         if (location.length < 1) validationErrors.city = 'location is required';
-        if (!url.includes('.png') && !url.includes('.jpg') && !url.includes('.jpeg')) {
-            validationErrors.url = "Image URL must end in .png, .jpg, or .jpeg"
-        }
+
         setErrors(validationErrors);
-    }, [name, location, type, about, isPrivate])
+    }, [name, location, type, about, isPrivate, url])
 
     useEffect(() => {
-        if (loaded === true) completeSubmit()
+        if (loaded === true) {
+            dispatch(
+                groupImageActions.postGroupImages(thisIsIt,
+                    {url, preview: true}))
+        .then(() => {
+            dispatch(groupActions.getGroups())
+        })
+        .then(() => {
+            setFullyLoaded(true)
+        })
+        }
     }, [loaded])
+
+    useEffect(() => {
+        if (fullyLoaded) completeSubmit()
+    }, [fullyLoaded])
 
     const completeSubmit= () => {
 
-        setErrors({})
-        setCurrGroupId(thisIsIt);
-        dispatch(
-            groupImageActions.postGroupImages(thisIsIt,
-                {url, preview: true}))
-        .then(() => {
+            setErrors({})
+            setCurrGroupId(thisIsIt);
             setCurrGroupPrev(url);
             setLocation('');
             setName('');
@@ -62,13 +74,14 @@ function CreateGroup() {
             setUrl('');
             setType('');
             setIsPrivate('');
+            setLoaded(false);
+            setFullyLoaded(false);
             navigate(`/groups/${thisIsIt}`);
-        })
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
+        console.log('hello', errors)
         if(Object.values(errors).length) {
             return;
         } else {
@@ -85,9 +98,6 @@ function CreateGroup() {
                     state: cityStateArr[1]
                 })
             )
-            .then(() => {
-                dispatch(groupActions.getGroups())  // still loaded without this but may still need it
-            })
             .then(() => {
                 setLoaded(true);
             })
@@ -182,7 +192,7 @@ function CreateGroup() {
                             onChange={(e) => setUrl(e.target.value)}
                             required
                         />
-                        <p style={{color: 'red'}}>{hasSubmitted && errors.state ? `${errors.state}` : ''}</p>
+                        <p style={{color: 'red'}}>{hasSubmitted && errors.url ? `${errors.url}` : ''}</p>
                     </div>
                     <div className="sub-btn-con">
                         <button type='submit' className="sub-btn" onClick={() => setHasSubmitted(true)}>Create Group</button>
