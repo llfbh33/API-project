@@ -1,104 +1,80 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import * as groupActions from '../../store/groupById';
-import * as eventActions from '../../store/events';
 import * as singleEventActions from '../../store/eventById';
 import DestroyGroup from '../DestroyGroup/DestroyGroup';
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
 
 import './IndividualGroup.css';
-import { ApplicationContext } from '../../context/GroupContext';
+
 
 
 
 function IndividualGroup() {
     const {groupId} = useParams();
-    const {setCurrGroupId, setCurrEventPrev } = useContext(ApplicationContext);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const group = useSelector(state => state.groupById)
+
+    const group = useSelector(state => state.groupById);
     const user = useSelector(state => state.session.user);
-    const events = useSelector(state => state.events)
-    const currEvents = Object.values(events)
-                .filter(event => event.groupId === parseInt(groupId))
+    const events = useSelector(state => state.events);
+
     const [organizer, setOrganizer] = useState(false);
-    const [loaded, setLoaded] = useState(false);
-    const [eventLoaded, setEventLoaded] = useState(false)
-    const [picture, setPicture] = useState('');
-    const [eventId, setEventId] = useState('');
-    const [groupLoaded, setGroupLoaded] = useState(true);
+    const [groupLoading, setGroupLoading] = useState(true);
+    const [image, setImage] = useState('');
 
+    const currEvents = Object.values(events)
+    .filter(event => event.groupId === parseInt(groupId))
 
+// Effect loading group by id and setting main image
     useEffect(() => {
         const loadData = async () => {
             await dispatch(groupActions.getGroupDetails(groupId));
-            setGroupLoaded(false);
+            setGroupLoading(false);
         }
 
         loadData();
     }, [dispatch, groupId])
 
+// Effect to set value of the main display image
     useEffect(() => {
-        if (group.GroupImages) {
-            let image = Object.values(group.GroupImages)
-            let imageFind = image.find(pic => pic)
-            console.log(imageFind)
-            imageFind ? setPicture(imageFind.url) : setPicture('https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg')
+        if (!groupLoading && group.GroupImages.length) {
+            setImage(group.GroupImages.find(image => image.preview === true).url)
         }
-    }, [group])
+    }, [groupLoading])
 
+
+// Effect to check if the current user is the organizer of the current group
     useEffect(() => {
-        if (eventLoaded === true) {
-            navToEvent();
-        }
-    }, [eventLoaded])
-
-    useEffect(() => {
-        if (user) {
-            if (user.id === group.organizerId) setOrganizer(true);
-            else setOrganizer(false)
-        }
-        if (group.id === parseInt(groupId)) setLoaded(true);
-        else setLoaded(false)
-    }, [loaded, group, groupId, user])
+         setOrganizer(user && user.id === group.organizerId)
+    }, [group, user])
 
 
-    const navToEvent = () => {
-        setEventLoaded(false);
-        setGroupLoaded(false);
-        setLoaded(false);
-        setOrganizer(false);
-        setPicture('');
-        setCurrEventPrev(group?.GroupImages[0].url)
-        navigate(`/loadingEvent/${eventId}/${groupId}`)
-    }
-
-    const seeEvent = (id) => {
-        setEventId(id)
+ // Function to navigate the user to an event by id
+    const seeEvent = async (id) => {
+        await dispatch(singleEventActions.getEventDetails(id));
+        setGroupLoading(true);
         localStorage.eventId = id;
-        dispatch(groupActions.getGroupDetails(groupId))
-        .then(() => {
-            dispatch(singleEventActions.getEventDetails(id))
-        })
-        .then(() => {
-            setEventLoaded(true)
-        })
+        localStorage.groupId = groupId;
+        navigate(`/events/${id}`);
     }
 
+
+// function to navigate the user to the create event page
     const createEvent = () => {
-
-        dispatch(eventActions.getEvents())
-        .then(() =>{
-            setCurrGroupId(group.id)
-        })
-        .then(() => {
-            setLoaded(false);
-            setGroupLoaded(false)
-            navigate(`/groups/${groupId}/events`)
-        })
+        setGroupLoading(true);
+        navigate(`/groups/${groupId}/events`)
     }
 
+
+    // const organizeEvents = (isExpired) => {
+    //     const now = new Date().getTime();
+    //     return currEvents.filter(event => (new Date(event.startDate).getTime() < now) === isExpired)
+    //                      .sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+    // };
+
+// function to organize a groups events which have not expired
     const organizeEvents = () => {
         let dates = []
         let sorted = [];
@@ -117,6 +93,7 @@ function IndividualGroup() {
         return sorted;
     }
 
+// function to organize a groups events which have expired
     const organizeExpiredEvents = () => {
         let dates = []
         let sorted = [];
@@ -136,57 +113,63 @@ function IndividualGroup() {
     }
 
     // Replace loading screen with an actual loading screen
-    if (groupLoaded) {
+    if (groupLoading) {
         return <LoadingScreen />;
     }
 
     return (
-        <div className='individual-group-container'
-            hidden={!loaded}>
+        <div className='individual-group-container'>
             <div className='return-nav-link'>
                 <Link to='/groups' className='groups-link'>{ `<--- Groups`}</Link>
             </div>
             <div className='top-section-container'>
                 <div className='top-section-details'>
                     <div className='img-group'>
-                        {picture && picture === '' ? (<h1>Loading...</h1>) : ( <img src={picture} />)}
+                         <img src={image} />
+                         <div className='img-group-small-images'>
+                            {group.GroupImages.map((image, idx)=> (
+                                <div key={idx}>
+                                    <img src={image.url} onClick={() => setImage(image.url)}/>
+                                </div>
+                            ))}
+                         </div>
                     </div>
+
                     <div className='top-group-details'>
                         <div className='group-details-container'>
                             <div >
                                 <h1>{`${group.name}`}</h1>
-                                <h3>{`${group?.city}, ${group.state}`}</h3>
+                                <h3>{`${group.city}, ${group.state}`}</h3>
                                 <h3>{`Events: ${currEvents.length} · `}{group.private ? 'Private' : 'Public'}</h3>
                                 <h3>{group.Organizer ? `Organized by: ${group.Organizer.firstName} ${group.Organizer.lastName}` : ''} </h3>
                             </div>
-                            <div className={!user || organizer ? '' : 'join-group-btn'}>
-                                <button className={!user || organizer ? '' : 'join-btn'}
-                                    hidden={user && !organizer ? false : true}
-                                    onClick={() => alert('Feature Coming Soon')}
-                                    >Join This Group</button>
-                            </div>
-                            <div>
-                                <div className={!user || !organizer ? '' : 'btn-container'}>
-                                    <div className={!user || !organizer ? '' : 'create-update-btns'}>
-                                        <button className={!user || !organizer ? '' : 'org-btn-group'}
-                                            hidden={!organizer}
-                                            onClick={() => createEvent()}
-                                            >Create Event
-                                        </button>
-                                        <button className={!user || !organizer ? '' : 'org-btn-group'}
-                                            hidden={!organizer}
-                                            onClick={() => navigate(`/groups/${groupId}/update`)}
-                                            >Update
-                                        </button>
-                                    </div>
-                                    <div
-                                        hidden={!organizer}
-                                        className={!organizer ? '' :'delete-group'}
-                                        >
-                                        {<DestroyGroup organizer={organizer} />}
+                            {/* If there is no logged in user, or the user is the organizer, you will not see this button */}
+                            {!user || organizer ? null : (
+                                <div className='join-group-btn'>
+                                    <button className='join-btn'
+                                        onClick={() => alert('Feature Coming Soon')}
+                                        >Join This Group</button>
+                                </div>
+                            )}
+                            {organizer && (
+                                <div>
+                                    <div className='btn-container'>
+                                        <div className='create-update-btns'>
+                                            <button className='org-btn-group'
+                                                onClick={() => createEvent()}
+                                                >Create Event
+                                            </button>
+                                            <button className='org-btn-group'
+                                                onClick={() => navigate(`/groups/${groupId}/update`)}
+                                                >Update
+                                            </button>
+                                        </div>
+                                        <div className='delete-group'>
+                                            <DestroyGroup organizer={organizer} />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            )}
                             <div className='about-section'>
                                 <h2>{`What We're About`}</h2>
                                 <p>{`${group.about}`}</p>
