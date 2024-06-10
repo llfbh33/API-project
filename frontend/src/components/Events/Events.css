@@ -1,111 +1,93 @@
-.all-events {
-    margin: 0px 0%;
+
+/* Updated styling for the Groups component */
+.main-container {
+    margin: 0 auto;
+    max-width: 1200px; /* Adjust as needed */
+    padding: 0 20px;
 }
 
 .events-title {
     display: flex;
     align-items: center;
-    /* gap: 1%; */
 }
 
-.events-title > h1 {
-    font-size: 2.8vw;
-    text-decoration: underline;
-    margin: 0;
-    margin-right: 1.5%;
-    margin-top: 2%;
+.events-title h1, .events-title h2, .events-title h3 {
+    font-size: 40px;
+    margin: 10px;
 }
 
-.events-title > h2 {
-    font-size: 2.8vw;
+.events-title h2 {
     color: rgba(128, 128, 128, 0.534);
-    margin: 0;
-    margin-top: 2%;
-}
-
-.events-title > h2:hover {
+    margin-right: 10px;
     cursor: pointer;
 }
 
-.events-title > h3 {
-    font-size: 2.8vw;
-    margin: 0;
-    margin-right: 1.5%;
-    margin-top: 2%;
+.events-title h2:hover {
+    text-decoration: underline;
 }
 
 .events-title-caption {
-    font-size: 1.7vw;
+    font-size: 24px;
+    margin: 12px;
 }
 
 .events-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
 }
 
 .event-card-container {
-    background-color: rgb(218, 243, 218);
-    margin: 2% 0;
-    padding: 5%;
+    background-color: #f0f0f0;
     border-radius: 20px;
-    border: 1px ridge grey;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    border: 1px solid #999;
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease; /* Add transition for smooth effect */
 }
 
 .event-card-container:hover {
-    cursor: pointer;
-    border: 3px solid grey;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.521); /* Add shadow on hover */
 }
 
-.event-details-main-container {
+.event-details {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 5%;
-    height: 100%
+    padding: 20px;
 }
 
 .event-img-container {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: 200px;
+    overflow: hidden;
 }
 
-.event-img-container > img {
+.event-img-container img {
     width: 100%;
     height: 100%;
-    max-height: 250px;
-    max-width: 400px;
-    border: 1px ridge grey;
+    object-fit: cover;
     border-radius: 10px;
 }
 
-.top-event-details-container {
-    width: 100%;
-    height: 100%;
-    border: 1px solid grey;
-    border-radius: 20px;
+.details-container {
+    text-align: center;
+    margin-top: 20px;
 }
 
-.event-details-container  {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.event-details-container > h3 {
-    font-size: 1.5vw;
+.details-container h3 {
+    font-size: 20px;
+    margin: 0;
     text-decoration: underline;
 }
 
-.event-details-container > h4 {
-    font-size: 1.1vw;
+.details-container h4 {
+    font-size: 16px;
+    margin: 5px 0;
 }
 
-.description {
-    font-size: 1.2vw;
+.event-description {
+    font-size: 16px;
+    margin: 0px 20px 30px;
+
 }

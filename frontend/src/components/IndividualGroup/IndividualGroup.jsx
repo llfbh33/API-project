@@ -5,6 +5,7 @@ import * as groupActions from '../../store/groupById';
 import * as eventActions from '../../store/events';
 import * as singleEventActions from '../../store/eventById';
 import DestroyGroup from '../DestroyGroup/DestroyGroup';
+import LoadingScreen from '../LoadingScreen/LoadingScreen';
 
 import './IndividualGroup.css';
 import { ApplicationContext } from '../../context/GroupContext';
@@ -16,7 +17,7 @@ function IndividualGroup() {
     const {setCurrGroupId, setCurrEventPrev } = useContext(ApplicationContext);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    let group = useSelector(state => state.groupById)
+    const group = useSelector(state => state.groupById)
     const user = useSelector(state => state.session.user);
     const events = useSelector(state => state.events)
     const currEvents = Object.values(events)
@@ -26,16 +27,17 @@ function IndividualGroup() {
     const [eventLoaded, setEventLoaded] = useState(false)
     const [picture, setPicture] = useState('');
     const [eventId, setEventId] = useState('');
-    const [groupLoaded, setGroupLoaded] = useState(false);
+    const [groupLoaded, setGroupLoaded] = useState(true);
 
 
     useEffect(() => {
-        dispatch(groupActions.getGroupDetails(groupId))
-        .then(() => {
-            localStorage.groupId = groupId;
-            setGroupLoaded(true)
-        })
-    }, [dispatch])
+        const loadData = async () => {
+            await dispatch(groupActions.getGroupDetails(groupId));
+            setGroupLoaded(false);
+        }
+
+        loadData();
+    }, [dispatch, groupId])
 
     useEffect(() => {
         if (group.GroupImages) {
@@ -133,8 +135,12 @@ function IndividualGroup() {
         return expired
     }
 
-    if (groupLoaded) return (
+    // Replace loading screen with an actual loading screen
+    if (groupLoaded) {
+        return <LoadingScreen />;
+    }
 
+    return (
         <div className='individual-group-container'
             hidden={!loaded}>
             <div className='return-nav-link'>

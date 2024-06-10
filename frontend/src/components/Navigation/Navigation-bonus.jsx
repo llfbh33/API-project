@@ -1,11 +1,11 @@
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-
-import './Navigation.css';
-import ProfileButton from './ProfileButton-bonus';
-
 import { TbDog } from "react-icons/tb";
+
+import ProfileButton from './ProfileButton-bonus';
+import './Navigation.css';
+
 
 function Navigation({ isLoaded }) {
   const sessionUser = useSelector(state => state.session.user);
@@ -14,28 +14,28 @@ function Navigation({ isLoaded }) {
 
   return (
     <div className='nav-header'>
-      <nav >
-        <div className='nav-home-a'>
+      <nav className='nav-container'>
+        <div className='nav-home-a nav-logo'>
           <div >
-            <NavLink to="/" className='navigation-link' >Meet Dogs . <TbDog /></NavLink>
+            <NavLink to="/" className='navigation-link nav-link' >Meet Dogs . <TbDog /></NavLink>
           </div>
         </div>
         {isLoaded && (
-          <div className='all-groups'>
+          <div className='all-groups nav-links'>
             <div className='nav-other-a'>
-              <NavLink to="/groups" className='navigation-link'>View Groups</NavLink>
+              <NavLink to="/groups" className='navigation-link nav-link'>View Groups</NavLink>
             </div>
             <div className='nav-home-a'>
-              <NavLink to="/events" className='navigation-link'>View Events</NavLink>
+              <NavLink to="/events" className='navigation-link nav-link'>View Events</NavLink>
             </div>
             <div>
               <button
                 hidden={!sessionUser}
-                className={sessionUser ? 'nav-btn' : ''}
+                className={`nav-btn ${sessionUser ? 'visible' : ''}`}
                 onClick={() => navigate('/createGroup')}
-                  >Start a New Group</button>
+              >Start a New Group</button>
             </div>
-            <ProfileButton user={sessionUser} />
+              <ProfileButton user={sessionUser} />
           </div>
         )}
       </nav>

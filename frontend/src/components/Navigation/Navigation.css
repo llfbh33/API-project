@@ -100,3 +100,56 @@ nav a:hover,
 .hidden {
   display: none;
 }
+
+
+/* Updated Navigation CSS */
+
+/* .nav-header {
+  background-color: rgb(96, 173, 96);
+  border-bottom: 1px solid grey;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.nav-logo {
+  font-size: 2rem;
+}
+
+.nav-link {
+  color: rgba(237, 244, 247, 0.416);
+  text-decoration: none;
+  margin-right: 20px;
+  font-size: 1.2rem;
+}
+
+.nav-link:hover {
+  color: rgb(149, 247, 190);
+  cursor: pointer;
+}
+
+.nav-btn {
+  background-color: rgba(255, 255, 255, 0);
+  border: none;
+  color: rgba(237, 244, 247, 0.416);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.nav-btn.visible {
+  display: inline-block;
+}
+
+.nav-btn:hover {
+  color: rgb(149, 247, 190);
+}
+
+Additional styling for ProfileButton component can go here */
