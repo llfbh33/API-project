@@ -85,6 +85,7 @@
     align-items: center;
     height: 100%;
     margin-top: 50px;
+    transition: box-shadow 0.2s ease; /* Add transition for smooth effect */
 }
 
 .cap-btn {
@@ -137,8 +138,9 @@
 
 .cap-container:hover {
     cursor: pointer;
-    border: solid 2px rgba(128, 128, 128, 0.285);
-    background-color: rgba(218, 243, 218, 0.521);
+    /* border: solid 2px rgba(128, 128, 128, 0.285);
+    background-color: rgba(218, 243, 218, 0.521); */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.521); /* Add shadow on hover */
     :is(button) {
         text-decoration: underline;
     }

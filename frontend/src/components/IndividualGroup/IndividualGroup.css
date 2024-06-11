@@ -1,5 +1,5 @@
 .individual-group-container {
-    /* background-color: rgb(218, 243, 218); */
+
     margin: auto;
     width: 75%;
     display: flex;
@@ -71,11 +71,11 @@
     height: 100px;
     border-radius: 20px;
     cursor: pointer;
-    transition: box-shadow 0.2s ease; /* Add transition for smooth effect */
+    transition: box-shadow 0.2s ease;
 }
 
 .img-group-small-images div img:hover{
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.521); /* Add shadow on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.521);
 }
 
 .top-group-details {
@@ -107,7 +107,7 @@
 .btn-container,
 .join-group-btn {
     display: flex;
-    /* flex-wrap: wrap; */
+
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -136,7 +136,7 @@
     font-size: 1.1vw;
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     margin: 2% 0%;
-    /* padding: 2% 0; */
+
 }
 
 .org-btn-group:hover,
@@ -160,7 +160,7 @@
     font-size: 1.2vw;
 }
 
-/* set the buttons on the group page to work*/
+
 
 .join-btn {
     background-color: rgba(255, 0, 0, 0.514);
@@ -176,7 +176,7 @@
 }
 
 
-/* Event list*/
+
 
 
 .all-events-container {
@@ -257,3 +257,251 @@
 .group-event-description {
     font-size: 1vw;
 }
+
+
+
+/* Container styles */
+/* .individual-group-container {
+    margin: auto;
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+} */
+
+/* Navigation link styles */
+/* .return-nav-link {
+    width: 100%;
+    margin-top: 3%;
+}
+
+.groups-link {
+    font-size: 1.2rem;
+    color: black;
+    text-decoration: none;
+}
+
+.groups-link:hover {
+    color: rgb(73, 73, 223);
+} */
+
+/* Top section styles */
+/* .top-section-container {
+    background-color: rgb(218, 243, 218);
+    padding: 5%;
+    border-radius: 20px;
+    border: 1px ridge grey;
+    width: 100%;
+}
+
+.top-section-details {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.img-group {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
+}
+
+.img-group > img {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    border: 1px ridge grey;
+    border-radius: 20px;
+    object-fit: cover;
+}
+
+.img-group-small-images {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.img-group-small-images div {
+    margin: 10px;
+}
+
+.img-group-small-images div img {
+    width: 100px;
+    height: 100px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
+}
+
+.img-group-small-images div img:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.52);
+} */
+
+/* Group details styles */
+/* .top-group-details {
+    width: 100%;
+    border: 1px solid grey;
+    border-radius: 20px;
+}
+
+.group-details-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    padding: 6%;
+}
+
+.group-details-container h1 {
+    font-size: 2.5rem;
+    text-decoration: underline;
+    margin-bottom: 0;
+}
+
+.group-details-container h3 {
+    font-size: 1.4rem;
+}
+
+.btn-container,
+.join-group-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    border-top: 1px solid grey;
+    border-bottom: 1px solid grey;
+    padding: 3% 0;
+}
+
+.create-update-btns {
+    display: flex;
+    justify-content: center;
+    width: 400px;
+}
+
+.org-btn-group,
+.delete-group {
+    background-color: rgba(195, 191, 191, 0.69);
+    width: 10rem;
+    height: 2.2rem;
+    border: 1px solid rgba(128, 128, 128, 0.54);
+    border-radius: 5px;
+    max-width: 160px;
+    font-size: 1.1rem;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    margin: 2% 0;
+}
+
+.org-btn-group:hover,
+.delete-group:hover {
+    background-color: rgba(150, 152, 177, 0.75);
+    cursor: pointer;
+}
+
+.delete-group {
+    display: flex;
+    justify-content: center;
+    border: 2px outset grey;
+    border-color: rgba(128, 128, 128, 0.64);
+}
+
+.about-section h2 {
+    font-size: 1.6rem;
+}
+
+.about-section p {
+    font-size: 1.2rem;
+} */
+
+/* Join button styles */
+/* .join-btn {
+    background-color: rgba(255, 0, 0, 0.51);
+    width: 45%;
+    height: 100%;
+    border-radius: 10px;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.join-btn:hover {
+    background-color: red;
+} */
+
+/* Event list styles */
+/* .all-events-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 65%;
+}
+
+.all-events-container .events-count {
+    align-self: flex-start;
+    font-size: 2rem;
+    border-bottom: 2px solid black;
+    padding: 2%;
+}
+
+.event-display-card-container {
+    width: 100%;
+    background-color: rgba(125, 196, 154, 0.29);
+    border: 1px ridge grey;
+    border-radius: 20px;
+    margin: 2% 0;
+    padding: 5%;
+}
+
+.event-display-card-container:hover {
+    cursor: pointer;
+    border: 2px ridge grey;
+}
+
+.event-top-sec {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.event-display-img-container {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.event-display-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    border: 1px solid grey;
+    object-fit: cover;
+}
+
+.group-event-details-top-container {
+    border: 1px solid grey;
+    border-radius: 20px;
+    width: 100%;
+}
+
+.group-event-details-container {
+    padding: 8%;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+}
+
+.group-event-details-container h4 {
+    font-size: 1.2rem;
+    text-decoration: underline;
+}
+
+.group-event-details-container p {
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+.group-event-description {
+    font-size: 1rem;
+} */

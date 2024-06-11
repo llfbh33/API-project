@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import * as groupActions from '../../store/groupById';
 import * as singleEventActions from '../../store/eventById';
 import DestroyGroup from '../DestroyGroup/DestroyGroup';
@@ -68,14 +68,8 @@ function IndividualGroup() {
     }
 
 
-    // const organizeEvents = (isExpired) => {
-    //     const now = new Date().getTime();
-    //     return currEvents.filter(event => (new Date(event.startDate).getTime() < now) === isExpired)
-    //                      .sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
-    // };
-
-// function to organize a groups events which have not expired
-    const organizeEvents = () => {
+// function organizes a groups events by date
+    const organizeEvents = (isExpired) => {
         let dates = []
         let sorted = [];
         let expired = [];
@@ -90,26 +84,8 @@ function IndividualGroup() {
                 events.splice(events.indexOf(currEvent), 1)
             })
         }
-        return sorted;
-    }
-
-// function to organize a groups events which have expired
-    const organizeExpiredEvents = () => {
-        let dates = []
-        let sorted = [];
-        let expired = [];
-        let events = [...currEvents]
-        if(events) {
-            events.forEach(event => dates.push(event.startDate))
-            dates.sort()
-            dates.forEach(date => {
-                let currEvent = events.find(event => event.startDate === date)
-                if(new Date(currEvent.startDate).getTime() < new Date().getTime()) expired.push(currEvent)
-                else sorted.push(currEvent)
-                events.splice(events.indexOf(currEvent), 1)
-            })
-        }
-        return expired
+        if (!isExpired) return sorted;
+        else return expired;
     }
 
     // Replace loading screen with an actual loading screen
@@ -205,8 +181,8 @@ function IndividualGroup() {
                     ))}
             </div>
             <div className='all-events-container'>
-            <h2 className='events-count' hidden={!organizeExpiredEvents().length}>{organizeExpiredEvents().length === 0 ? '' :`Expired Events: (${organizeExpiredEvents().length})`}</h2>
-                    {organizeExpiredEvents().map(event => (
+            <h2 className='events-count' hidden={!organizeEvents(true).length}>{organizeEvents(true).length === 0 ? '' :`Expired Events: (${organizeEvents(true).length})`}</h2>
+                    {organizeEvents(true).map(event => (
                         <div key={`${event.id}`} className='event-display-card-container' >
                             <div className='event-top-sec' >
                                 <div className='event-display-img-container'>
