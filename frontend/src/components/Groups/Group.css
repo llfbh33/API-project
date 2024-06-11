@@ -38,7 +38,7 @@
 }
 
 .group-card-container {
-    background-color: #f0f0f0;
+    background-color: rgb(235, 247, 235);
     border-radius: 20px;
     border: 1px solid #999;
     overflow: hidden;

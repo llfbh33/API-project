@@ -111,51 +111,47 @@ function CreateGroup() {
                 <form onSubmit={handleSubmit} >
                     <h1>Start a new Group</h1>
                     <div className="sec-one">
-                        <h2>{`Set your group's location`}</h2>
-                        {/* <div  > */}
-                            <label>Meet Dogs groups meet locally, in person, and online. Well connect you with people in your area</label>
-                            <input
-                                type='text'
-                                value={location}
-                                placeholder="City, STATE"
-                                onChange={(e) => setLocation(e.target.value)}
-                                required
-                            />
-                            <p style={{color: 'red'}}>{hasSubmitted && errors.city ? `${errors.city}` : ''}</p>
-                        {/* </div> */}
+                        <h2>Set your group's location</h2>
+                        <label>Meet Dogs groups meet locally, in person, and online. Well connect you with people in your area.</label>
+                        <input
+                            type='text'
+                            value={location}
+                            placeholder="City, STATE"
+                            onChange={(e) => setLocation(e.target.value)}
+                            required
+                        />
+                        <p style={{color: 'red'}}>{hasSubmitted && errors.city ? `${errors.city}` : ''}</p>
+                    </div>
+                    <div className="sec-one">
+                        <h2>What will your group's name be?</h2>
+                        <label>Choose a name that will give people a clear idea of what the group is about. Feel free to get creative! You can edit this later if you change your mind.</label>
+                        <input
+                            type='text'
+                            value={name}
+                            placeholder="What is your group name?"
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                        />
+                        <p style={{color: 'red'}}>{hasSubmitted && errors.name ? `${errors.name}` : ''}</p>
                     </div>
                     <div>
-                        <h2>{`What will your group's name be?`}</h2>
-                        <div className="sec-one">
-                            <label>Choose a name that will give people a clear idea of what the group is about. Feel free to get creative! You can edit this later if you change your mind.</label>
-                            <input
-                                type='text'
-                                value={name}
-                                placeholder="What is your group name?"
-                                onChange={(e) => setName(e.target.value)}
-                                required
-                            />
-                            <p style={{color: 'red'}}>{hasSubmitted && errors.name ? `${errors.name}` : ''}</p>
-                        </div>
-                    </div>
-                    <div>
-                        <h2>{`Describe the purpose of your group.`}</h2>
+                        <h2>Describe the purpose of your group</h2>
                         <div>
                             <div>
-                                <p>{`People will see this when we promote your group, but you'll be able to add to it later, too.`}</p>
+                                <p>People will see this when we promote your group, but you'll be able to add to it later, too.</p>
                                 <div>
-                                    <p>{`1. What's the purpose of the group?`}</p>
+                                    <p>1. What's the purpose of your group?</p>
                                     <p>2. Who should join?</p>
                                     <p>3. What will you do at your events?</p>
                                 </div>
                             </div>
                             <textarea
-
+                                rows={7}
                                 value={about}
                                 placeholder="Please write at least 50 characters"
                                 onChange={(e) => setAbout(e.target.value)}
                                 required
-                                rows='5'
+                                // rows='5'
                             />
                             <p style={{color: 'red'}}>{hasSubmitted && errors.about ? `${errors.about}` : ''}</p>
                         </div>

@@ -1,44 +1,92 @@
 .create-group {
     display: flex;
     justify-content: center;
-    background-color: rgba(230, 245, 237, 0.662);
-    padding-bottom: 40px;
-    /* text-align: center; */
+    background-color: #e6f5ed;
+    padding: 40px 0;
 }
 
 .create-group-inner {
-    width: 30%;
+    width: 50%;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    text-align: left;
 }
 
-input {
-    max-width: 400px;
-}
-
-textarea {
-    width: 450px;
-}
-
-select {
-    max-width: 120px;
-    height: 30px
+form h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
 .sec-one {
-    display: flex;
-    flex-direction: column;
-    gap: 20px
+    margin-bottom: 20px;
+}
+
+.sec-one h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+label {
+    font-size: 1em;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+input, textarea, select {
+    width: 100%;
+    max-width: 100%;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: vertical;
+    padding: 10px;
+    resize: none;
+}
+
+input {
+    padding: 10px;
+}
+
+select {
+    width: auto;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+p {
+    font-size: 1em;
+    margin-top: 5px;
 }
 
 .sub-btn-con {
+    text-align: center;
+    width: 100%;
     display: flex;
-    /* justify-content: center; */
-    width: 100%
+    align-items: center;
+    justify-content: center;
 }
 
 .sub-btn {
-    margin: 40px;
-    width: 200px;
-    height: 30px;
+    background-color: #258dfc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
-    /* justify-content: center; */
+.sub-btn:hover {
+    background-color: #374bbb;
 }

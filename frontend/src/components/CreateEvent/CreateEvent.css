@@ -4,8 +4,7 @@
     display: flex;
     justify-content: center;
     background-color: rgba(230, 245, 237, 0.662);
-    padding-bottom: 40px;
-    /* text-align: center; */
+    padding: 40px 0;
 }
 
 .create-event-inner {
